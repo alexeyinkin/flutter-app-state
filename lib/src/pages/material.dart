@@ -4,6 +4,11 @@ import 'abstract.dart';
 import '../blocs/screen/screen.dart';
 
 abstract class AbstractMaterialPage<C> extends MaterialPage implements AbstractPage<C> {
+  final ValueKey _nonNullKey;
+
+  @override
+  ValueKey get key => _nonNullKey;
+
   @override
   ScreenBloc<C, dynamic>? get bloc => null;
 
@@ -11,12 +16,15 @@ abstract class AbstractMaterialPage<C> extends MaterialPage implements AbstractP
   C? get currentConfiguration => null;
 
   const AbstractMaterialPage({
-    required LocalKey key,
+    required ValueKey key,
     required Widget child,
-  }) : super(
-    key: key,
-    child: child,
-  );
+  })
+      :
+        _nonNullKey = key,
+        super(
+          key: key,
+          child: child,
+        );
 
   @override
   void dispose() {}

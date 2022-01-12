@@ -9,11 +9,13 @@ abstract class StatelessMaterialPage<C> extends AbstractMaterialPage<C> {
   C? get currentConfiguration => configuration;
 
   const StatelessMaterialPage({
-    required LocalKey key,
+    required ValueKey key,
     required Widget child,
     this.configuration,
-  }) : super(
-    key: key,
-    child: child,
-  );
+  })
+      :
+        super(
+          key: key,
+          child: child,
+        );
 }

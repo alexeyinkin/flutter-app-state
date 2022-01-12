@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../blocs/page_stack/page_stack.dart';
 
+/// Builds a [Navigator] using [PageStackBloc]'s pages.
 class PageStackBlocNavigator extends StatelessWidget {
   final PageStackBloc bloc;
 

@@ -1,9 +1,6 @@
 import 'event.dart';
 
-class ScreenBlocConfigurationChangedEvent<C> extends ScreenBlocEvent {
-  final C configuration;
-
-  ScreenBlocConfigurationChangedEvent({
-    required this.configuration,
-  });
-}
+/// Emit this when configuration of the screen changes.
+///
+/// The configuration will then be read with [ScreenBloc.currentConfiguration].
+class ScreenBlocConfigurationChangedEvent<C> extends ScreenBlocEvent {}

@@ -1,2 +1,1 @@
-abstract class PageStackBlocEvent {
-}
+abstract class PageStackBlocEvent {}
