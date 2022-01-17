@@ -1,4 +1,4 @@
-import 'normalized_state.dart';
+import 'configuration.dart';
 import '../page_stack/page_stack.dart';
 
 /// A container for [PageStackBloc] objects.
@@ -9,15 +9,17 @@ class AppBloc {
     _pageStacks[key] = bloc;
   }
 
-  AppBlocNormalizedState get normalizedState {
-    return AppBlocNormalizedState(
-      stackStates: _pageStacks.map((k, v) => MapEntry(k, v.normalizedState))
+  AppConfiguration getConfiguration() {
+    return AppConfiguration(
+      pageStackConfigurations: _pageStacks.map(
+        (key, pageStackBloc) => MapEntry(key, pageStackBloc.getConfiguration()),
+      ),
     );
   }
 
-  set normalizedState(AppBlocNormalizedState state) {
-    for (final entry in state.stackStates.entries) {
-      _pageStacks[entry.key]?.normalizedState = entry.value;
+  void setConfiguration(AppConfiguration state, {bool fire = true}) {
+    for (final entry in state.pageStackConfigurations.entries) {
+      _pageStacks[entry.key]?.setConfiguration(entry.value, fire: fire);
     }
   }
 }

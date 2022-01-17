@@ -1,21 +1,24 @@
 import 'package:flutter/widgets.dart';
 
 import 'material.dart';
+import '../blocs/page/configuration.dart';
 
-abstract class StatelessMaterialPage<C> extends AbstractMaterialPage<C> {
+abstract class StatelessMaterialPage<C extends PageConfiguration> extends AbstractMaterialPage<C> {
   final C? configuration;
 
   @override
-  C? get currentConfiguration => configuration;
+  C? getConfiguration() => configuration;
 
   const StatelessMaterialPage({
-    required ValueKey key,
+    required ValueKey<String> key,
+    String? factoryKey,
     required Widget child,
     this.configuration,
   })
       :
         super(
           key: key,
+          factoryKey: factoryKey,
           child: child,
         );
 }
