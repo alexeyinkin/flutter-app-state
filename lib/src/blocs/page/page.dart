@@ -9,11 +9,11 @@ import 'event.dart';
 /// A BLoC that backs each stateful page of your app.
 ///
 /// [C] is the base class for all app's page configurations.
-abstract class PageBloc<C extends PageConfiguration> {
+class PageBloc<C extends PageConfiguration> {
   final _eventsController = BehaviorSubject<PageBlocEvent>();
   Stream<PageBlocEvent> get events => _eventsController.stream;
 
-  C? getConfiguration();
+  C? getConfiguration() => null;
 
   @protected
   void emitEvent(PageBlocEvent event) {

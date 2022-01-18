@@ -5,6 +5,8 @@
 * **BREAKING**: Renamed `ScreenBlocNormalizedState` to `PageConfiguration`.
 * **BREAKING**: Renamed `Screen...` events to `Page...` events.
 * **BREAKING**: Extracted `PageBloc.states` to the new `PageStatefulBloc` subclass.
+* `PageBloc` is not abstract.
+* Allow to specify duplicate key behavior per push.
 * Allow `null` for page keys.
 * Added docs.
 

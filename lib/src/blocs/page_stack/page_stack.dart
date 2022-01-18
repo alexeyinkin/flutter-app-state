@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'duplicate_page_key_action.dart';
 import 'event.dart';
 import 'page_event.dart';
 import 'configuration.dart';
@@ -27,7 +28,7 @@ class PageStackBloc<C extends PageConfiguration> {
   final AbstractPage<C>? Function(String key, Map<String, dynamic> state)? createPage;
 
   /// What to do if pushing a page with a key already existing in the stack.
-  final DuplicatePageKeyAction duplicatePageKeyAction;
+  final DuplicatePageKeyAction onDuplicateKey;
 
   final _eventsController = BehaviorSubject<PageStackBlocEvent>();
   Stream<PageStackBlocEvent> get events => _eventsController.stream;
@@ -35,9 +36,9 @@ class PageStackBloc<C extends PageConfiguration> {
   PageStackBloc({
     required AbstractPage<C> bottomPage,
     this.createPage,
-    this.duplicatePageKeyAction = DuplicatePageKeyAction.bringOld,
+    this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
   }) {
-    _pushNoFire(bottomPage);
+    _pushNoFire(bottomPage, onDuplicateKey);
   }
 
   /// The first non-null page configuration from top.
@@ -51,12 +52,16 @@ class PageStackBloc<C extends PageConfiguration> {
   }
 
   /// Pushes a page to the stack much like [Navigator.push] does.
-  void push(AbstractPage<C> page) {
-    _pushNoFire(page);
+  void push(
+    AbstractPage<C> page, {
+      DuplicatePageKeyAction? onDuplicateKey,
+    }
+  ) {
+    _pushNoFire(page, onDuplicateKey ?? this.onDuplicateKey);
     _firePageConfigurationChange(page);
   }
 
-  void _pushNoFire(AbstractPage<C> page) {
+  void _pushNoFire(AbstractPage<C> page, DuplicatePageKeyAction duplicatePageKeyAction) {
     final key = page.key;
     if (key == null) {
       _pushNewPageNoFire(page);
@@ -69,7 +74,7 @@ class PageStackBloc<C extends PageConfiguration> {
       return;
     }
 
-    _pushDuplicateNoFire(oldPage, page);
+    _pushDuplicateNoFire(oldPage, page, duplicatePageKeyAction);
   }
 
   AbstractPage<C>? _findSameKeyPage(ValueKey<String> key) {
@@ -104,8 +109,12 @@ class PageStackBloc<C extends PageConfiguration> {
     _eventsController.sink.add(pageStackEvent);
   }
 
-  void _pushDuplicateNoFire(AbstractPage<C> oldPage, AbstractPage<C> newPage) {
-    switch (duplicatePageKeyAction) {
+  void _pushDuplicateNoFire(
+    AbstractPage<C> oldPage,
+    AbstractPage<C> newPage,
+    DuplicatePageKeyAction onDuplicateKey,
+  ) {
+    switch (onDuplicateKey) {
       case DuplicatePageKeyAction.error:
         throw Exception('Duplicate page key: ${newPage.key}');
 
@@ -122,7 +131,7 @@ class PageStackBloc<C extends PageConfiguration> {
         break;
     }
 
-    throw Exception('Unknown duplicatePageKeyAction: $duplicatePageKeyAction');
+    throw Exception('Unknown onDuplicateKey: $onDuplicateKey');
   }
 
   void _firePageConfigurationChange(AbstractPage<C> page) {
@@ -252,7 +261,7 @@ class PageStackBloc<C extends PageConfiguration> {
     if (page == null) return false;
 
     page.bloc?.setStateMap(pc.state);
-    _pushNoFire(page);
+    _pushNoFire(page, onDuplicateKey);
     return true;
   }
 
@@ -273,16 +282,4 @@ class PageStackBloc<C extends PageConfiguration> {
 
     _eventsController.close();
   }
-}
-
-/// What to do if pushing a page with a key already existing in the stack.
-enum DuplicatePageKeyAction {
-  /// Remove and dispose the old page, create a new one on top.
-  dropOld,
-
-  /// Dispose the new page without adding, bring the old page to the top.
-  bringOld,
-
-  /// Throw an exception.
-  error,
 }
