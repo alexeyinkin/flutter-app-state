@@ -97,6 +97,9 @@ class PageStackBloc<C extends PageConfiguration> {
       _pages.remove(page);
       _firePageConfigurationChange(_pages.last);
       _schedulePageDisposal(page);
+
+      final newTopBloc = _pages.last.bloc;
+      newTopBloc?.onForegroundClosed(event);
     }
   }
 

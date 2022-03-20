@@ -41,6 +41,16 @@ class PageBloc<C extends PageConfiguration> {
     _eventsController.sink.add(PageBlocCloseEvent());
   }
 
+  /// Emits [event] for [PageStackBloc] to remove and dispose the current page.
+  /// [event] is passed to the new topmost [PageBloc] and can be used
+  /// as modal dialog result.
+  void closeScreenWith(PageBlocCloseEvent event) {
+    _eventsController.sink.add(event);
+  }
+
+  /// Override this to use the result of a closed modal screen.
+  void onForegroundClosed(PageBlocCloseEvent event) {}
+
   /// Called when Android back button is pressed with this page active.
   ///
   /// Return [true] if this event is handled and the page should stay.

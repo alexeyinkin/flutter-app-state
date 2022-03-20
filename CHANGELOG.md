@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Added `PageBloc.closeScreenWith`, `PageBloc.onForegroundClosed`.
+
 ## 0.1.2
 
 * **BREAKING**: Renamed `AppBlocNormalizedState` to `AppConfiguration`.
