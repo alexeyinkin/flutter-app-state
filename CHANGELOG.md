@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Added `PageStackRouterDelegate`.
+
 ## 0.1.3
 
 * Added `PageBloc.closeScreenWith`, `PageBloc.onForegroundClosed`.

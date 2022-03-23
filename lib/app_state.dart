@@ -15,6 +15,8 @@ export 'src/blocs/page_stack/event.dart'                      show PageStackBloc
 export 'src/blocs/page_stack/page_stack.dart'                 show PageStackBloc;
 export 'src/blocs/page_stack/page_event.dart'                 show PageStackPageBlocEvent;
 
+export 'src/delegates/page_stack.dart'                        show PageStackRouterDelegate;
+
 export 'src/pages/abstract.dart'                              show AbstractPage;
 export 'src/pages/material.dart'                              show AbstractMaterialPage;
 export 'src/pages/bloc_material.dart'                         show BlocMaterialPage;
