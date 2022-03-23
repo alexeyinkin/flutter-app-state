@@ -7,9 +7,7 @@ import '../widgets/navigator.dart';
 class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
   final PageStackBloc pageStackBloc;
 
-  PageStackRouterDelegate({
-    required this.pageStackBloc,
-  });
+  PageStackRouterDelegate(this.pageStackBloc);
 
   @override
   final navigatorKey = GlobalKey<NavigatorState>();

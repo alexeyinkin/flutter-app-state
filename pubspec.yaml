@@ -1,6 +1,6 @@
 name: app_state
 description: A BLoC-based state management solution on top of Router API for larger apps.
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/alexeyinkin/flutter-app-state
 
 environment:
