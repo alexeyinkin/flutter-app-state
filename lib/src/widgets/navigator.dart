@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import '../blocs/page/page.dart';
 import '../blocs/page_stack/page_stack.dart';
+import '../models/back_pressed_result_enum.dart';
+import '../pages/bloc_material.dart';
 
 /// Builds a [Navigator] using [PageStackBloc]'s pages.
 class PageStackBlocNavigator extends StatelessWidget {
@@ -27,12 +30,43 @@ class PageStackBlocNavigator extends StatelessWidget {
       // diff the new list with itself and would not show a newly pushed route.
       pages: [...bloc.pages],
       onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
+        // This is required by Flutter's internals to complete the pop future.
+        final didPop = route.didPop(result);
+
+        final settings = route.settings;
+
+        if (settings is BlocMaterialPage) {
+          // Ideally we want to await for bloc.onBackPressed to see if it
+          // handled the event (so we ignore it) or not (so we propagate it).
+          // But this callback is synchronous, so we always have to ignore it.
+          // This means the app will never close on back button press.
+          // TODO: File an issue with Flutter and suggest opPopPage
+          //       be changed to FutureOr<bool>, see if it is filed already.
+          _onBackButtonPressedInBloc(settings.bloc);
+          return false; // Prevent the default pop.
         }
 
-        return true;
+        if (settings is Page) {
+          // A page without bloc. It has no chance to override the behavior.
+          bloc.onBackPressed();
+          return false; // Prevent the default pop.
+        }
+
+        // The classic handler for non-paged routes:
+
+        if (!didPop) {
+          return false; // Prevent the default pop.
+        }
+
+        return true; // Continue with the default pop.
       },
     );
+  }
+
+  void _onBackButtonPressedInBloc(PageBloc bloc) async {
+    final result = await bloc.onBackPressed();
+    if (result == BackPressedResult.close) {
+      bloc.closeScreen();
+    }
   }
 }

@@ -1,3 +1,7 @@
+## 0.1.6
+
+* Fix `onPopRoute` in `PageStackBlocNavigator`.
+
 ## 0.1.5
 
 * Added `PageStackRouterDelegate`.

@@ -5,6 +5,7 @@ import 'close_event.dart';
 import 'configuration.dart';
 import 'configuration_changed_event.dart';
 import 'event.dart';
+import '../../models/back_pressed_result_enum.dart';
 
 /// A BLoC that backs each stateful page of your app.
 ///
@@ -53,12 +54,13 @@ class PageBloc<C extends PageConfiguration> {
 
   /// Called when Android back button is pressed with this page active.
   ///
-  /// Return [true] if this event is handled and the page should stay.
-  /// Return [false] if the page **may** close.
+  /// Override this to handle the event and to prevent the screen from closing.
+  /// The closing itself is done in [PageStackBlocNavigator] so this method
+  /// only has to return the decision.
   ///
   /// Closing is not guaranteed. For instance, it is not closed
   /// if this is the last page in the [PageStackBloc].
-  Future<bool> onBackPressed() => Future.value(false);
+  Future<BackPressedResult> onBackPressed() => Future.value(BackPressedResult.close);
 
   /// Override this to recover the state during navigation.
   void setStateMap(Map<String, dynamic> state) {}

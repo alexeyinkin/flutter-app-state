@@ -17,6 +17,8 @@ export 'src/blocs/page_stack/page_event.dart'                 show PageStackPage
 
 export 'src/delegates/page_stack.dart'                        show PageStackRouterDelegate;
 
+export 'src/models/back_pressed_result_enum.dart'             show BackPressedResult;
+
 export 'src/pages/abstract.dart'                              show AbstractPage;
 export 'src/pages/material.dart'                              show AbstractMaterialPage;
 export 'src/pages/bloc_material.dart'                         show BlocMaterialPage;

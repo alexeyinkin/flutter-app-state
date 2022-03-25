@@ -12,6 +12,7 @@ import '../page/configuration.dart';
 import '../page/close_event.dart';
 import '../page/configuration_changed_event.dart';
 import '../page/event.dart';
+import '../../models/back_pressed_result_enum.dart';
 import '../../pages/abstract.dart';
 
 /// The source of pages for [Navigator] widget.
@@ -156,14 +157,15 @@ class PageStackBloc<C extends PageConfiguration> {
   ///
   /// Otherwise returns [false]. This may signal to shut down the app
   /// or to close some widgets wrapping this stack.
-  Future<bool> onBackPressed() async {
+  Future<BackPressedResult> onBackPressed() async {
     final page = _pages.lastOrNull;
-    if (page == null) return false; // Normally never happens.
+    if (page == null) return BackPressedResult.close; // Normally never happens.
 
     final bloc = page.bloc;
     if (bloc != null) {
-      if (await bloc.onBackPressed()) {
-        return true;
+      final result = await bloc.onBackPressed();
+      if (result == BackPressedResult.keep) {
+        return result;
       }
     }
 
@@ -174,10 +176,10 @@ class PageStackBloc<C extends PageConfiguration> {
       _pages.removeLast();
       _firePageConfigurationChange(_pages.last);
       _schedulePageDisposal(page);
-      return true;
+      return BackPressedResult.keep;
     }
 
-    return false;
+    return BackPressedResult.close;
   }
 
   /// Surveys all pages' configurations for serialization.
