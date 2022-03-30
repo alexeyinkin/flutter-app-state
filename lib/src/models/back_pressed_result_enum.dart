@@ -1,0 +1,4 @@
+enum BackPressedResult {
+  close,
+  keep,
+}

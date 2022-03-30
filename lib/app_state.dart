@@ -24,4 +24,6 @@ export 'src/pages/material.dart'                              show AbstractMater
 export 'src/pages/bloc_material.dart'                         show BlocMaterialPage;
 export 'src/pages/stateless_material.dart'                    show StatelessMaterialPage;
 
+export 'src/route_information_parsers/page_stack.dart'        show PageStackRouteInformationParser;
+
 export 'src/widgets/navigator.dart'                           show PageStackBlocNavigator;

@@ -1,7 +1,11 @@
+import 'package:flutter/widgets.dart';
+
+import '../page_stack/configuration.dart';
+
 /// Describes a location within the app, corresponds to URL + state.
 /// Can be used to navigate to a page recovering its state.
 /// Subclass this for your pages' configurations.
-class PageConfiguration {
+abstract class PageConfiguration {
   /// The key to compare with to [AbstractPage.key] to decide if the state
   /// is applicable to a page in a stack.
   ///
@@ -70,10 +74,36 @@ class PageConfiguration {
   }
 
   factory PageConfiguration._fromMap(Map<String, dynamic> map) {
-    return PageConfiguration(
+    return _DenormalizedPageConfiguration(
       key: map['key'],
       factoryKey: map['factoryKey'],
       state: map['state'],
     );
+  }
+
+  RouteInformation restoreRouteInformation();
+
+  // What pages to show when navigating directly to this configuration's URL.
+  PageStackConfiguration get defaultStackConfiguration {
+    return PageStackConfiguration(
+      pageConfigurations: [this],
+    );
+  }
+}
+
+class _DenormalizedPageConfiguration extends PageConfiguration {
+  _DenormalizedPageConfiguration({
+    required String? key,
+    required String? factoryKey,
+    required Map<String, dynamic> state,
+  }) : super(
+    key: key,
+    factoryKey: factoryKey,
+    state: state,
+  );
+
+  @override
+  RouteInformation restoreRouteInformation() {
+    throw UnimplementedError();
   }
 }

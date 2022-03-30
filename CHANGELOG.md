@@ -1,3 +1,10 @@
+## 0.2.0
+
+* **BREAKING**: `PageConfiguration` is now abstract, added `restoreRouteInformation()`.
+* Added `PageConfiguration.defaultStackConfiguration`.
+* Added `PageStackConfiguration.getTopPageConfiguration()`.
+* Added `PageStackRouteInformationParser`.
+
 ## 0.1.6
 
 * Fix `onPopRoute` in `PageStackBlocNavigator`.
