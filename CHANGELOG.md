@@ -1,3 +1,7 @@
+## 0.2.1
+
+* An accidental debug print removed.
+
 ## 0.2.0
 
 * **BREAKING**: `PageConfiguration` is now abstract, added `restoreRouteInformation()`.
