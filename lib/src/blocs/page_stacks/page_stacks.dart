@@ -4,6 +4,8 @@ import 'package:rxdart/rxdart.dart';
 import 'configuration.dart';
 import 'current_page_stack_changed_event.dart';
 import 'event.dart';
+import 'page_stack_event.dart';
+import '../page_stack/event.dart';
 import '../page_stack/page_stack.dart';
 
 /// A container for [PageStackBloc] objects with a concept of a current one.
@@ -18,6 +20,7 @@ class PageStacksBloc {
 
   void addPageStack(String key, PageStackBloc bloc) {
     _pageStacks[key] = bloc;
+    bloc.events.listen((e) => _onPageStackEvent(bloc, e));
   }
 
   PageStacksConfiguration getConfiguration() {
@@ -50,6 +53,15 @@ class PageStacksBloc {
         CurrentPageStackChangedEvent(oldKey: oldKey, newKey: key),
       );
     }
+  }
+
+  void _onPageStackEvent(PageStackBloc bloc, PageStackBlocEvent event) {
+    _eventsController.add(
+      PageStacksPageStackBlocEvent(
+        bloc: bloc,
+        pageStackBlocEvent: event,
+      ),
+    );
   }
 
   PageStackBloc? get currentStackBloc => _pageStacks[_currentStackKey];

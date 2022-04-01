@@ -23,10 +23,10 @@ class PageStackBloc<C extends PageConfiguration> {
   List<AbstractPage<C>> get pages => _pages;
 
   /// A factory to create pages from their serialized states.
-  /// It is called when a popped page should be re-created on back-front
+  /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final AbstractPage<C>? Function(String key, Map<String, dynamic> state)? createPage;
+  final AbstractPage<C>? Function(String factoryKey, Map<String, dynamic> state)? createPage;
 
   /// What to do if pushing a page with a key already existing in the stack.
   final DuplicatePageKeyAction onDuplicateKey;

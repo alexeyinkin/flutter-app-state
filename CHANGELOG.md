@@ -1,3 +1,7 @@
+## 0.3.1
+
+* Wrap `PageStackBlocEvent` as `PageStacksBlocEvent`.
+
 ## 0.3.0
 
 * **BREAKING**: Remove `AppBloc`.
