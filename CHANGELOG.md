@@ -1,3 +1,9 @@
+## 0.3.0
+
+* **BREAKING**: Remove `AppBloc`.
+* Add `PageStacksBloc`, `PageStacksConfiguration`, `PageStacksRouteInformationParser`, `PageStacksRouterDelegate`.
+* Add `PageConfiguration.defaultStackKey`, `defaultStacksConfiguration`.
+
 ## 0.2.1
 
 * An accidental debug print removed.

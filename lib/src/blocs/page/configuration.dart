@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../page_stack/configuration.dart';
+import '../page_stacks/configuration.dart';
 
 /// Describes a location within the app, corresponds to URL + state.
 /// Can be used to navigate to a page recovering its state.
@@ -87,6 +88,17 @@ abstract class PageConfiguration {
   PageStackConfiguration get defaultStackConfiguration {
     return PageStackConfiguration(
       pageConfigurations: [this],
+    );
+  }
+
+  String get defaultStackKey => (throw UnimplementedError());
+
+  PageStacksConfiguration get defaultStacksConfiguration {
+    final key = defaultStackKey;
+
+    return PageStacksConfiguration(
+      currentStackKey: key,
+      pageStackConfigurations: {key: defaultStackConfiguration},
     );
   }
 }

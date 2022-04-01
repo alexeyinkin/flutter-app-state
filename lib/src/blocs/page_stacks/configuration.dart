@@ -1,18 +1,22 @@
 import '../page/configuration.dart';
 import '../page_stack/configuration.dart';
 
-/// Used to restore [PageStackBloc] states, can be serialized
+/// Used to restore [PageStacksBloc] state, can be serialized
 /// for browser history.
-class AppConfiguration {
+class PageStacksConfiguration {
   final Map<String, PageStackConfiguration> pageStackConfigurations;
+  final String? currentStackKey;
 
-  const AppConfiguration({
+  const PageStacksConfiguration({
     required this.pageStackConfigurations,
+    required this.currentStackKey,
   });
 
-  const AppConfiguration.empty() : pageStackConfigurations = const {};
+  const PageStacksConfiguration.empty() :
+      pageStackConfigurations = const {},
+      currentStackKey = '';
 
-  AppConfiguration.singleStack({
+  PageStacksConfiguration.singleStack({
     required String key,
     required List<PageConfiguration> pageConfigurations,
   }) :
@@ -20,19 +24,24 @@ class AppConfiguration {
           key: PageStackConfiguration(
             pageConfigurations: pageConfigurations,
           ),
-        };
+        },
+        currentStackKey = key;
 
-  static AppConfiguration? fromMapOrNull(Map<String, dynamic>? map) {
+  static PageStacksConfiguration? fromMapOrNull(Map<String, dynamic>? map) {
     if (map == null) return null;
 
-    return AppConfiguration(
+    return PageStacksConfiguration(
       pageStackConfigurations: PageStackConfiguration.fromMaps(map['psc']),
+      currentStackKey: map['k'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'psc': pageStackConfigurations,
+      'k': currentStackKey,
     };
   }
+
+  PageStackConfiguration? get currentStackConfiguration => pageStackConfigurations[currentStackKey];
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/configuration_changed_event.dart';
-import '../blocs/page_stack/configuration.dart';
-import '../blocs/page_stack/event.dart';
-import '../blocs/page_stack/page_event.dart';
-import '../blocs/page_stack/page_stack.dart';
-import '../widgets/navigator.dart';
+import '../page/configuration_changed_event.dart';
+import 'configuration.dart';
+import 'event.dart';
+import 'page_event.dart';
+import 'page_stack.dart';
+import '../../widgets/navigator.dart';
 
 class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
   final PageStackBloc pageStackBloc;

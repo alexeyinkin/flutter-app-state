@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page_stack/configuration.dart';
+import 'configuration.dart';
 
 abstract class PageStackRouteInformationParser extends RouteInformationParser<PageStackConfiguration> {
   @override
