@@ -4,4 +4,6 @@ import 'event.dart';
 ///
 /// The page could be anywhere in the stack as long as at least one other page
 /// is left in the stack afterwards.
-class PageBlocCloseEvent extends PageBlocEvent {}
+class PageBlocCloseEvent extends PageBlocEvent {
+  const PageBlocCloseEvent();
+}

@@ -1,3 +1,8 @@
+## 0.3.2
+
+* Const constructors for `PageBlocCloseEvent`, `PageBlocConfigurationChangedEvent`, `PageStackConfiguration`.
+* Link to tutorials.
+
 ## 0.3.1
 
 * Wrap `PageStackBlocEvent` as `PageStacksBlocEvent`.

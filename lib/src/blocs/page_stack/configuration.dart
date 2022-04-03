@@ -5,7 +5,7 @@ import '../page/configuration.dart';
 class PageStackConfiguration {
   final List<PageConfiguration?> pageConfigurations;
 
-  PageStackConfiguration({
+  const PageStackConfiguration({
     required this.pageConfigurations,
   });
 
