@@ -1,3 +1,8 @@
+## 0.3.3
+
+* Added `MaterialPageStacksRouterDelegate`.
+* Added `StatefulBlocWidget`.
+
 ## 0.3.2
 
 * Const constructors for `PageBlocCloseEvent`, `PageBlocConfigurationChangedEvent`, `PageStackConfiguration`.

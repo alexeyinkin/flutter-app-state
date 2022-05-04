@@ -18,6 +18,7 @@ export 'src/blocs/page_stacks/back_button_dispatcher.dart'            show PageS
 export 'src/blocs/page_stacks/configuration.dart'                     show PageStacksConfiguration;
 export 'src/blocs/page_stacks/current_page_stack_changed_event.dart'  show CurrentPageStackChangedEvent;
 export 'src/blocs/page_stacks/event.dart'                             show PageStacksBlocEvent;
+export 'src/blocs/page_stacks/material_router_delegate.dart'          show MaterialPageStacksRouterDelegate;
 export 'src/blocs/page_stacks/page_stacks.dart'                       show PageStacksBloc;
 export 'src/blocs/page_stacks/route_information_parser.dart'          show PageStacksRouteInformationParser;
 export 'src/blocs/page_stacks/router_delegate.dart'                   show PageStacksRouterDelegate;
@@ -30,3 +31,4 @@ export 'src/pages/bloc_material.dart'                         show BlocMaterialP
 export 'src/pages/stateless_material.dart'                    show StatelessMaterialPage;
 
 export 'src/widgets/navigator.dart'                           show PageStackBlocNavigator;
+export 'src/widgets/stateful_bloc_widget.dart'                show StatefulBlocWidget;
