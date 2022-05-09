@@ -16,6 +16,8 @@ abstract class AbstractPage<C extends PageConfiguration> extends Page {
   String? getFactoryKey();
 
   PageBloc<C>? get bloc;
+
   C? getConfiguration();
+
   void dispose();
 }

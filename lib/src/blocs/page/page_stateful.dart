@@ -8,11 +8,10 @@ import 'page.dart';
 ///
 /// [C] is the base class for all app's page configurations.
 /// [S] is the state class of this BLoC.
-abstract class PageStatefulBloc<
-  C extends PageConfiguration,
-  S
-> extends PageBloc<C> {
+abstract class PageStatefulBloc<C extends PageConfiguration, S>
+    extends PageBloc<C> {
   final _statesController = BehaviorSubject<S>();
+
   Stream<S> get states => _statesController.stream;
 
   /// Creates and emits the current state of this BLoC.

@@ -8,10 +8,8 @@ import '../blocs/page/page.dart';
 ///
 /// [C] is the base class for all app's page configurations.
 /// [B] is the block for the state.
-abstract class BlocMaterialPage<
-  C extends PageConfiguration,
-  B extends PageBloc<C>
-> extends AbstractMaterialPage<C> {
+abstract class BlocMaterialPage<C extends PageConfiguration,
+    B extends PageBloc<C>> extends AbstractMaterialPage<C> {
   @override
   final B bloc;
 
@@ -23,9 +21,7 @@ abstract class BlocMaterialPage<
     String? factoryKey,
     required this.bloc,
     required Widget Function(B) createScreen,
-  })
-      :
-        super(
+  }) : super(
           key: key,
           factoryKey: factoryKey,
           child: createScreen(bloc),

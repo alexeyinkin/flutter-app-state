@@ -16,6 +16,7 @@ class PageStacksBloc {
   String? _currentStackKey;
 
   final _eventsController = BehaviorSubject<PageStacksBlocEvent>();
+
   Stream<PageStacksBlocEvent> get events => _eventsController.stream;
 
   void addPageStack(String key, PageStackBloc bloc) {
@@ -65,5 +66,8 @@ class PageStacksBloc {
   }
 
   PageStackBloc? get currentStackBloc => _pageStacks[_currentStackKey];
-  UnmodifiableMapView<String, PageStackBloc> get pageStacks => UnmodifiableMapView(_pageStacks);
+
+  UnmodifiableMapView<String, PageStackBloc> get pageStacks {
+    return UnmodifiableMapView(_pageStacks);
+  }
 }

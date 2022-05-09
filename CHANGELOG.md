@@ -1,3 +1,9 @@
+## 0.3.4
+
+* Call const constructors where possible.
+* Applied `dart format`.
+* Added features to `README.md`
+
 ## 0.3.3
 
 * Added `MaterialPageStacksRouterDelegate`.

@@ -50,13 +50,10 @@ abstract class PageConfiguration {
     this.key,
     String? factoryKey,
     this.state = const {},
-  }) :
-      _factoryKey = factoryKey;
+  }) : _factoryKey = factoryKey;
 
   static List<Map<String, dynamic>?> toJsons(Iterable<PageConfiguration?> pcs) {
-    return pcs
-        .map((pc) => pc?.toJson())
-        .toList(growable: false);
+    return pcs.map((pc) => pc?.toJson()).toList(growable: false);
   }
 
   Map<String, dynamic>? toJson() {
@@ -109,10 +106,10 @@ class _DenormalizedPageConfiguration extends PageConfiguration {
     required String? factoryKey,
     required Map<String, dynamic> state,
   }) : super(
-    key: key,
-    factoryKey: factoryKey,
-    state: state,
-  );
+          key: key,
+          factoryKey: factoryKey,
+          state: state,
+        );
 
   @override
   RouteInformation restoreRouteInformation() {

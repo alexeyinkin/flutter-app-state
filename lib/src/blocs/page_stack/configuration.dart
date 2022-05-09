@@ -10,7 +10,8 @@ class PageStackConfiguration {
   });
 
   static Map<String, PageStackConfiguration> fromMaps(
-      Map<String, dynamic> maps) {
+    Map<String, dynamic> maps,
+  ) {
     return maps.cast<String, Map<String, dynamic>>().map(
           (k, v) => MapEntry(k, PageStackConfiguration._fromMap(v)),
         );
@@ -35,6 +36,8 @@ class PageStackConfiguration {
     }
 
     throw Exception(
-        'No page configurations found for this stack. Did you forget to override PageBloc.getConfiguration()?');
+      'No page configurations found for this stack. '
+      'Did you forget to override PageBloc.getConfiguration()?',
+    );
   }
 }

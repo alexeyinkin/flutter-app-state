@@ -20,18 +20,23 @@ import '../../pages/abstract.dart';
 /// [C] is the base class for all app's page configurations.
 class PageStackBloc<C extends PageConfiguration> {
   final _pages = <AbstractPage<C>>[];
+
   List<AbstractPage<C>> get pages => _pages;
 
   /// A factory to create pages from their serialized states.
   /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final AbstractPage<C>? Function(String factoryKey, Map<String, dynamic> state)? createPage;
+  final AbstractPage<C>? Function(
+    String factoryKey,
+    Map<String, dynamic> state,
+  )? createPage;
 
   /// What to do if pushing a page with a key already existing in the stack.
   final DuplicatePageKeyAction onDuplicateKey;
 
   final _eventsController = BehaviorSubject<PageStackBlocEvent>();
+
   Stream<PageStackBlocEvent> get events => _eventsController.stream;
 
   PageStackBloc({
@@ -55,14 +60,16 @@ class PageStackBloc<C extends PageConfiguration> {
   /// Pushes a page to the stack much like [Navigator.push] does.
   void push(
     AbstractPage<C> page, {
-      DuplicatePageKeyAction? onDuplicateKey,
-    }
-  ) {
+    DuplicatePageKeyAction? onDuplicateKey,
+  }) {
     _pushNoFire(page, onDuplicateKey ?? this.onDuplicateKey);
     _firePageConfigurationChange(page);
   }
 
-  void _pushNoFire(AbstractPage<C> page, DuplicatePageKeyAction duplicatePageKeyAction) {
+  void _pushNoFire(
+    AbstractPage<C> page,
+    DuplicatePageKeyAction duplicatePageKeyAction,
+  ) {
     final key = page.key;
     if (key == null) {
       _pushNewPageNoFire(page);
@@ -143,7 +150,7 @@ class PageStackBloc<C extends PageConfiguration> {
       PageStackPageBlocEvent(
         page: page,
         bloc: page.bloc,
-        pageBlocEvent: PageBlocConfigurationChangedEvent(),
+        pageBlocEvent: const PageBlocConfigurationChangedEvent(),
       ),
     );
   }
@@ -185,9 +192,8 @@ class PageStackBloc<C extends PageConfiguration> {
   /// Surveys all pages' configurations for serialization.
   PageStackConfiguration getConfiguration() {
     return PageStackConfiguration(
-      pageConfigurations: _pages
-          .map((p) => p.getConfiguration())
-          .toList(growable: false),
+      pageConfigurations:
+          _pages.map((p) => p.getConfiguration()).toList(growable: false),
     );
   }
 
@@ -203,9 +209,11 @@ class PageStackBloc<C extends PageConfiguration> {
   /// 3. For page states that were not matched, creates the pages
   ///    with [createPage] factory and sets their states.
   ///    Stops at the first page that failed to be created.
-  void setConfiguration(PageStackConfiguration configuration, {bool fire = true}) {
+  void setConfiguration(PageStackConfiguration configuration,
+      {bool fire = true}) {
     int matchedIndex = 0;
-    int matchLength = min(_pages.length, configuration.pageConfigurations.length);
+    int matchLength =
+        min(_pages.length, configuration.pageConfigurations.length);
 
     for (; matchedIndex < matchLength; matchedIndex++) {
       final page = _pages[matchedIndex];
@@ -224,12 +232,14 @@ class PageStackBloc<C extends PageConfiguration> {
       }
     }
 
-    for (int i = _pages.length; --i >= matchedIndex; ) {
+    for (int i = _pages.length; --i >= matchedIndex;) {
       final page = _pages.removeAt(i);
       _schedulePageDisposal(page);
     }
 
-    for (int i = matchedIndex; i < configuration.pageConfigurations.length; i++) {
+    for (int i = matchedIndex;
+        i < configuration.pageConfigurations.length;
+        i++) {
       final pc = configuration.pageConfigurations[i];
       if (pc == null) {
         // Pages without configuration are transient dialogs, these are OK
@@ -254,7 +264,7 @@ class PageStackBloc<C extends PageConfiguration> {
     if (_pages.isEmpty) {
       throw Exception(
         'PageStackBloc is emptied by setting a configuration state. '
-        'The stack should never be empty according to the Navigator API.'
+        'The stack should never be empty according to the Navigator API.',
       );
     }
   }

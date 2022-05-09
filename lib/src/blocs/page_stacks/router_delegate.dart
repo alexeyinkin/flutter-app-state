@@ -1,7 +1,11 @@
 import 'package:app_state/app_state.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class PageStacksRouterDelegate extends RouterDelegate<PageStacksConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageStacksConfiguration> {
+abstract class PageStacksRouterDelegate
+    extends RouterDelegate<PageStacksConfiguration>
+    with
+        ChangeNotifier,
+        PopNavigatorRouterDelegateMixin<PageStacksConfiguration> {
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
   final PageStacksBloc pageStacksBloc;

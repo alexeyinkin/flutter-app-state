@@ -7,7 +7,10 @@ import 'page_event.dart';
 import 'page_stack.dart';
 import '../../widgets/navigator.dart';
 
-class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration> with ChangeNotifier, PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
+class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
+    with
+        ChangeNotifier,
+        PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
   final PageStackBloc pageStackBloc;
 
   PageStackRouterDelegate(this.pageStackBloc) {

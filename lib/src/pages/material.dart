@@ -4,7 +4,8 @@ import 'abstract.dart';
 import '../blocs/page/configuration.dart';
 import '../blocs/page/page.dart';
 
-abstract class AbstractMaterialPage<C extends PageConfiguration> extends MaterialPage implements AbstractPage<C> {
+abstract class AbstractMaterialPage<C extends PageConfiguration>
+    extends MaterialPage implements AbstractPage<C> {
   final ValueKey<String>? _valueKey;
 
   @override
@@ -27,9 +28,7 @@ abstract class AbstractMaterialPage<C extends PageConfiguration> extends Materia
     ValueKey<String>? key,
     String? factoryKey,
     required Widget child,
-  })
-      :
-        _valueKey = key,
+  })  : _valueKey = key,
         _factoryKey = factoryKey,
         super(
           key: key,

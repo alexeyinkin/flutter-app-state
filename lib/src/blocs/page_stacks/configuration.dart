@@ -12,15 +12,14 @@ class PageStacksConfiguration {
     required this.currentStackKey,
   });
 
-  const PageStacksConfiguration.empty() :
-      pageStackConfigurations = const {},
-      currentStackKey = '';
+  const PageStacksConfiguration.empty()
+      : pageStackConfigurations = const {},
+        currentStackKey = '';
 
   PageStacksConfiguration.singleStack({
     required String key,
     required List<PageConfiguration> pageConfigurations,
-  }) :
-        pageStackConfigurations = <String, PageStackConfiguration>{
+  })  : pageStackConfigurations = <String, PageStackConfiguration>{
           key: PageStackConfiguration(
             pageConfigurations: pageConfigurations,
           ),
@@ -43,5 +42,7 @@ class PageStacksConfiguration {
     };
   }
 
-  PageStackConfiguration? get currentStackConfiguration => pageStackConfigurations[currentStackKey];
+  PageStackConfiguration? get currentStackConfiguration {
+    return pageStackConfigurations[currentStackKey];
+  }
 }

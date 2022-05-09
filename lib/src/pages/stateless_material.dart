@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'material.dart';
 import '../blocs/page/configuration.dart';
 
-abstract class StatelessMaterialPage<C extends PageConfiguration> extends AbstractMaterialPage<C> {
+abstract class StatelessMaterialPage<C extends PageConfiguration>
+    extends AbstractMaterialPage<C> {
   final C? configuration;
 
   @override
@@ -14,9 +15,7 @@ abstract class StatelessMaterialPage<C extends PageConfiguration> extends Abstra
     String? factoryKey,
     required Widget child,
     this.configuration,
-  })
-      :
-        super(
+  }) : super(
           key: key,
           factoryKey: factoryKey,
           child: child,

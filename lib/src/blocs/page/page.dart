@@ -12,6 +12,7 @@ import '../../models/back_pressed_result_enum.dart';
 /// [C] is the base class for all app's page configurations.
 class PageBloc<C extends PageConfiguration> {
   final _eventsController = BehaviorSubject<PageBlocEvent>();
+
   Stream<PageBlocEvent> get events => _eventsController.stream;
 
   C? getConfiguration() => null;
@@ -23,7 +24,7 @@ class PageBloc<C extends PageConfiguration> {
 
   @protected
   void emitConfigurationChanged() {
-    _eventsController.sink.add(PageBlocConfigurationChangedEvent());
+    _eventsController.sink.add(const PageBlocConfigurationChangedEvent());
   }
 
   /// Checks if this BLoC has a non-null current configuration
@@ -39,7 +40,7 @@ class PageBloc<C extends PageConfiguration> {
   /// Emits [PageBlocCloseEvent] for [PageStackBloc] to remove and dispose
   /// the current page.
   void closeScreen() {
-    _eventsController.sink.add(PageBlocCloseEvent());
+    _eventsController.sink.add(const PageBlocCloseEvent());
   }
 
   /// Emits [event] for [PageStackBloc] to remove and dispose the current page.
@@ -60,7 +61,9 @@ class PageBloc<C extends PageConfiguration> {
   ///
   /// Closing is not guaranteed. For instance, it is not closed
   /// if this is the last page in the [PageStackBloc].
-  Future<BackPressedResult> onBackPressed() => Future.value(BackPressedResult.close);
+  Future<BackPressedResult> onBackPressed() {
+    return Future.value(BackPressedResult.close);
+  }
 
   /// Override this to recover the state during navigation.
   void setStateMap(Map<String, dynamic> state) {}
