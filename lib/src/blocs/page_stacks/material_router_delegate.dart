@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'page_stacks.dart';
+import 'bloc.dart';
 import 'router_delegate.dart';
 
 // TODO: Create a delegate like this independent from Material,

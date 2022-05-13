@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 
+import '../../widgets/navigator.dart';
 import '../page/configuration_changed_event.dart';
+import 'bloc.dart';
 import 'configuration.dart';
 import 'event.dart';
 import 'page_event.dart';
-import 'page_stack.dart';
-import '../../widgets/navigator.dart';
 
 class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
     with

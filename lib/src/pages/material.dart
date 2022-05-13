@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'abstract.dart';
+import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
-import '../blocs/page/page.dart';
 
 abstract class AbstractMaterialPage<C extends PageConfiguration>
     extends MaterialPage implements AbstractPage<C> {

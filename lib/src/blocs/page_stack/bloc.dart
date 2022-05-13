@@ -133,13 +133,13 @@ class PageStackBloc<C extends PageConfiguration> {
         _pages.remove(oldPage);
         _pages.add(newPage);
         _schedulePageDisposal(oldPage);
-        break;
+        return;
 
       case DuplicatePageKeyAction.bringOld:
         newPage.dispose();
         _pages.remove(oldPage);
         _pages.add(oldPage);
-        break;
+        return;
     }
 
     throw Exception('Unknown onDuplicateKey: $onDuplicateKey');

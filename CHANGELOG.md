@@ -1,3 +1,7 @@
+## 0.3.5
+
+* Fix duplicate page key handling.
+
 ## 0.3.4
 
 * Call const constructors where possible.

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
-import '../blocs/page/page.dart';
 
 /// The base page class for this package.
 ///

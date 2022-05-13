@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../blocs/page/configuration.dart';
-import '../blocs/page/page_stateful.dart';
+import '../blocs/page/stateful_bloc.dart';
 
 abstract class StatefulBlocWidget<
     B extends PageStatefulBloc<PageConfiguration, S>,

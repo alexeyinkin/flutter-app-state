@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'page_stacks.dart';
 import '../../models/back_pressed_result_enum.dart';
+import 'bloc.dart';
 
 /// The back button dispatcher for [PageStacksBloc],
 /// directs requests to the current bloc in the stack.

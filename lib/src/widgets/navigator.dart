@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/page.dart';
-import '../blocs/page_stack/page_stack.dart';
+import '../blocs/page/bloc.dart';
+import '../blocs/page_stack/bloc.dart';
 import '../models/back_pressed_result_enum.dart';
 import '../pages/bloc_material.dart';
 

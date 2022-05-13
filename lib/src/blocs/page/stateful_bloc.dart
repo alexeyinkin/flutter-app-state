@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'bloc.dart';
 import 'configuration.dart';
-import 'page.dart';
 
 /// A PageBloc that also has [states] stream.
 ///

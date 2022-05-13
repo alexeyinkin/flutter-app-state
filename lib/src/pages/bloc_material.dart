@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import 'material.dart';
+import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
-import '../blocs/page/page.dart';
 
 /// The base class for stateful pages.
 ///

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'page_stack.dart';
 import '../../models/back_pressed_result_enum.dart';
+import 'bloc.dart';
 
 class PageStackBackButtonDispatcher extends RootBackButtonDispatcher {
   final PageStackBloc pageStackBloc;

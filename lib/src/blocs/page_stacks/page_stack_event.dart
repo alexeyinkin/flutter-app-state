@@ -1,7 +1,7 @@
 import 'event.dart';
 import '../page/configuration.dart';
+import '../page_stack/bloc.dart';
 import '../page_stack/event.dart';
-import '../page_stack/page_stack.dart';
 
 class PageStacksPageStackBlocEvent<C extends PageConfiguration>
     extends PageStacksBlocEvent {

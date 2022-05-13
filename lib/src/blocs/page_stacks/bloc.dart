@@ -5,8 +5,8 @@ import 'configuration.dart';
 import 'current_page_stack_changed_event.dart';
 import 'event.dart';
 import 'page_stack_event.dart';
+import '../page_stack/bloc.dart';
 import '../page_stack/event.dart';
-import '../page_stack/page_stack.dart';
 
 /// A container for [PageStackBloc] objects with a concept of a current one.
 ///
