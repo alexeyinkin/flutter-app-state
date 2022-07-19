@@ -1,11 +1,13 @@
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../models/back_pressed_result_enum.dart';
+import '../../widgets/navigator.dart';
+import '../page_stack/bloc.dart';
 import 'close_event.dart';
 import 'configuration.dart';
 import 'configuration_changed_event.dart';
 import 'event.dart';
-import '../../models/back_pressed_result_enum.dart';
 
 /// A BLoC that backs each stateful page of your app.
 ///

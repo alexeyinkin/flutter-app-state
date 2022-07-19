@@ -1,19 +1,20 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../models/back_pressed_result_enum.dart';
+import '../../pages/abstract.dart';
+import '../page/close_event.dart';
+import '../page/configuration.dart';
+import '../page/configuration_changed_event.dart';
+import '../page/event.dart';
+import 'configuration.dart';
 import 'duplicate_page_key_action.dart';
 import 'event.dart';
 import 'page_event.dart';
-import 'configuration.dart';
-import '../page/configuration.dart';
-import '../page/close_event.dart';
-import '../page/configuration_changed_event.dart';
-import '../page/event.dart';
-import '../../models/back_pressed_result_enum.dart';
-import '../../pages/abstract.dart';
 
 /// The source of pages for [Navigator] widget.
 ///
@@ -51,7 +52,10 @@ class PageStackBloc<C extends PageConfiguration> {
   C getTopPageConfiguration() {
     for (final page in _pages.reversed) {
       final configuration = page.getConfiguration();
-      if (configuration != null) return configuration;
+
+      if (configuration != null) {
+        return configuration;
+      }
     }
 
     throw Exception('No configuration found for this stack.');
@@ -141,8 +145,6 @@ class PageStackBloc<C extends PageConfiguration> {
         _pages.add(oldPage);
         return;
     }
-
-    throw Exception('Unknown onDuplicateKey: $onDuplicateKey');
   }
 
   void _firePageConfigurationChange(AbstractPage<C> page) {
@@ -157,16 +159,18 @@ class PageStackBloc<C extends PageConfiguration> {
 
   /// Passes the back button event to the foreground page bloc.
   ///
-  /// If that bloc handles the event itself, returns [true].
+  /// If that bloc handles the event itself, returns `true`.
   ///
   /// If that bloc does not handle the event itself AND it is not the bottommost
-  /// one, pops it and disposes the page, then returns [true].
+  /// one, pops it and disposes the page, then returns `true`.
   ///
-  /// Otherwise returns [false]. This may signal to shut down the app
+  /// Otherwise returns `false`. This may signal to shut down the app
   /// or to close some widgets wrapping this stack.
   Future<BackPressedResult> onBackPressed() async {
     final page = _pages.lastOrNull;
-    if (page == null) return BackPressedResult.close; // Normally never happens.
+    if (page == null) {
+      return BackPressedResult.close;
+    } // Normally never happens.
 
     final bloc = page.bloc;
     if (bloc != null) {
@@ -176,13 +180,13 @@ class PageStackBloc<C extends PageConfiguration> {
       }
     }
 
-    // TODO: Check if pages changed while waiting.
+    // TODO(alexeyinkin): Check if pages changed while waiting, https://github.com/alexeyinkin/flutter-app-state/issues/2.
 
     // _pages can never be empty. Only pop if there are at least 2.
     if (_pages.length >= 2) {
       _pages.removeLast();
       _firePageConfigurationChange(_pages.last);
-      _schedulePageDisposal(page);
+      unawaited(_schedulePageDisposal(page));
       return BackPressedResult.keep;
     }
 
@@ -209,11 +213,15 @@ class PageStackBloc<C extends PageConfiguration> {
   /// 3. For page states that were not matched, creates the pages
   ///    with [createPage] factory and sets their states.
   ///    Stops at the first page that failed to be created.
-  void setConfiguration(PageStackConfiguration configuration,
-      {bool fire = true}) {
+  void setConfiguration(
+    PageStackConfiguration configuration, {
+    bool fire = true,
+  }) {
     int matchedIndex = 0;
-    int matchLength =
-        min(_pages.length, configuration.pageConfigurations.length);
+    final matchLength = min(
+      _pages.length,
+      configuration.pageConfigurations.length,
+    );
 
     for (; matchedIndex < matchLength; matchedIndex++) {
       final page = _pages[matchedIndex];
@@ -225,7 +233,9 @@ class PageStackBloc<C extends PageConfiguration> {
         continue;
       }
 
-      if (page.key?.value != pc?.key) break;
+      if (page.key?.value != pc?.key) {
+        break;
+      }
 
       if (pc != null) {
         page.bloc?.setStateMap(pc.state);
@@ -257,9 +267,11 @@ class PageStackBloc<C extends PageConfiguration> {
       }
     }
 
-    if (fire) _firePageConfigurationChange(_pages.last);
+    if (fire) {
+      _firePageConfigurationChange(_pages.last);
+    }
 
-    // TODO: Prevent emptying. Maybe keep the list of popped pages
+    // TODO(alexeyinkin): Prevent emptying. Maybe keep the list of popped pages, https://github.com/alexeyinkin/flutter-app-state/issues/3
     //       and only dispose them when we determine the stack is not emptied.
     if (_pages.isEmpty) {
       throw Exception(
@@ -270,22 +282,26 @@ class PageStackBloc<C extends PageConfiguration> {
   }
 
   bool _createPage(PageConfiguration pc) {
-    if (createPage == null || pc.factoryKey == null) return false;
+    if (createPage == null || pc.factoryKey == null) {
+      return false;
+    }
 
     final page = createPage!(pc.factoryKey!, pc.state);
-    if (page == null) return false;
+    if (page == null) {
+      return false;
+    }
 
     page.bloc?.setStateMap(pc.state);
     _pushNoFire(page, onDuplicateKey);
     return true;
   }
 
-  void _schedulePageDisposal(AbstractPage<C> page) async {
+  Future<void> _schedulePageDisposal(AbstractPage<C> page) async {
     // If we dispose the page immediately (or even with 1 frame delay of
     // Future.delayed(Duration.zero)), the bloc will dispose
     // TextEditingController objects, and we get the exception of using disposed
     // controllers before the screen is gone.
-    // TODO: Find a guaranteed synchronous way.
+    // TODO(alexeyinkin): Find a guaranteed synchronous way, https://github.com/alexeyinkin/flutter-app-state/issues/4
     await Future.delayed(const Duration(seconds: 10));
     page.dispose();
   }

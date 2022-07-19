@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'abstract.dart';
 import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
+import 'abstract.dart';
 
 abstract class AbstractMaterialPage<C extends PageConfiguration>
     extends MaterialPage implements AbstractPage<C> {
@@ -25,14 +25,13 @@ abstract class AbstractMaterialPage<C extends PageConfiguration>
   C? getConfiguration() => null;
 
   const AbstractMaterialPage({
+    required super.child,
     ValueKey<String>? key,
     String? factoryKey,
-    required Widget child,
   })  : _valueKey = key,
         _factoryKey = factoryKey,
         super(
           key: key,
-          child: child,
         );
 
   @override

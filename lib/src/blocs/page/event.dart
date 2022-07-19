@@ -1,3 +1,5 @@
+import 'bloc.dart';
+
 /// The base class for [PageBloc] events.
 ///
 /// Extend this for your custom events like emitting notifications

@@ -9,9 +9,9 @@ abstract class StatefulBlocWidget<
   final B bloc;
 
   const StatefulBlocWidget({
-    Key? key,
     required this.bloc,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

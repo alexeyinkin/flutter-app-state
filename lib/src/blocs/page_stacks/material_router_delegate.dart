@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'bloc.dart';
 import 'router_delegate.dart';
 
-// TODO: Create a delegate like this independent from Material,
-//       then deprecate this class.
+// TODO(alexeyinkin): Create a delegate like this independent from Material,
+//       then deprecate this class,
+//       https://github.com/alexeyinkin/flutter-app-state/issues/5
 class MaterialPageStacksRouterDelegate extends PageStacksRouterDelegate {
   final Widget child;
 

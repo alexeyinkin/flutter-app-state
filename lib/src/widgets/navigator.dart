@@ -10,13 +10,14 @@ class PageStackBlocNavigator extends StatelessWidget {
   final PageStackBloc bloc;
 
   const PageStackBlocNavigator({
-    Key? key,
     required this.bloc,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Only rebuild on configuration change events.
+    // TODO(alexeyinkin): Only rebuild on configuration change events,
+    //  https://github.com/alexeyinkin/flutter-app-state/issues/7
     return StreamBuilder(
       stream: bloc.events,
       builder: (context, snapshot) => _buildOnChange(),
@@ -40,8 +41,8 @@ class PageStackBlocNavigator extends StatelessWidget {
           // handled the event (so we ignore it) or not (so we propagate it).
           // But this callback is synchronous, so we always have to ignore it.
           // This means the app will never close on back button press.
-          // TODO: File an issue with Flutter and suggest opPopPage
-          //       be changed to FutureOr<bool>, see if it is filed already.
+          // TODO(alexeyinkin): Allow to close the app on back button,
+          //  https://github.com/alexeyinkin/flutter-app-state/issues/8
           _onBackButtonPressedInBloc(settings.bloc);
           return false; // Prevent the default pop.
         }
@@ -63,7 +64,7 @@ class PageStackBlocNavigator extends StatelessWidget {
     );
   }
 
-  void _onBackButtonPressedInBloc(PageBloc bloc) async {
+  Future<void> _onBackButtonPressedInBloc(PageBloc bloc) async {
     final result = await bloc.onBackPressed();
     if (result == BackPressedResult.close) {
       bloc.closeScreen();

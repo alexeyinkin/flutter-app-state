@@ -1,6 +1,6 @@
 export 'src/blocs/page/bloc.dart';
-export 'src/blocs/page/configuration.dart';
 export 'src/blocs/page/close_event.dart';
+export 'src/blocs/page/configuration.dart';
 export 'src/blocs/page/configuration_changed_event.dart';
 export 'src/blocs/page/event.dart';
 export 'src/blocs/page/stateful_bloc.dart';
@@ -26,8 +26,8 @@ export 'src/blocs/page_stacks/router_delegate.dart';
 export 'src/models/back_pressed_result_enum.dart';
 
 export 'src/pages/abstract.dart';
-export 'src/pages/material.dart';
 export 'src/pages/bloc_material.dart';
+export 'src/pages/material.dart';
 export 'src/pages/stateless_material.dart';
 
 export 'src/widgets/navigator.dart';

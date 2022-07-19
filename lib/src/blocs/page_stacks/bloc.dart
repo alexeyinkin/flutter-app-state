@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../page_stack/bloc.dart';
+import '../page_stack/event.dart';
 import 'configuration.dart';
 import 'current_page_stack_changed_event.dart';
 import 'event.dart';
 import 'page_stack_event.dart';
-import '../page_stack/bloc.dart';
-import '../page_stack/event.dart';
 
 /// A container for [PageStackBloc] objects with a concept of a current one.
 ///
@@ -44,7 +44,9 @@ class PageStacksBloc {
   String? get currentStackKey => _currentStackKey;
 
   void setCurrentStackKey(String? key, {bool fire = true}) {
-    if (_currentStackKey == key) return;
+    if (_currentStackKey == key) {
+      return;
+    }
 
     final oldKey = _currentStackKey;
     _currentStackKey = key;

@@ -14,7 +14,9 @@ class PageStacksBackButtonDispatcher extends RootBackButtonDispatcher {
   Future<bool> invokeCallback(Future<bool> defaultValue) async {
     final pageStackBloc = pageStacksBloc.currentStackBloc;
 
-    if (pageStackBloc == null) return false; // Not handled, pass further.
+    if (pageStackBloc == null) {
+      return false; // Not handled, pass farther.
+    }
 
     final result = await pageStackBloc.onBackPressed();
     return result == BackPressedResult.keep;

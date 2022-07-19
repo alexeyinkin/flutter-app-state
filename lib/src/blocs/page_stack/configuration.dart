@@ -32,7 +32,9 @@ class PageStackConfiguration {
   /// The first non-null page configuration from top.
   PageConfiguration getTopPageConfiguration() {
     for (final c in pageConfigurations.reversed) {
-      if (c != null) return c;
+      if (c != null) {
+        return c;
+      }
     }
 
     throw Exception(

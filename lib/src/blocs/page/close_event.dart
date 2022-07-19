@@ -1,3 +1,4 @@
+import '../page_stack/bloc.dart';
 import 'event.dart';
 
 /// Emit this for [PageStackBloc] to remove and dispose the page.

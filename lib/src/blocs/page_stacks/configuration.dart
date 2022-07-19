@@ -1,5 +1,6 @@
 import '../page/configuration.dart';
 import '../page_stack/configuration.dart';
+import 'bloc.dart';
 
 /// Used to restore [PageStacksBloc] state, can be serialized
 /// for browser history.
@@ -27,7 +28,9 @@ class PageStacksConfiguration {
         currentStackKey = key;
 
   static PageStacksConfiguration? fromMapOrNull(Map<String, dynamic>? map) {
-    if (map == null) return null;
+    if (map == null) {
+      return null;
+    }
 
     return PageStacksConfiguration(
       pageStackConfigurations: PageStackConfiguration.fromMaps(map['psc']),

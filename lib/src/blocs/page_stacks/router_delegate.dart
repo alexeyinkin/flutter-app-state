@@ -1,5 +1,7 @@
-import 'package:app_state/app_state.dart';
 import 'package:flutter/widgets.dart';
+
+import 'bloc.dart';
+import 'configuration.dart';
 
 abstract class PageStacksRouterDelegate
     extends RouterDelegate<PageStacksConfiguration>
@@ -11,7 +13,8 @@ abstract class PageStacksRouterDelegate
   final PageStacksBloc pageStacksBloc;
 
   PageStacksRouterDelegate(this.pageStacksBloc) {
-    // TODO: Filter events, do not fire on all.
+    // TODO(alexeyinkin): Filter events, do not fire on all,
+    //  https://github.com/alexeyinkin/flutter-app-state/issues/6
     pageStacksBloc.events.listen((e) => notifyListeners());
   }
 

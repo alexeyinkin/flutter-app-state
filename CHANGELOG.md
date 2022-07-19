@@ -1,3 +1,9 @@
+## 0.4.0
+
+* **BREAKING**: Require Flutter 3.
+* Re-licensed under MIT No Attribution.
+* Using `total_lints`, fix linter issues.
+
 ## 0.3.5
 
 * Fix duplicate page key handling.

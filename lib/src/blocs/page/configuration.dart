@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import '../../pages/abstract.dart';
 import '../page_stack/configuration.dart';
 import '../page_stacks/configuration.dart';
+import 'bloc.dart';
 
 /// Describes a location within the app, corresponds to URL + state.
 /// Can be used to navigate to a page recovering its state.
@@ -67,7 +69,7 @@ abstract class PageConfiguration {
   static List<PageConfiguration> fromMaps(List maps) {
     return maps
         .cast<Map<String, dynamic>>()
-        .map((v) => PageConfiguration._fromMap(v))
+        .map(PageConfiguration._fromMap)
         .toList(growable: false);
   }
 
@@ -88,7 +90,7 @@ abstract class PageConfiguration {
     );
   }
 
-  String get defaultStackKey => (throw UnimplementedError());
+  String get defaultStackKey => throw UnimplementedError();
 
   PageStacksConfiguration get defaultStacksConfiguration {
     final key = defaultStackKey;
@@ -102,14 +104,10 @@ abstract class PageConfiguration {
 
 class _DenormalizedPageConfiguration extends PageConfiguration {
   _DenormalizedPageConfiguration({
-    required String? key,
-    required String? factoryKey,
-    required Map<String, dynamic> state,
-  }) : super(
-          key: key,
-          factoryKey: factoryKey,
-          state: state,
-        );
+    required super.key,
+    required super.factoryKey,
+    required super.state,
+  });
 
   @override
   RouteInformation restoreRouteInformation() {
