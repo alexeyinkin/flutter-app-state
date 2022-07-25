@@ -1,5 +1,6 @@
 [![Pub Package](https://img.shields.io/pub/v/app_state.svg)](https://pub.dev/packages/app_state)
 ![GitHub](https://img.shields.io/github/license/alexeyinkin/flutter-app-state)
+[![CodeFactor](https://img.shields.io/codefactor/grade/github/alexeyinkin/flutter-app-state?style=flat-square)](https://www.codefactor.io/repository/github/alexeyinkin/flutter-app-state)
 
 A bloc-based state management solution on top of Router API for larger apps.
 
