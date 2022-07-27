@@ -7,9 +7,10 @@ import 'material.dart';
 /// The base class for stateful pages.
 ///
 /// [C] is the base class for all app's page configurations.
+/// [R] is the result returned when the page pops.
 /// [B] is the block for the state.
-abstract class BlocMaterialPage<C extends PageConfiguration,
-    B extends PageBloc<C>> extends AbstractMaterialPage<C> {
+abstract class BlocMaterialPage<C extends PageConfiguration, R,
+    B extends PageBloc<C, R>> extends AbstractMaterialPage<C, R> {
   @override
   final B bloc;
 

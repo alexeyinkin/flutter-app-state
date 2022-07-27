@@ -4,10 +4,10 @@ import '../page/configuration.dart';
 import '../page/event.dart';
 import 'event.dart';
 
-class PageStackPageBlocEvent<C extends PageConfiguration>
+class PageStackPageBlocEvent<C extends PageConfiguration, R>
     extends PageStackBlocEvent {
-  final AbstractPage<C> page;
-  final PageBloc<C>? bloc;
+  final AbstractPage<C, R> page;
+  final PageBloc<C, R>? bloc;
   final PageBlocEvent pageBlocEvent;
 
   PageStackPageBlocEvent({

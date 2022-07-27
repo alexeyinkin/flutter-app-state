@@ -4,12 +4,13 @@ import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 import 'configuration.dart';
 
-/// A PageBloc that also has [states] stream.
+/// A [PageBloc] that also has [states] stream.
 ///
 /// [C] is the base class for all app's page configurations.
+/// [R] is the result returned when the page pops.
 /// [S] is the state class of this BLoC.
-abstract class PageStatefulBloc<C extends PageConfiguration, S>
-    extends PageBloc<C> {
+abstract class PageStatefulBloc<C extends PageConfiguration, S, R>
+    extends PageBloc<C, R> {
   final _statesController = BehaviorSubject<S>();
 
   Stream<S> get states => _statesController.stream;

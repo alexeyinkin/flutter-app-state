@@ -20,15 +20,15 @@ import 'page_event.dart';
 ///
 /// [C] is the base class for all app's page configurations.
 class PageStackBloc<C extends PageConfiguration> {
-  final _pages = <AbstractPage<C>>[];
+  final _pages = <AbstractPage<C, dynamic>>[];
 
-  List<AbstractPage<C>> get pages => _pages;
+  List<AbstractPage<C, dynamic>> get pages => _pages;
 
   /// A factory to create pages from their serialized states.
   /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final AbstractPage<C>? Function(
+  final AbstractPage<C, dynamic>? Function(
     String factoryKey,
     Map<String, dynamic> state,
   )? createPage;
@@ -41,7 +41,7 @@ class PageStackBloc<C extends PageConfiguration> {
   Stream<PageStackBlocEvent> get events => _eventsController.stream;
 
   PageStackBloc({
-    required AbstractPage<C> bottomPage,
+    required AbstractPage<C, dynamic> bottomPage,
     this.createPage,
     this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
   }) {
@@ -62,61 +62,70 @@ class PageStackBloc<C extends PageConfiguration> {
   }
 
   /// Pushes a page to the stack much like [Navigator.push] does.
-  void push(
-    AbstractPage<C> page, {
+  Future<R?> push<R>(
+    AbstractPage<C, R> page, {
     DuplicatePageKeyAction? onDuplicateKey,
   }) {
-    _pushNoFire(page, onDuplicateKey ?? this.onDuplicateKey);
-    _firePageConfigurationChange(page);
+    final future = _pushNoFire<R>(page, onDuplicateKey ?? this.onDuplicateKey);
+    _firePageConfigurationChange<R>(page);
+    return future;
   }
 
-  void _pushNoFire(
-    AbstractPage<C> page,
+  Future<R?> _pushNoFire<R>(
+    AbstractPage<C, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
   ) {
     final key = page.key;
     if (key == null) {
       _pushNewPageNoFire(page);
-      return;
+      return page.completer.future;
     }
 
-    final oldPage = _findSameKeyPage(key);
+    final oldPage = _findSameKeyPage<R>(key);
     if (oldPage == null) {
       _pushNewPageNoFire(page);
-      return;
+      return page.completer.future;
     }
 
-    _pushDuplicateNoFire(oldPage, page, duplicatePageKeyAction);
+    return _pushDuplicateNoFire(oldPage, page, duplicatePageKeyAction);
   }
 
-  AbstractPage<C>? _findSameKeyPage(ValueKey<String> key) {
-    return _pages.firstWhereOrNull((page) => page.key == key);
+  AbstractPage<C, R>? _findSameKeyPage<R>(ValueKey<String> key) {
+    return _pages.firstWhereOrNull((page) => page.key == key)
+        as AbstractPage<C, R>?;
   }
 
-  void _pushNewPageNoFire(AbstractPage<C> page) {
+  Future<R?> _pushNewPageNoFire<R>(AbstractPage<C, R> page) {
     _pages.add(page);
 
     final bloc = page.bloc;
     if (bloc != null) {
-      bloc.events.listen((event) => _onPageEvent(page, event));
+      bloc.events.listen((event) => _onPageEvent<R>(page, event));
     }
+
+    return page.completer.future;
   }
 
-  void _onPageEvent(AbstractPage<C> page, PageBlocEvent event) {
+  void _onPageEvent<R>(AbstractPage<C, R> page, PageBlocEvent event) {
     _emitPageEvent(page, event);
 
     if (event is PageBlocCloseEvent && _pages.length >= 2) {
       _pages.remove(page);
       _firePageConfigurationChange(_pages.last);
-      _schedulePageDisposal(page);
 
       final newTopBloc = _pages.last.bloc;
+      newTopBloc?.didPopNext(page, event);
+
+      // ignore: deprecated_member_use_from_same_package
       newTopBloc?.onForegroundClosed(event);
+      page.completer.complete(event.data);
+
+      _schedulePageDisposal<R>(page);
     }
   }
 
-  void _emitPageEvent(AbstractPage<C> page, PageBlocEvent event) {
-    final pageStackEvent = PageStackPageBlocEvent<C>(
+  void _emitPageEvent<R>(AbstractPage<C, R> page, PageBlocEvent event) {
+    final pageStackEvent = PageStackPageBlocEvent<C, R>(
       page: page,
       bloc: page.bloc,
       pageBlocEvent: event,
@@ -124,9 +133,9 @@ class PageStackBloc<C extends PageConfiguration> {
     _eventsController.sink.add(pageStackEvent);
   }
 
-  void _pushDuplicateNoFire(
-    AbstractPage<C> oldPage,
-    AbstractPage<C> newPage,
+  Future<R?> _pushDuplicateNoFire<R>(
+    AbstractPage<C, R> oldPage,
+    AbstractPage<C, R> newPage,
     DuplicatePageKeyAction onDuplicateKey,
   ) {
     switch (onDuplicateKey) {
@@ -136,18 +145,19 @@ class PageStackBloc<C extends PageConfiguration> {
       case DuplicatePageKeyAction.dropOld:
         _pages.remove(oldPage);
         _pages.add(newPage);
-        _schedulePageDisposal(oldPage);
-        return;
+        _schedulePageDisposal<R>(oldPage);
+        oldPage.completer.complete(newPage.completer.future);
+        return newPage.completer.future;
 
       case DuplicatePageKeyAction.bringOld:
         newPage.dispose();
         _pages.remove(oldPage);
         _pages.add(oldPage);
-        return;
+        return oldPage.completer.future;
     }
   }
 
-  void _firePageConfigurationChange(AbstractPage<C> page) {
+  void _firePageConfigurationChange<R>(AbstractPage<C, R> page) {
     _eventsController.sink.add(
       PageStackPageBlocEvent(
         page: page,
@@ -244,6 +254,7 @@ class PageStackBloc<C extends PageConfiguration> {
 
     for (int i = _pages.length; --i >= matchedIndex;) {
       final page = _pages.removeAt(i);
+      page.completer.complete(null);
       _schedulePageDisposal(page);
     }
 
@@ -296,7 +307,7 @@ class PageStackBloc<C extends PageConfiguration> {
     return true;
   }
 
-  Future<void> _schedulePageDisposal(AbstractPage<C> page) async {
+  Future<void> _schedulePageDisposal<R>(AbstractPage<C, R> page) async {
     // If we dispose the page immediately (or even with 1 frame delay of
     // Future.delayed(Duration.zero)), the bloc will dispose
     // TextEditingController objects, and we get the exception of using disposed

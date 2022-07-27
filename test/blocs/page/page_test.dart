@@ -8,13 +8,13 @@ void main() {
     sut = PageBloc();
   });
 
-  test('closeScreen pushes PageBlocCloseEvent', () async {
+  test('pop pushes PageBlocCloseEvent', () async {
     PageBlocEvent? received;
     sut.events.listen((PageBlocEvent e) {
       received = e;
     });
 
-    sut.closeScreen();
+    sut.pop();
     await Future.delayed(Duration.zero);
 
     expect(received.runtimeType, PageBlocCloseEvent);

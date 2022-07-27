@@ -67,7 +67,7 @@ class PageStackBlocNavigator extends StatelessWidget {
   Future<void> _onBackButtonPressedInBloc(PageBloc bloc) async {
     final result = await bloc.onBackPressed();
     if (result == BackPressedResult.close) {
-      bloc.closeScreen();
+      bloc.pop();
     }
   }
 }

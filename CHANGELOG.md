@@ -1,3 +1,17 @@
+## 0.5.0
+
+* **BREAKING**: Pages, Blocs an `PageBlocCloseEvent` have a new `R` type parameter
+  for the return result.
+  The actual result is of `R?` with `null` if closing without data.
+* **BREAKING**: `PageBlocCloseEvent` has a new required `data` property of type `R`.
+  It is encouraged to use it instead of subclassing `PageBlocCloseEvent`.
+* **BREAKING**: Page classes no longer have `const` constructors because they have `Completer`s now.
+* Added `PageBloc.pop(data)`.
+* Added `PageBloc.didPopNext(page, event)`.
+* `PageStackBloc.push` returns a `Future` that completes when the page is popped.
+* Deprecated `PageBloc.onForegroundClosed` in favor of `didPopNext`.
+* Deprecated `PageBloc.closeScreen` and `PageBloc.closeScreenWith` in favor of `pop`.
+
 ## 0.4.0
 
 * **BREAKING**: Require Flutter 3.

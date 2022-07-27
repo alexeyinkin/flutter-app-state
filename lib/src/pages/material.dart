@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
 import 'abstract.dart';
 
-abstract class AbstractMaterialPage<C extends PageConfiguration>
-    extends MaterialPage implements AbstractPage<C> {
+abstract class AbstractMaterialPage<C extends PageConfiguration, R>
+    extends MaterialPage implements AbstractPage<C, R> {
   final ValueKey<String>? _valueKey;
 
   @override
@@ -19,12 +21,15 @@ abstract class AbstractMaterialPage<C extends PageConfiguration>
   String? getFactoryKey() => _factoryKey ?? _valueKey?.value;
 
   @override
-  PageBloc<C>? get bloc => null;
+  PageBloc<C, R>? get bloc => null;
 
   @override
   C? getConfiguration() => null;
 
-  const AbstractMaterialPage({
+  @override
+  final completer = Completer<R?>();
+
+  AbstractMaterialPage({
     required super.child,
     ValueKey<String>? key,
     String? factoryKey,
