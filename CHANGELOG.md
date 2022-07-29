@@ -1,3 +1,8 @@
+## 0.5.1
+
+* Added `PageConfiguration.location`.
+* Added `PageConfiguration.defaultStackConfigurations`.
+
 ## 0.5.0
 
 * **BREAKING**: Pages, Blocs an `PageBlocCloseEvent` have a new `R` type parameter

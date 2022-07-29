@@ -81,16 +81,34 @@ abstract class PageConfiguration {
     );
   }
 
-  RouteInformation restoreRouteInformation();
-
-  // What pages to show when navigating directly to this configuration's URL.
-  PageStackConfiguration get defaultStackConfiguration {
-    return PageStackConfiguration(
-      pageConfigurations: [this],
+  RouteInformation restoreRouteInformation() {
+    return RouteInformation(
+      location: location,
+      state: state,
     );
   }
 
-  String get defaultStackKey => throw UnimplementedError();
+  /// Returns the path of the page to be a part of the URL.
+  ///
+  /// It gets passed to [RouteInformation] as `location` argument.
+  /// It may contain query string parameters after '?'.
+  String get location => '/';
+
+  /// What pages to show when navigating directly to this configuration's URL.
+  PageStackConfiguration get defaultStackConfiguration {
+    return PageStackConfiguration(
+      pageConfigurations: defaultStackConfigurations,
+    );
+  }
+
+  /// What pages to show when navigating directly to this configuration's URL.
+  List<PageConfiguration> get defaultStackConfigurations => [this];
+
+  String get defaultStackKey => throw UnimplementedError(
+        'If you use multiple navigation stacks, each PageConfiguration class '
+        'must indicate what stack it prefers to be shown in. '
+        'For this, override defaultStackKey getter.',
+      );
 
   PageStacksConfiguration get defaultStacksConfiguration {
     final key = defaultStackKey;
