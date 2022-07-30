@@ -524,6 +524,8 @@ See [this tutorial](https://medium.com/p/811acedc5214) with more details and the
 
 Do you like this package? Do not buy me a coffee, I don't drink it. You can make:
 
+* **A Like** on https://pub.dev/packages/app_state, because people judge the packages by the
+  like count.
 * **Code Generator**. This package needs one to generate `Page` and `PageConfiguration` classes.
   You can design or implement it.
 * **Tests**. You can cover it.
@@ -535,5 +537,9 @@ Do you like this package? Do not buy me a coffee, I don't drink it. You can make
   and the old Navigator push-pop. You can write an article or at least provide me with points
   on how they compare, what they could not do for you, what is too hard with them,
   or how this package made your life easier.
+  My email is here: https://pub.dev/publishers/ainkin.com/packages
 * **Issue Reports** if you find anything wrong.
 * **Other PRs**. Please share your idea in an issue first.
+
+Here are [tons of runnable examples again](https://github.com/alexeyinkin/flutter-app-state-examples)
+if you missed the link in the beginning.
