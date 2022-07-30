@@ -6,8 +6,8 @@ import '../blocs/page/bloc.dart';
 import '../blocs/page/configuration.dart';
 import 'abstract.dart';
 
-abstract class AbstractMaterialPage<C extends PageConfiguration, R>
-    extends MaterialPage implements AbstractPage<C, R> {
+abstract class CAbstractMaterialPage<C extends PageConfiguration, R>
+    extends MaterialPage implements CAbstractPage<C, R> {
   final ValueKey<String>? _valueKey;
 
   @override
@@ -21,7 +21,7 @@ abstract class AbstractMaterialPage<C extends PageConfiguration, R>
   String? getFactoryKey() => _factoryKey ?? _valueKey?.value;
 
   @override
-  PageBloc<C, R>? get bloc => null;
+  CPageBloc<C, R>? get bloc => null;
 
   @override
   C? getConfiguration() => null;
@@ -29,7 +29,7 @@ abstract class AbstractMaterialPage<C extends PageConfiguration, R>
   @override
   final completer = Completer<R?>();
 
-  AbstractMaterialPage({
+  CAbstractMaterialPage({
     required super.child,
     ValueKey<String>? key,
     String? factoryKey,

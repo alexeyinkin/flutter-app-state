@@ -19,16 +19,16 @@ import 'page_event.dart';
 /// The source of pages for [Navigator] widget.
 ///
 /// [C] is the base class for all app's page configurations.
-class PageStackBloc<C extends PageConfiguration> {
-  final _pages = <AbstractPage<C, dynamic>>[];
+class CPageStackBloc<C extends PageConfiguration> {
+  final _pages = <CAbstractPage<C, dynamic>>[];
 
-  List<AbstractPage<C, dynamic>> get pages => _pages;
+  List<CAbstractPage<C, dynamic>> get pages => _pages;
 
   /// A factory to create pages from their serialized states.
   /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final AbstractPage<C, dynamic>? Function(
+  final CAbstractPage<C, dynamic>? Function(
     String factoryKey,
     Map<String, dynamic> state,
   )? createPage;
@@ -40,8 +40,8 @@ class PageStackBloc<C extends PageConfiguration> {
 
   Stream<PageStackBlocEvent> get events => _eventsController.stream;
 
-  PageStackBloc({
-    required AbstractPage<C, dynamic> bottomPage,
+  CPageStackBloc({
+    required CAbstractPage<C, dynamic> bottomPage,
     this.createPage,
     this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
   }) {
@@ -63,7 +63,7 @@ class PageStackBloc<C extends PageConfiguration> {
 
   /// Pushes a page to the stack much like [Navigator.push] does.
   Future<R?> push<R>(
-    AbstractPage<C, R> page, {
+    CAbstractPage<C, R> page, {
     DuplicatePageKeyAction? onDuplicateKey,
   }) {
     final future = _pushNoFire<R>(page, onDuplicateKey ?? this.onDuplicateKey);
@@ -72,7 +72,7 @@ class PageStackBloc<C extends PageConfiguration> {
   }
 
   Future<R?> _pushNoFire<R>(
-    AbstractPage<C, R> page,
+    CAbstractPage<C, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
   ) {
     final key = page.key;
@@ -90,12 +90,12 @@ class PageStackBloc<C extends PageConfiguration> {
     return _pushDuplicateNoFire(oldPage, page, duplicatePageKeyAction);
   }
 
-  AbstractPage<C, R>? _findSameKeyPage<R>(ValueKey<String> key) {
+  CAbstractPage<C, R>? _findSameKeyPage<R>(ValueKey<String> key) {
     return _pages.firstWhereOrNull((page) => page.key == key)
-        as AbstractPage<C, R>?;
+        as CAbstractPage<C, R>?;
   }
 
-  Future<R?> _pushNewPageNoFire<R>(AbstractPage<C, R> page) {
+  Future<R?> _pushNewPageNoFire<R>(CAbstractPage<C, R> page) {
     _pages.add(page);
 
     final bloc = page.bloc;
@@ -106,7 +106,7 @@ class PageStackBloc<C extends PageConfiguration> {
     return page.completer.future;
   }
 
-  void _onPageEvent<R>(AbstractPage<C, R> page, PageBlocEvent event) {
+  void _onPageEvent<R>(CAbstractPage<C, R> page, PageBlocEvent event) {
     _emitPageEvent(page, event);
 
     if (event is PageBlocCloseEvent && _pages.length >= 2) {
@@ -124,8 +124,8 @@ class PageStackBloc<C extends PageConfiguration> {
     }
   }
 
-  void _emitPageEvent<R>(AbstractPage<C, R> page, PageBlocEvent event) {
-    final pageStackEvent = PageStackPageBlocEvent<C, R>(
+  void _emitPageEvent<R>(CAbstractPage<C, R> page, PageBlocEvent event) {
+    final pageStackEvent = CPageStackPageBlocEvent<C, R>(
       page: page,
       bloc: page.bloc,
       pageBlocEvent: event,
@@ -134,8 +134,8 @@ class PageStackBloc<C extends PageConfiguration> {
   }
 
   Future<R?> _pushDuplicateNoFire<R>(
-    AbstractPage<C, R> oldPage,
-    AbstractPage<C, R> newPage,
+    CAbstractPage<C, R> oldPage,
+    CAbstractPage<C, R> newPage,
     DuplicatePageKeyAction onDuplicateKey,
   ) {
     switch (onDuplicateKey) {
@@ -157,7 +157,7 @@ class PageStackBloc<C extends PageConfiguration> {
     }
   }
 
-  void _firePageConfigurationChange<R>(AbstractPage<C, R> page) {
+  void _firePageConfigurationChange<R>(CAbstractPage<C, R> page) {
     _eventsController.sink.add(
       PageStackPageBlocEvent(
         page: page,
@@ -237,19 +237,19 @@ class PageStackBloc<C extends PageConfiguration> {
       final page = _pages[matchedIndex];
       final pc = configuration.pageConfigurations[matchedIndex];
 
-      if (page.key == null && pc == null) {
-        // A page without key is implied to be the same, and no state can
-        // be applied to it.
+      if (pc == null) {
+        // A null PageConfiguration is implied to match any page,
+        // and it cannot apply any state to it.
+        // The only production case for it is non-web where this diff
+        // only happens at startup and does nothing.
         continue;
       }
 
-      if (page.key?.value != pc?.key) {
-        break;
+      if (page.key?.value != pc.key) {
+        break; // Mismatch. Will dispose this page and above.
       }
 
-      if (pc != null) {
-        page.bloc?.setStateMap(pc.state);
-      }
+      page.bloc?.setStateMap(pc.state);
     }
 
     for (int i = _pages.length; --i >= matchedIndex;) {
@@ -307,7 +307,7 @@ class PageStackBloc<C extends PageConfiguration> {
     return true;
   }
 
-  Future<void> _schedulePageDisposal<R>(AbstractPage<C, R> page) async {
+  Future<void> _schedulePageDisposal<R>(CAbstractPage<C, R> page) async {
     // If we dispose the page immediately (or even with 1 frame delay of
     // Future.delayed(Duration.zero)), the bloc will dispose
     // TextEditingController objects, and we get the exception of using disposed
@@ -325,3 +325,5 @@ class PageStackBloc<C extends PageConfiguration> {
     _eventsController.close();
   }
 }
+
+typedef PageStackBloc = CPageStackBloc<PageConfiguration>;

@@ -5,7 +5,7 @@ import '../blocs/page/stateful_bloc.dart';
 
 abstract class StatefulBlocWidget<
     R,
-    B extends PageStatefulBloc<PageConfiguration, S, R>,
+    B extends CPageStatefulBloc<PageConfiguration, S, R>,
     S> extends StatelessWidget {
   final B bloc;
 

@@ -1,3 +1,55 @@
+## 0.6.0
+
+* **BREAKING**: All classes that had a type parameter `<C extends PageConfiguration>` no longer
+  have it. The idea of this type parameter is to have a subclass that is a superclass to all of
+  your configurations. An example is when you store a language slug there, and it must be
+  automatically present in all your configurations. These cases are rare, and most of the time
+  `<PageConfiguration...` only clutters the code when you must provide some other typed
+  parameters like `PageBloc` type or the return value.
+  All such classes were renamed in a pattern of `PageBloc<C, R> -> CPageBloc<C, R>`.
+  Then `typedef`s were added like `typedef PageBloc<R> = CPageBloc<PageConfiguration, R>`.
+  If you need the common subclass of `PageConfiguration`,
+  just add `C` before all such typed parent classes to get it back.
+  Otherwise just remove `<PageConfiguration>` from your code.
+* **BREAKING**: When `PageStackBloc` compares pages to `null` `PageConfiguration`,
+  it ignores the page keys and never disposes such pages.
+  This is to allow non-web apps without any `PageConfiguration` classes.
+  Otherwise the pages were always kicked out when comparing to `null` `PageConfiguration`.
+  No practical use cases were affected.
+* `PageConfiguration` classes are now optional for all non-web apps and web apps that do not
+  care for URLs.
+* `PageConfiguration` is now non-abstract and has `/` as the default `location`.
+* `PageConfiguration` objects no longer need to parse `RouteInformation.state` in their `tryParse`.
+  To benefit from this, stop overriding `parseRouteInformation` in your parser and override
+  one of the new methods instead: `parsePageConfiguration`,
+  `PageStackRouteInformationParser.parsePageStackConfiguration`,
+  `PageStacksRouteInformationParser.parsePageStacksConfiguration`.
+  These methods are only called when failed to extract state from `RouteInformation`,
+  i.e. when the URL is typed in, and so no non-URL state information is present.
+* `PageStackConfiguration.getTopPageConfiguration()` is now nullable and returns null if
+  none of the pages in the stack have `PageConfiguration`.
+* `PageStackRouteInformationParser` and `PageStacksRouteInformationParser` can now be used
+  without subclassing in all non-web apps and web apps that do not care for URLs.
+  By return they parse `null` `PageConfiguration` objects.
+* `PageStackRouteInformationParser` and `PageStacksRouteInformationParser` in their
+  `restoreRouteInformation` now return all their stack/stacks states to store in browser history
+  and not only that of the top `PageConfiguration`.
+* Added `const` constructors to `PageStackRouteInformationParser` and
+  `PageStacksRouteInformationParser`.
+* `PageStackRouteInformationParser` and `PageStacksRouteInformationParser` now have
+  `parsePageConfiguration` to only parse the single `PageConfiguration`. This way the superclasses
+  call `defaultStackConfiguration` and `defaultStacksConfiguration` so you don't have to.
+  They are *the recommended* replacements to respective `parseRouteInformation` methods.
+  They are called only when failed to recover from `RouteInformation.state`.
+  To use them, stop overriding `parseRouteInformation`.
+* `PageStackRouteInformationParser` now has `parsePageStackConfiguration`,
+  and `PageStacksRouteInformationParser` now has `parsePageStacksConfiguration`.
+  They are *the alternative* replacements to respective `parseRouteInformation` methods
+  in case you need additional logic to recover the stack state that cannot be derived
+  from your `PageConfiguration` alone.
+  They are called only when failed to recover `RouteInformation.state`.
+  To use them, stop overriding `parseRouteInformation`.
+
 ## 0.5.1
 
 * Added `PageConfiguration.location`.

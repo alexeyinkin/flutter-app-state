@@ -9,15 +9,15 @@ import 'material.dart';
 /// [C] is the base class for all app's page configurations.
 /// [R] is the result returned when the page pops.
 /// [B] is the block for the state.
-abstract class BlocMaterialPage<C extends PageConfiguration, R,
-    B extends PageBloc<C, R>> extends AbstractMaterialPage<C, R> {
+abstract class CBlocMaterialPage<C extends PageConfiguration, R,
+    B extends CPageBloc<C, R>> extends CAbstractMaterialPage<C, R> {
   @override
   final B bloc;
 
   @override
   C? getConfiguration() => bloc.getConfiguration();
 
-  BlocMaterialPage({
+  CBlocMaterialPage({
     required this.bloc,
     required Widget Function(B) createScreen,
     super.key,
@@ -31,3 +31,6 @@ abstract class BlocMaterialPage<C extends PageConfiguration, R,
     bloc.dispose();
   }
 }
+
+typedef BlocMaterialPage<R, B extends PageBloc<R>>
+    = CBlocMaterialPage<PageConfiguration, R, B>;

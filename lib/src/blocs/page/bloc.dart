@@ -14,7 +14,7 @@ import 'event.dart';
 ///
 /// [C] is the base class for all app's page configurations.
 /// [R] is the result returned when the page pops.
-class PageBloc<C extends PageConfiguration, R> {
+class CPageBloc<C extends PageConfiguration, R> {
   final _eventsController = BehaviorSubject<PageBlocEvent>();
 
   Stream<PageBlocEvent> get events => _eventsController.stream;
@@ -97,3 +97,5 @@ class PageBloc<C extends PageConfiguration, R> {
     _eventsController.close();
   }
 }
+
+typedef PageBloc<R> = CPageBloc<PageConfiguration, R>;

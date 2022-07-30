@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import '../page/configuration.dart';
 import '../page_stack/configuration.dart';
 import 'bloc.dart';
@@ -47,5 +49,13 @@ class PageStacksConfiguration {
 
   PageStackConfiguration? get currentStackConfiguration {
     return pageStackConfigurations[currentStackKey];
+  }
+
+  RouteInformation restoreRouteInformation() {
+    return RouteInformation(
+      location:
+          currentStackConfiguration?.getTopPageConfiguration()?.location ?? '/',
+      state: toJson(),
+    );
   }
 }

@@ -13,7 +13,7 @@ import '../blocs/page/configuration.dart';
 ///
 /// [key] is narrowed down to [ValueKey] of String because we need to compare it
 /// to string keys in configurations.
-abstract class AbstractPage<C extends PageConfiguration, R> extends Page {
+abstract class CAbstractPage<C extends PageConfiguration, R> extends Page {
   @override
   ValueKey<String>? get key;
 
@@ -23,9 +23,11 @@ abstract class AbstractPage<C extends PageConfiguration, R> extends Page {
   /// The key to re-create this page with factory when recovering state.
   String? getFactoryKey();
 
-  PageBloc<C, R>? get bloc;
+  CPageBloc<C, R>? get bloc;
 
   C? getConfiguration();
 
   void dispose();
 }
+
+typedef AbstractPage<R> = CAbstractPage<PageConfiguration, R>;

@@ -8,7 +8,7 @@ import 'bloc.dart';
 /// Describes a location within the app, corresponds to URL + state.
 /// Can be used to navigate to a page recovering its state.
 /// Subclass this for your pages' configurations.
-abstract class PageConfiguration {
+class PageConfiguration {
   /// The key to compare with to [AbstractPage.key] to decide if the state
   /// is applicable to a page in a stack.
   ///
@@ -44,7 +44,7 @@ abstract class PageConfiguration {
   ///   1. To your page factory to create the page. Use some parameters there
   ///      if you need something to be known at the time of creating your
   ///      [PageBloc].
-  ///   2. To [PageBloc.setStateMap]. Use other parameters there
+  ///   2. To [CPageBloc.setStateMap]. Use other parameters there
   ///      to recover further details of the state.
   final Map<String, dynamic> state;
 

@@ -3,13 +3,16 @@ import '../page_stack/bloc.dart';
 import '../page_stack/event.dart';
 import 'event.dart';
 
-class PageStacksPageStackBlocEvent<C extends PageConfiguration>
+class CPageStacksPageStackBlocEvent<C extends PageConfiguration>
     extends PageStacksBlocEvent {
-  final PageStackBloc<C> bloc;
+  final CPageStackBloc<C> bloc;
   final PageStackBlocEvent pageStackBlocEvent;
 
-  const PageStacksPageStackBlocEvent({
+  const CPageStacksPageStackBlocEvent({
     required this.bloc,
     required this.pageStackBlocEvent,
   });
 }
+
+typedef PageStacksPageStackBlocEvent
+    = CPageStacksPageStackBlocEvent<PageConfiguration>;

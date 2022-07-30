@@ -9,8 +9,8 @@ import 'configuration.dart';
 /// [C] is the base class for all app's page configurations.
 /// [R] is the result returned when the page pops.
 /// [S] is the state class of this BLoC.
-abstract class PageStatefulBloc<C extends PageConfiguration, S, R>
-    extends PageBloc<C, R> {
+abstract class CPageStatefulBloc<C extends PageConfiguration, S, R>
+    extends CPageBloc<C, R> {
   final _statesController = BehaviorSubject<S>();
 
   Stream<S> get states => _statesController.stream;
@@ -31,3 +31,5 @@ abstract class PageStatefulBloc<C extends PageConfiguration, S, R>
     super.dispose();
   }
 }
+
+typedef PageStatefulBloc<S, R> = CPageStatefulBloc<PageConfiguration, S, R>;

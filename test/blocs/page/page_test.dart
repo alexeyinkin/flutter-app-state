@@ -5,7 +5,7 @@ void main() {
   late PageBloc sut;
 
   setUp(() {
-    sut = PageBloc();
+    sut = CPageBloc<PageConfiguration, int>();
   });
 
   test('pop pushes PageBlocCloseEvent', () async {
@@ -14,9 +14,10 @@ void main() {
       received = e;
     });
 
-    sut.pop();
+    sut.pop(7);
     await Future.delayed(Duration.zero);
 
-    expect(received.runtimeType, PageBlocCloseEvent);
+    expect(received.runtimeType, PageBlocCloseEvent<int>);
+    expect((received! as PageBlocCloseEvent).data, 7);
   });
 }

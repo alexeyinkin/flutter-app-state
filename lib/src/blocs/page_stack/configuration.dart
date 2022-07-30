@@ -1,3 +1,6 @@
+import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
+
 import '../page/configuration.dart';
 
 /// Used to recover [PageConfiguration] objects, can be serialized
@@ -9,6 +12,10 @@ class PageStackConfiguration {
     required this.pageConfigurations,
   });
 
+  /// Recovers normalized states from a map.
+  ///
+  /// [maps] keys are stack keys, and the values are the normalized
+  /// stack states.
   static Map<String, PageStackConfiguration> fromMaps(
     Map<String, dynamic> maps,
   ) {
@@ -17,12 +24,18 @@ class PageStackConfiguration {
         );
   }
 
+  static PageStackConfiguration? fromMapOrNull(Map<String, dynamic>? map) {
+    if (map == null) return null;
+    return PageStackConfiguration._fromMap(map);
+  }
+
   factory PageStackConfiguration._fromMap(Map<String, dynamic> map) {
     return PageStackConfiguration(
       pageConfigurations: PageConfiguration.fromMaps(map['pc']),
     );
   }
 
+  /// Returns a map describing this state to be stored in the browser history.
   Map<String, dynamic> toJson() {
     return {
       'pc': PageConfiguration.toJsons(pageConfigurations),
@@ -30,16 +43,16 @@ class PageStackConfiguration {
   }
 
   /// The first non-null page configuration from top.
-  PageConfiguration getTopPageConfiguration() {
-    for (final c in pageConfigurations.reversed) {
-      if (c != null) {
-        return c;
-      }
-    }
+  PageConfiguration? getTopPageConfiguration() {
+    return pageConfigurations.reversed.firstWhereOrNull((c) => c != null);
+  }
 
-    throw Exception(
-      'No page configurations found for this stack. '
-      'Did you forget to override PageBloc.getConfiguration()?',
+  /// Returns [RouteInformation] that has the top [PageConfiguration]'s location
+  /// and all pages' states.
+  RouteInformation restoreRouteInformation() {
+    return RouteInformation(
+      location: getTopPageConfiguration()?.location ?? '/',
+      state: toJson(),
     );
   }
 }
