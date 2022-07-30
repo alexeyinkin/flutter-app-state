@@ -1,3 +1,7 @@
+## 0.6.1
+
+* Fix images in README.
+
 ## 0.6.0
 
 * **BREAKING**: All classes that had a type parameter `<C extends PageConfiguration>` no longer
