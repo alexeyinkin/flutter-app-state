@@ -6,20 +6,25 @@ import '../../pages/abstract.dart';
 import '../../widgets/navigator.dart';
 import '../page_stack/bloc.dart';
 import 'close_event.dart';
-import 'configuration.dart';
-import 'configuration_changed_event.dart';
 import 'event.dart';
+import 'path.dart';
+import 'path_changed_event.dart';
 
 /// A BLoC that backs each stateful page of your app.
 ///
-/// [C] is the base class for all app's page configurations.
+/// [P] is the base class for all app's paths.
 /// [R] is the result returned when the page pops.
-class CPageBloc<C extends PageConfiguration, R> {
+class CPageBloc<P extends PagePath, R> {
   final _eventsController = BehaviorSubject<PageBlocEvent>();
 
   Stream<PageBlocEvent> get events => _eventsController.stream;
 
-  C? getConfiguration() => null;
+  P? get path =>
+      getConfiguration(); // ignore: deprecated_member_use_from_same_package
+
+  @Deprecated('Use "path" getter. See CHANGELOG for v0.6.2')
+  @nonVirtual
+  P? getConfiguration() => null;
 
   @protected
   void emitEvent(PageBlocEvent event) {
@@ -27,17 +32,23 @@ class CPageBloc<C extends PageConfiguration, R> {
   }
 
   @protected
+  void emitPathChanged() =>
+      emitConfigurationChanged(); // ignore: deprecated_member_use_from_same_package
+
+  @protected
+  @Deprecated('Renamed to emitPathChanged, see CHANGELOG for v0.6.2')
+  @nonVirtual
   void emitConfigurationChanged() {
-    _eventsController.sink.add(const PageBlocConfigurationChangedEvent());
+    _eventsController.sink.add(const PageBlocPathChangedEvent());
   }
 
-  /// Checks if this BLoC has a non-null current configuration
-  /// and emits [PageBlocConfigurationChangedEvent] if so.
+  /// Checks if this BLoC has a non-null current path
+  /// and emits [PageBlocPathChangedEvent] if so.
   @protected
-  void emitConfigurationChangedIfAny() {
-    final configuration = getConfiguration();
-    if (configuration != null) {
-      emitConfigurationChanged();
+  void emitPathChangedIfAny() {
+    final currentPath = path;
+    if (currentPath != null) {
+      emitPathChanged();
     }
   }
 
@@ -98,4 +109,4 @@ class CPageBloc<C extends PageConfiguration, R> {
   }
 }
 
-typedef PageBloc<R> = CPageBloc<PageConfiguration, R>;
+typedef PageBloc<R> = CPageBloc<PagePath, R>;

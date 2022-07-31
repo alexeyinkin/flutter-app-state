@@ -2,15 +2,15 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'bloc.dart';
-import 'configuration.dart';
+import 'path.dart';
 
 /// A [PageBloc] that also has [states] stream.
 ///
-/// [C] is the base class for all app's page configurations.
+/// [P] is the base class for all app's page paths.
 /// [R] is the result returned when the page pops.
 /// [S] is the state class of this BLoC.
-abstract class CPageStatefulBloc<C extends PageConfiguration, S, R>
-    extends CPageBloc<C, R> {
+abstract class CPageStatefulBloc<P extends PagePath, S, R>
+    extends CPageBloc<P, R> {
   final _statesController = BehaviorSubject<S>();
 
   Stream<S> get states => _statesController.stream;
@@ -32,4 +32,4 @@ abstract class CPageStatefulBloc<C extends PageConfiguration, S, R>
   }
 }
 
-typedef PageStatefulBloc<S, R> = CPageStatefulBloc<PageConfiguration, S, R>;
+typedef PageStatefulBloc<S, R> = CPageStatefulBloc<PagePath, S, R>;

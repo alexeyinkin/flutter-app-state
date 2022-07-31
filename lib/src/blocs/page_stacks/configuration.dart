@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../page/configuration.dart';
+import '../page/path.dart';
 import '../page_stack/configuration.dart';
 import 'bloc.dart';
 
@@ -21,10 +21,10 @@ class PageStacksConfiguration {
 
   PageStacksConfiguration.singleStack({
     required String key,
-    required List<PageConfiguration> pageConfigurations,
+    required List<PagePath> paths,
   })  : pageStackConfigurations = <String, PageStackConfiguration>{
           key: PageStackConfiguration(
-            pageConfigurations: pageConfigurations,
+            paths: paths,
           ),
         },
         currentStackKey = key;
@@ -53,8 +53,11 @@ class PageStacksConfiguration {
 
   RouteInformation restoreRouteInformation() {
     return RouteInformation(
-      location:
-          currentStackConfiguration?.getTopPageConfiguration()?.location ?? '/',
+      location: currentStackConfiguration
+              ?.getTopPagePath()
+              ?.restoreRouteInformation() // ignore: deprecated_member_use_from_same_package
+              .location ??
+          '/',
       state: toJson(),
     );
   }

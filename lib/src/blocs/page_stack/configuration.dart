@@ -1,16 +1,22 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-import '../page/configuration.dart';
+import '../page/path.dart';
 
-/// Used to recover [PageConfiguration] objects, can be serialized
+/// Used to recover [PagePath] objects, can be serialized
 /// for browser history.
 class PageStackConfiguration {
-  final List<PageConfiguration?> pageConfigurations;
+  final List<PagePath?> paths;
 
   const PageStackConfiguration({
-    required this.pageConfigurations,
-  });
+    List<PagePath?>? paths,
+    @Deprecated('Use "path" instead. See CHANGELOG for v0.6.2')
+        List<PagePath?>? pageConfigurations,
+  })  : assert(
+          paths != null || pageConfigurations != null,
+          'A non-null path is required',
+        ),
+        paths = paths ?? pageConfigurations ?? const [];
 
   /// Recovers normalized states from a map.
   ///
@@ -31,27 +37,28 @@ class PageStackConfiguration {
 
   factory PageStackConfiguration._fromMap(Map<String, dynamic> map) {
     return PageStackConfiguration(
-      pageConfigurations: PageConfiguration.fromMaps(map['pc']),
+      paths: PagePath.fromMaps(map['p']),
     );
   }
 
   /// Returns a map describing this state to be stored in the browser history.
   Map<String, dynamic> toJson() {
     return {
-      'pc': PageConfiguration.toJsons(pageConfigurations),
+      'p': PagePath.toJsons(paths),
     };
   }
 
-  /// The first non-null page configuration from top.
-  PageConfiguration? getTopPageConfiguration() {
-    return pageConfigurations.reversed.firstWhereOrNull((c) => c != null);
+  /// The first non-null page path from top.
+  PagePath? getTopPagePath() {
+    return paths.reversed.firstWhereOrNull((c) => c != null);
   }
 
-  /// Returns [RouteInformation] that has the top [PageConfiguration]'s location
+  /// Returns [RouteInformation] that has the top [PagePath]'s location
   /// and all pages' states.
   RouteInformation restoreRouteInformation() {
     return RouteInformation(
-      location: getTopPageConfiguration()?.location ?? '/',
+      // ignore: deprecated_member_use_from_same_package
+      location: getTopPagePath()?.restoreRouteInformation().location ?? '/',
       state: toJson(),
     );
   }

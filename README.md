@@ -27,7 +27,7 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
     * [Page Keys](#page-keys)
 - [Web Architecture](#web-architecture)
     * [Parsing URLs](#parsing-urls)
-    * [Recommended PageConfiguration Structure](#recommended-pageconfiguration-structure)
+    * [Recommended PagePath Structure](#recommended-pagepath-structure)
     * [Creating the Page Objects](#creating-the-page-objects)
     * [Updating the Address Bar](#updating-the-address-bar)
         + [Page Without Bloc](#page-without-bloc)
@@ -35,7 +35,7 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
         + [Page Without URL](#page-without-url)
         + [Updating the URL Programmatically](#updating-the-url-programmatically)
     * [Redirecting a URL](#redirecting-a-url)
-    * [Browser's Back and Forward Buttons](#browser-s-back-and-forward-buttons)
+    * [Browser's Back and Forward Buttons](#browser-back-and-forward-buttons)
     * [Recovering Unsaved Input on Back and Forward Navigation](#recovering-unsaved-input-on-back-and-forward-navigation)
 - [Multiple Tabs with Independent Stacks](#multiple-tabs-with-independent-stacks)
 - [Advanced Ways to Return Result](#advanced-ways-to-return-result)
@@ -209,25 +209,25 @@ All the above examples work in web, but URL always stays `/`. Here is how to sup
 
 ### Parsing URLs
 
-`PageConfiguration` class is an object representation of a URL. You subclass it for every
-page you support. For example, `BookListPageConfiguration` will likely have no arguments,
-but a `BookDetailsPageConfiguration` will likely have `final int id;`
+`PagePath` class is an object representation of a URL. You subclass it for every
+page you support. For example, `BookListPath` will likely have no arguments,
+but a `BookDetailsPath` will likely have `final int id;`
 
 You then create a URL parser that is called by Flutter on start-up
 and also on back and forward navigation.
-This parser chooses the particular `PageConfiguration`.
+This parser chooses the particular `PagePath`.
 
-![Parsing PageConfiguration](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/parsing-page-configuration.png)
+![Parsing PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/parsing-page-path.png)
 
 It is easiest to maintain if made of one-liners like this:
 
 ```dart
 class MyRouteInformationParser extends PageStackRouteInformationParser {
   @override
-  Future<PageConfiguration> parsePageConfiguration(RouteInformation ri) async {
+  Future<PagePath> parsePagePath(RouteInformation ri) async {
     return
-        BookDetailsPageConfiguration.tryParse(ri) ??
-        const BookListPageConfiguration(); // The default page if nothing worked.
+        BookDetailsPath.tryParse(ri) ??
+        const BookListPath(); // The default page if nothing worked.
   }
 }
 ```
@@ -236,17 +236,17 @@ You use this parser instead of the ordinary `PageStackRouteInformationParser` in
 See and run [this example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_3_web)
 that adds URL support to the earlier book list example.
 
-### Recommended PageConfiguration Structure
+### Recommended PagePath Structure
 
 This is the class from the above example.
 
 ```dart
-class BookDetailsPageConfiguration extends PageConfiguration {
+class BookDetailsPath extends PagePath {
   final int bookId;
 
   static final _regExp = RegExp(r'^/books/(\d+)$');
 
-  BookDetailsPageConfiguration({
+  BookDetailsPagePath({
     required this.bookId,
   }) : super(
     key: BookDetailsPage.formatKey(bookId: bookId),
@@ -257,7 +257,7 @@ class BookDetailsPageConfiguration extends PageConfiguration {
   @override
   String get location => '/books/$bookId';
 
-  static BookDetailsPageConfiguration? tryParse(RouteInformation ri) {
+  static BookDetailsPath? tryParse(RouteInformation ri) {
     final matches = _regExp.firstMatch(ri.location ?? '');
     if (matches == null) return null;
 
@@ -267,26 +267,26 @@ class BookDetailsPageConfiguration extends PageConfiguration {
       return null; // Will never get here with present _regExp.
     }
 
-    return BookDetailsPageConfiguration(
+    return BookDetailsPath(
       bookId: bookId,
     );
   }
 
   @override
-  get defaultStackConfigurations => [
-    const BookListPageConfiguration(),
+  get defaultStackPaths => [
+    const BookListPath(),
     this,
   ];
 }
 ```
 
-- **`tryParse`** is the recommended static method in each of your `PageConfiguration` classes.
+- **`tryParse`** is the recommended static method in each of your `PagePath` classes.
   You then call them in a chain to return the one that worked.
   Here it applies the regular expression to get `bookId`.
-- **`location`** getter is the reverse. It returns the URL to put in the address bar
+- **`location`** getter is the reverse. It returns the path of the URL to put in the address bar
   in case the location changes programmatically in the app and not as a result of the
   address bar change. If not present, the URL will be `/`.
-- **`getStackConfigurations`** returns a list of `PageConfiguration` objects to pre-populate
+- **`getStackPaths`** returns a list of `PagePath` objects to pre-populate
   the stack with, bottom to top. In this case, the user has typed in a particular book's URL,
   so we compose the initial stack of two pages. At the bottom is the book list page,
   and above it is this one we parsed. So when this stack is loaded, the back button would lead the user
@@ -294,7 +294,7 @@ class BookDetailsPageConfiguration extends PageConfiguration {
 - **`super.key`** is to diff the pages in the stack to see if after the URL change some pages
   need to be kicked out of the stack or added.
 - **`super.state`** is the map of all fields. It is required because sometimes this object
-  gets serialized into browser history and then recovered.
+  gets serialized into the browser history and then recovered.
 - **`super.factoryKey`** will be described in the next section.
 
 This was the most complicated example you will see with this package.
@@ -338,7 +338,7 @@ class BookDetailsPage extends StatelessMaterialPage {
   }) : super(
     key: ValueKey(formatKey(bookId: bookId)),
     child: BookDetailsScreen(book: bookRepository[bookId]),
-    configuration: BookDetailsPageConfiguration(bookId: bookId),
+    path: BookDetailsPath(bookId: bookId),
   );
 
   static String formatKey({required int bookId}) {
@@ -350,46 +350,46 @@ class BookDetailsPage extends StatelessMaterialPage {
 The new things in this `Page` class are:
 
 - **`classFactoryKey`** is any unique string among your page classes.
-  This is what `PageConfiguration.factoryKey` is matched to when your factory selects
+  This is what `PagePath.factoryKey` is matched to when your factory selects
   the page class to create.
 - **`formatKey`** is a method to create a runtime key to
   [avoid page duplication in the stack](#page-keys). It is just for convenience because
-  we now need to create it in two diffeent places: here and in `BookDetailsPageConfiguration`.
-- **`super.configuration`** is described next.
+  we now need to create it in two different places: here and in `BookDetailsPath`.
+- **`super.path`** is described next.
 
 ### Updating the Address Bar
 
-The address bar is not the only source of `PageConfiguration` objects.
+The address bar is not the only source of `PagePath` objects.
 When you programmatically create a page and push it to the stack, it may report
-a `PageConfiguration` object to the framework so it updates the address bar from it.
+a `PagePath` object to the framework so it updates the address bar from it.
 
-![Emitting PageConfiguration](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/emitting-page-configuration.png)
+![Emitting PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/emitting-page-path.png)
 
 #### Page Without Bloc
-For a page without bloc, you hardcode a `PageConfiguration` like in the snippet above.
+For a page without bloc, you hardcode a `PagePath` like in the snippet above.
 
 ```dart
 super(
   // ...
-  configuration: BookDetailsPageConfiguration(bookId: bookId),
+  path: BookDetailsPath(bookId: bookId),
 );
 ```
 
-When this page is pushed, that `PageConfiguration.location` ends up in the address bar.
+When this page is pushed, that `PagePath.location` ends up in the address bar.
 
 #### Page With Bloc
 A page with bloc delegates this to the bloc for higher flexibility.
-Override `PageBloc.getConfiguration()`:
+Override the `PageBloc.path` getter:
 
 ```dart
 @override
-BookListPageConfiguration getConfiguration() => const BookListPageConfiguration();
+BookListPath get path => const BookListPath();
 ```
 
 #### Page Without URL
 The address bar content is always taken from the highest page in the stack that has non-`null`
-`PageConfiguration`, with or without bloc. For minor dialogs that should not affect the address bar
-and should not get to the browser history, just do not introduce any configurations.
+`PagePath`, with or without bloc. For minor dialogs that should not affect the address bar
+and should not get to the browser history, just do not introduce any path classes.
 
 #### Updating the URL Programmatically
 
@@ -398,57 +398,57 @@ in a single screen:
 
 ![Tree Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/tree-navigation.gif)
 
-What gets updated is its bloc. A bloc can emit a new `PageConfiguration` at any time.
-For this, call its `emitConfiguration()` method.
-This will call `getConfiguration()` for the actual configuration to propagate.
+What gets updated is its bloc. A bloc can emit a new `PagePath` at any time.
+For this, call its `emitPathChanged()` method.
+This will call the `path` getter for the actual path to propagate.
 
 ### Redirecting a URL
 
 #### Option 1. Single Class
-The URL that your `PageConfiguration` returns takes over the one
+The URL that your `PagePath` returns takes over the one
 that was parsed. To redirect `/` to `/books`, do the following:
 
-1. In `BookListPageConfiguration.tryParse()`, allow both `/` and `/books`.
+1. In `BookListPath.tryParse()`, allow both `/` and `/books`.
 2. Return `/books` in `location` getter.
 
 #### Option 2. Multiple Classes
-You can have many `PageConfiguration` classes for different URLs that all return
-`BookListPageConfiguration` in their `tryParse` methods, and it in turn will return `/books`
+You can have many `PagePath` classes for different URLs that all return
+`BookListPath` in their `tryParse` methods, and it in turn will return `/books`
 for location.
 
 This is useful for:
 
 - Redirecting to a page without its knowledge.
 - Conditional redirects where you don't want to concentrate the condition logic
-  in the target `PageConfiguration`.
+  in the target `PagePath`.
 
-### Browser's Back and Forward Buttons
+### Browser Back and Forward Buttons
 
 Back and Forward buttons in the browser work automatically. Unlike the Android back button,
 these buttons traverse the browser's history. The following is happening on any navigation
 with browser buttons:
 
-1. **`RouteInformationParser`** is called with a URL to parse `PageConfiguration` object from it.
+1. **`RouteInformationParser`** is called with a URL to parse `PagePath` object from it.
    This is exactly like when the app starts.
 2. Unlike the initial parsing, the `RouteInformation` now contains saved states for each page.
-   This is because when the framework emitted the `PageConfiguration` earlier,
+   This is because when the framework emitted the `PagePath` earlier,
    it was smart enough to also save all pages' serialized states.
-   This is why you had `state` passed to `PageConfiguration` super constructor earlier.
+   This is why you did pass `state` to `PagePath` super constructor earlier.
    This is how [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API)
    works in JavaScript, nicely abstracted by Flutter.
    `PageStackRouteInformationParser` detects this and skips the URL parsing.
 3. `PageStackBloc.setConfiguration()` is called with all pages' states recovered into maps.
    The current pages in the stack are diffed against that recovered state.
    Unchanged pages are not affected, unwanted pages are popped, and new pages are created
-   using the `pageFactory` you provided when creating this bloc. This is why `pageFactory`
-   gets a map and not a `PageConfiguration` object.
+   using the `createPage` factory you provided when creating this bloc. This is why `createPage`
+   gets a map and not a `PagePath` object.
 4. `PageStckBloc` emits an event to rebuild any navigator listening to it.
    This is usually `PageStackBlocNavigator` created for you by the default `PageStackRouterDelegate`
    you passed to the app constructor.
 5. The `Navigator` then runs its own diff on pages to update the routes that actually show
    the screen widgets. This way you get the updated UI.
 
-It all works for you automatically if you correctly set all pages' and `PageConfiguration` keys.
+It all works for you automatically if you correctly set all pages' and `PagePath` keys.
 
 ### Recovering Unsaved Input on Back and Forward Navigation
 
@@ -529,24 +529,35 @@ See [this tutorial](https://medium.com/p/811acedc5214) with more details and the
 
 ## Help is Wanted
 
-Do you like this package? Do not buy me a coffee, I don't drink it. You can make:
+Do you like this package? Do not buy me a coffee, I don't drink it. Here is what you can do:
 
-* **A Like** on https://pub.dev/packages/app_state, because people judge the packages by the
-  like count.
-* **Code Generator**. This package needs one to generate `Page` and `PageConfiguration` classes.
-  You can design or implement it.
-* **Tests**. You can cover it.
-* **Comparison** to
-  [auto_route](https://pub.dev/packages/auto_route),
-  [go_router](https://pub.dev/packages/go_router),
-  [beamer](https://pub.dev/packages/beamer),
-  raw Router API implementation,
-  and the old Navigator push-pop. You can write an article or at least provide me with points
-  on how they compare, what they could not do for you, what is too hard with them,
-  or how this package made your life easier.
-  My email is here: https://pub.dev/publishers/ainkin.com/packages
-* **Issue Reports** if you find anything wrong.
-* **Other PRs**. Please share your idea in an issue first.
+* **Spread**:
+    * **Like this package** on https://pub.dev/packages/app_state, because people judge the packages by the
+      like count.
+    * **Spread a word** to Flutterers you know.
+    * **[Follow me on Medium](https://medium.com/@alexey.inkin)**. It will show my app_state tutorials to more people.
+
+* **Info Help**:
+    * **I need a Comparison** to
+      [auto_route](https://pub.dev/packages/auto_route),
+      [go_router](https://pub.dev/packages/go_router),
+      [beamer](https://pub.dev/packages/beamer),
+      raw Router API implementation,
+      and the old Navigator push-pop. You can write an article or at least provide me with points
+      on how they compare, what they could not do for you, what is too hard with them,
+      or how this package made your life easier.
+      My email is here: https://pub.dev/publishers/ainkin.com/packages
+    * **Send me your project link** so I can list it among users to have a richer gallery of examples.
+      Get a free ad from me.
+      If it is a proprietary website or app, people will see what is possible. If it is open-source,
+      it will get more attention here and gain more users.
+    * **Reports an Issue** if you find anything wrong.
+
+* **Program**:
+    * **Code Generator**. This package needs one to generate `Page` and `PagePath` classes.
+      You can design or implement it.
+    * **Tests**. You can cover it.
+    * **Other PRs**. Please share your idea in an issue first.
 
 Here are [tons of runnable examples again](https://github.com/alexeyinkin/flutter-app-state-examples)
 if you have missed the link in the beginning.

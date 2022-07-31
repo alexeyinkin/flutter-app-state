@@ -1,21 +1,21 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/configuration.dart';
+import '../blocs/page/path.dart';
 import 'material.dart';
 
-abstract class CStatelessMaterialPage<C extends PageConfiguration, R>
-    extends CAbstractMaterialPage<C, R> {
-  final C? configuration;
-
+abstract class CStatelessMaterialPage<P extends PagePath, R>
+    extends CAbstractMaterialPage<P, R> {
   @override
-  C? getConfiguration() => configuration;
+  final P? path;
 
   CStatelessMaterialPage({
     required ValueKey<String> super.key,
     required super.child,
     super.factoryKey,
-    this.configuration,
-  });
+    P? path,
+    @Deprecated('Use "path" instead. See CHANGELOG for v0.6.2')
+        P? configuration,
+  }) : path = path ?? configuration;
 }
 
-typedef StatelessMaterialPage<R> = CStatelessMaterialPage<PageConfiguration, R>;
+typedef StatelessMaterialPage<R> = CStatelessMaterialPage<PagePath, R>;

@@ -1,15 +1,16 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../../pages/abstract.dart';
 import '../page_stack/configuration.dart';
 import '../page_stacks/configuration.dart';
 import 'bloc.dart';
 
-/// Describes a location within the app, corresponds to URL + state.
+/// Describes a location within the app, corresponds to location + state.
 /// Can be used to navigate to a page recovering its state.
-/// Subclass this for your pages' configurations.
-class PageConfiguration {
-  /// The key to compare with to [AbstractPage.key] to decide if the state
+/// Subclass this for your pages' paths.
+class PagePath {
+  /// The key to compare with to [CAbstractPage.key] to decide if the state
   /// is applicable to a page in a stack.
   ///
   /// It may be more specific than [factoryKey] and contain parameters
@@ -48,13 +49,13 @@ class PageConfiguration {
   ///      to recover further details of the state.
   final Map<String, dynamic> state;
 
-  const PageConfiguration({
+  const PagePath({
     this.key,
     String? factoryKey,
     this.state = const {},
   }) : _factoryKey = factoryKey;
 
-  static List<Map<String, dynamic>?> toJsons(Iterable<PageConfiguration?> pcs) {
+  static List<Map<String, dynamic>?> toJsons(Iterable<PagePath?> pcs) {
     return pcs.map((pc) => pc?.toJson()).toList(growable: false);
   }
 
@@ -66,21 +67,23 @@ class PageConfiguration {
     };
   }
 
-  static List<PageConfiguration> fromMaps(List maps) {
+  static List<PagePath> fromMaps(List maps) {
     return maps
         .cast<Map<String, dynamic>>()
-        .map(PageConfiguration._fromMap)
+        .map(PagePath._fromMap)
         .toList(growable: false);
   }
 
-  factory PageConfiguration._fromMap(Map<String, dynamic> map) {
-    return _DenormalizedPageConfiguration(
+  factory PagePath._fromMap(Map<String, dynamic> map) {
+    return PagePath(
       key: map['key'],
       factoryKey: map['factoryKey'],
       state: map['state'],
     );
   }
 
+  @Deprecated('Use location getter instead and pass state to super constructor')
+  @nonVirtual
   RouteInformation restoreRouteInformation() {
     return RouteInformation(
       location: location,
@@ -94,18 +97,23 @@ class PageConfiguration {
   /// It may contain query string parameters after '?'.
   String get location => '/';
 
-  /// What pages to show when navigating directly to this configuration's URL.
+  /// What pages to show when navigating directly to this path.
   PageStackConfiguration get defaultStackConfiguration {
     return PageStackConfiguration(
-      pageConfigurations: defaultStackConfigurations,
+      paths: defaultStackPaths,
     );
   }
 
-  /// What pages to show when navigating directly to this configuration's URL.
-  List<PageConfiguration> get defaultStackConfigurations => [this];
+  /// What pages to show when navigating directly to this path.
+  List<PagePath> get defaultStackPaths =>
+      defaultStackConfigurations; // ignore: deprecated_member_use_from_same_package
+
+  @Deprecated('Renamed to defaultStackPaths. See CHANGELOG for v0.6.2')
+  @nonVirtual
+  List<PagePath> get defaultStackConfigurations => [this];
 
   String get defaultStackKey => throw UnimplementedError(
-        'If you use multiple navigation stacks, each PageConfiguration class '
+        'If you use multiple navigation stacks, each PagePath class '
         'must indicate what stack it prefers to be shown in. '
         'For this, override defaultStackKey getter.',
       );
@@ -120,15 +128,5 @@ class PageConfiguration {
   }
 }
 
-class _DenormalizedPageConfiguration extends PageConfiguration {
-  _DenormalizedPageConfiguration({
-    required super.key,
-    required super.factoryKey,
-    required super.state,
-  });
-
-  @override
-  RouteInformation restoreRouteInformation() {
-    throw UnimplementedError();
-  }
-}
+@Deprecated('Renamed to PagePath. See CHANGELOG for v0.6.2')
+typedef PageConfiguration = PagePath;

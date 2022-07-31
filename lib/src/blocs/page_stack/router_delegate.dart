@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../widgets/navigator.dart';
-import '../page/configuration_changed_event.dart';
+import '../page/path_changed_event.dart';
 import 'bloc.dart';
 import 'configuration.dart';
 import 'event.dart';
@@ -39,7 +39,7 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
 
   void _onPageStackEvent(PageStackBlocEvent event) {
     if (event is PageStackPageBlocEvent) {
-      if (event.pageBlocEvent is PageBlocConfigurationChangedEvent) {
+      if (event.pageBlocEvent is PageBlocPathChangedEvent) {
         notifyListeners();
       }
     }

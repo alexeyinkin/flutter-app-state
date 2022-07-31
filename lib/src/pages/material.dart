@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../blocs/page/bloc.dart';
-import '../blocs/page/configuration.dart';
+import '../blocs/page/path.dart';
 import 'abstract.dart';
 
-abstract class CAbstractMaterialPage<C extends PageConfiguration, R>
-    extends MaterialPage implements CAbstractPage<C, R> {
+abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
+    implements CAbstractPage<P, R> {
   final ValueKey<String>? _valueKey;
 
   @override
@@ -21,10 +21,10 @@ abstract class CAbstractMaterialPage<C extends PageConfiguration, R>
   String? getFactoryKey() => _factoryKey ?? _valueKey?.value;
 
   @override
-  CPageBloc<C, R>? get bloc => null;
+  CPageBloc<P, R>? get bloc => null;
 
   @override
-  C? getConfiguration() => null;
+  P? get path => null;
 
   @override
   final completer = Completer<R?>();

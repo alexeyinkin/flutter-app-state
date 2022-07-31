@@ -1,11 +1,11 @@
-import '../page/configuration.dart';
+import '../page/path.dart';
 import '../page_stack/bloc.dart';
 import '../page_stack/event.dart';
 import 'event.dart';
 
-class CPageStacksPageStackBlocEvent<C extends PageConfiguration>
+class CPageStacksPageStackBlocEvent<P extends PagePath>
     extends PageStacksBlocEvent {
-  final CPageStackBloc<C> bloc;
+  final CPageStackBloc<P> bloc;
   final PageStackBlocEvent pageStackBlocEvent;
 
   const CPageStacksPageStackBlocEvent({
@@ -14,5 +14,4 @@ class CPageStacksPageStackBlocEvent<C extends PageConfiguration>
   });
 }
 
-typedef PageStacksPageStackBlocEvent
-    = CPageStacksPageStackBlocEvent<PageConfiguration>;
+typedef PageStacksPageStackBlocEvent = CPageStacksPageStackBlocEvent<PagePath>;

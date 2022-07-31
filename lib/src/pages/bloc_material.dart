@@ -1,21 +1,21 @@
 import 'package:flutter/widgets.dart';
 
 import '../blocs/page/bloc.dart';
-import '../blocs/page/configuration.dart';
+import '../blocs/page/path.dart';
 import 'material.dart';
 
 /// The base class for stateful pages.
 ///
-/// [C] is the base class for all app's page configurations.
+/// [P] is the base class for all app's page path.
 /// [R] is the result returned when the page pops.
 /// [B] is the block for the state.
-abstract class CBlocMaterialPage<C extends PageConfiguration, R,
-    B extends CPageBloc<C, R>> extends CAbstractMaterialPage<C, R> {
+abstract class CBlocMaterialPage<P extends PagePath, R,
+    B extends CPageBloc<P, R>> extends CAbstractMaterialPage<P, R> {
   @override
   final B bloc;
 
   @override
-  C? getConfiguration() => bloc.getConfiguration();
+  P? get path => bloc.path;
 
   CBlocMaterialPage({
     required this.bloc,
@@ -33,4 +33,4 @@ abstract class CBlocMaterialPage<C extends PageConfiguration, R,
 }
 
 typedef BlocMaterialPage<R, B extends PageBloc<R>>
-    = CBlocMaterialPage<PageConfiguration, R, B>;
+    = CBlocMaterialPage<PagePath, R, B>;

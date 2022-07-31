@@ -1,8 +1,8 @@
 export 'src/blocs/page/bloc.dart';
 export 'src/blocs/page/close_event.dart';
-export 'src/blocs/page/configuration.dart';
-export 'src/blocs/page/configuration_changed_event.dart';
 export 'src/blocs/page/event.dart';
+export 'src/blocs/page/path.dart';
+export 'src/blocs/page/path_changed_event.dart';
 export 'src/blocs/page/stateful_bloc.dart';
 
 export 'src/blocs/page_stack/back_button_dispatcher.dart';

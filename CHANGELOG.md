@@ -1,3 +1,24 @@
+## 0.6.2
+
+* Renamed `PageConfiguration` to `PagePath`. A `typedef` for backwards compatibility is added.
+  Methods, getters, and arguments with pages' 'configuration' in its name were changed to use 'path',
+  deprecated copies of the old ones were added for backwards compatibility.
+  The `PageConfiguration`'s name was a permanent source of confusion.
+  Each doc had to start with a note that `PageConfiguration` corresponds to a URL,
+  and it was not easy to memorize. This change will simplify the learning of this package.
+  It has also stripped 9-13 characters from identifiers.
+  `Path` is inspired by the
+  [original article announcing Router API](https://medium.com/flutter/learning-flutters-new-navigation-and-routing-system-7c9068155ade)
+  (as well as `app_state` name itself was).
+  `Configuration` earlier was inspired by `Router` docs where it means the configuration of
+  the whole app (earlier versions of `app_state` were designed to allow storing only the top page's
+  state, and so 'configuration' was extended to pages as well). 'Configuration' is still used
+  in `PageStackConfiguration` and `PageStacksConfiguration` class names that do represent
+  the whole app's state, and that is correct.
+* Deprecated `PagePath.restoreRouteInformation`. It used to allow overriding `state`
+  and was confusing because it was not used in serializing for browser history
+  (`super.state` is).
+
 ## 0.6.1
 
 * Fix images in README.

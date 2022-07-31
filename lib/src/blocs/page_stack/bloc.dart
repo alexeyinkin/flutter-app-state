@@ -8,9 +8,9 @@ import 'package:rxdart/rxdart.dart';
 import '../../models/back_pressed_result_enum.dart';
 import '../../pages/abstract.dart';
 import '../page/close_event.dart';
-import '../page/configuration.dart';
-import '../page/configuration_changed_event.dart';
 import '../page/event.dart';
+import '../page/path.dart';
+import '../page/path_changed_event.dart';
 import 'configuration.dart';
 import 'duplicate_page_key_action.dart';
 import 'event.dart';
@@ -18,17 +18,17 @@ import 'page_event.dart';
 
 /// The source of pages for [Navigator] widget.
 ///
-/// [C] is the base class for all app's page configurations.
-class CPageStackBloc<C extends PageConfiguration> {
-  final _pages = <CAbstractPage<C, dynamic>>[];
+/// [P] is the base class for all app's page paths.
+class CPageStackBloc<P extends PagePath> {
+  final _pages = <CAbstractPage<P, dynamic>>[];
 
-  List<CAbstractPage<C, dynamic>> get pages => _pages;
+  List<CAbstractPage<P, dynamic>> get pages => _pages;
 
   /// A factory to create pages from their serialized states.
   /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final CAbstractPage<C, dynamic>? Function(
+  final CAbstractPage<P, dynamic>? Function(
     String factoryKey,
     Map<String, dynamic> state,
   )? createPage;
@@ -41,38 +41,38 @@ class CPageStackBloc<C extends PageConfiguration> {
   Stream<PageStackBlocEvent> get events => _eventsController.stream;
 
   CPageStackBloc({
-    required CAbstractPage<C, dynamic> bottomPage,
+    required CAbstractPage<P, dynamic> bottomPage,
     this.createPage,
     this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
   }) {
     _pushNoFire(bottomPage, onDuplicateKey);
   }
 
-  /// The first non-null page configuration from top.
-  C getTopPageConfiguration() {
+  /// The first non-null page path from top.
+  P getTopPagePath() {
     for (final page in _pages.reversed) {
-      final configuration = page.getConfiguration();
+      final path = page.path;
 
-      if (configuration != null) {
-        return configuration;
+      if (path != null) {
+        return path;
       }
     }
 
-    throw Exception('No configuration found for this stack.');
+    throw Exception('No path found for this stack.');
   }
 
   /// Pushes a page to the stack much like [Navigator.push] does.
   Future<R?> push<R>(
-    CAbstractPage<C, R> page, {
+    CAbstractPage<P, R> page, {
     DuplicatePageKeyAction? onDuplicateKey,
   }) {
     final future = _pushNoFire<R>(page, onDuplicateKey ?? this.onDuplicateKey);
-    _firePageConfigurationChange<R>(page);
+    _firePathChange<R>(page);
     return future;
   }
 
   Future<R?> _pushNoFire<R>(
-    CAbstractPage<C, R> page,
+    CAbstractPage<P, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
   ) {
     final key = page.key;
@@ -90,12 +90,12 @@ class CPageStackBloc<C extends PageConfiguration> {
     return _pushDuplicateNoFire(oldPage, page, duplicatePageKeyAction);
   }
 
-  CAbstractPage<C, R>? _findSameKeyPage<R>(ValueKey<String> key) {
+  CAbstractPage<P, R>? _findSameKeyPage<R>(ValueKey<String> key) {
     return _pages.firstWhereOrNull((page) => page.key == key)
-        as CAbstractPage<C, R>?;
+        as CAbstractPage<P, R>?;
   }
 
-  Future<R?> _pushNewPageNoFire<R>(CAbstractPage<C, R> page) {
+  Future<R?> _pushNewPageNoFire<R>(CAbstractPage<P, R> page) {
     _pages.add(page);
 
     final bloc = page.bloc;
@@ -106,12 +106,12 @@ class CPageStackBloc<C extends PageConfiguration> {
     return page.completer.future;
   }
 
-  void _onPageEvent<R>(CAbstractPage<C, R> page, PageBlocEvent event) {
+  void _onPageEvent<R>(CAbstractPage<P, R> page, PageBlocEvent event) {
     _emitPageEvent(page, event);
 
     if (event is PageBlocCloseEvent && _pages.length >= 2) {
       _pages.remove(page);
-      _firePageConfigurationChange(_pages.last);
+      _firePathChange(_pages.last);
 
       final newTopBloc = _pages.last.bloc;
       newTopBloc?.didPopNext(page, event);
@@ -124,8 +124,8 @@ class CPageStackBloc<C extends PageConfiguration> {
     }
   }
 
-  void _emitPageEvent<R>(CAbstractPage<C, R> page, PageBlocEvent event) {
-    final pageStackEvent = CPageStackPageBlocEvent<C, R>(
+  void _emitPageEvent<R>(CAbstractPage<P, R> page, PageBlocEvent event) {
+    final pageStackEvent = CPageStackPageBlocEvent<P, R>(
       page: page,
       bloc: page.bloc,
       pageBlocEvent: event,
@@ -134,8 +134,8 @@ class CPageStackBloc<C extends PageConfiguration> {
   }
 
   Future<R?> _pushDuplicateNoFire<R>(
-    CAbstractPage<C, R> oldPage,
-    CAbstractPage<C, R> newPage,
+    CAbstractPage<P, R> oldPage,
+    CAbstractPage<P, R> newPage,
     DuplicatePageKeyAction onDuplicateKey,
   ) {
     switch (onDuplicateKey) {
@@ -157,12 +157,12 @@ class CPageStackBloc<C extends PageConfiguration> {
     }
   }
 
-  void _firePageConfigurationChange<R>(CAbstractPage<C, R> page) {
+  void _firePathChange<R>(CAbstractPage<P, R> page) {
     _eventsController.sink.add(
       PageStackPageBlocEvent(
         page: page,
         bloc: page.bloc,
-        pageBlocEvent: const PageBlocConfigurationChangedEvent(),
+        pageBlocEvent: const PageBlocPathChangedEvent(),
       ),
     );
   }
@@ -195,7 +195,7 @@ class CPageStackBloc<C extends PageConfiguration> {
     // _pages can never be empty. Only pop if there are at least 2.
     if (_pages.length >= 2) {
       _pages.removeLast();
-      _firePageConfigurationChange(_pages.last);
+      _firePathChange(_pages.last);
       unawaited(_schedulePageDisposal(page));
       return BackPressedResult.keep;
     }
@@ -203,18 +203,17 @@ class CPageStackBloc<C extends PageConfiguration> {
     return BackPressedResult.close;
   }
 
-  /// Surveys all pages' configurations for serialization.
+  /// Surveys all pages' paths for serialization.
   PageStackConfiguration getConfiguration() {
     return PageStackConfiguration(
-      pageConfigurations:
-          _pages.map((p) => p.getConfiguration()).toList(growable: false),
+      paths: _pages.map((p) => p.path).toList(growable: false),
     );
   }
 
   /// Recovers pages and their states.
   ///
   /// 1. Compares the current stack with given page states from bottom to top.
-  ///    For each page with key matching configuration's key, recovers its
+  ///    For each page with key matching the path's key, recovers its
   ///    state.
   ///
   /// 2. When a mismatch is found, pops and disposes the remaining pages.
@@ -230,26 +229,26 @@ class CPageStackBloc<C extends PageConfiguration> {
     int matchedIndex = 0;
     final matchLength = min(
       _pages.length,
-      configuration.pageConfigurations.length,
+      configuration.paths.length,
     );
 
     for (; matchedIndex < matchLength; matchedIndex++) {
       final page = _pages[matchedIndex];
-      final pc = configuration.pageConfigurations[matchedIndex];
+      final path = configuration.paths[matchedIndex];
 
-      if (pc == null) {
-        // A null PageConfiguration is implied to match any page,
+      if (path == null) {
+        // A null PagePath is implied to match any page,
         // and it cannot apply any state to it.
         // The only production case for it is non-web where this diff
         // only happens at startup and does nothing.
         continue;
       }
 
-      if (page.key?.value != pc.key) {
+      if (page.key?.value != path.key) {
         break; // Mismatch. Will dispose this page and above.
       }
 
-      page.bloc?.setStateMap(pc.state);
+      page.bloc?.setStateMap(path.state);
     }
 
     for (int i = _pages.length; --i >= matchedIndex;) {
@@ -258,20 +257,18 @@ class CPageStackBloc<C extends PageConfiguration> {
       _schedulePageDisposal(page);
     }
 
-    for (int i = matchedIndex;
-        i < configuration.pageConfigurations.length;
-        i++) {
-      final pc = configuration.pageConfigurations[i];
-      if (pc == null) {
-        // Pages without configuration are transient dialogs, these are OK
+    for (int i = matchedIndex; i < configuration.paths.length; i++) {
+      final path = configuration.paths[i];
+      if (path == null) {
+        // Pages without path are transient dialogs, these are OK
         // to skip. Otherwise we will never be able to recover good URLed pages
         // on top of transient dialogs.
         continue;
       }
 
-      if (!_createPage(pc)) {
-        // But if we cannot create a page with configuration, it is not OK.
-        // Configuration implies recoverability.
+      if (!_createPage(path)) {
+        // But if we cannot create a page with path, it is not OK.
+        // A path implies recoverability.
         // Also consider throwing Exception in createPage factory on failure
         // so we will not get here.
         break;
@@ -279,7 +276,7 @@ class CPageStackBloc<C extends PageConfiguration> {
     }
 
     if (fire) {
-      _firePageConfigurationChange(_pages.last);
+      _firePathChange(_pages.last);
     }
 
     // TODO(alexeyinkin): Prevent emptying. Maybe keep the list of popped pages, https://github.com/alexeyinkin/flutter-app-state/issues/3
@@ -292,22 +289,22 @@ class CPageStackBloc<C extends PageConfiguration> {
     }
   }
 
-  bool _createPage(PageConfiguration pc) {
-    if (createPage == null || pc.factoryKey == null) {
+  bool _createPage(PagePath path) {
+    if (createPage == null || path.factoryKey == null) {
       return false;
     }
 
-    final page = createPage!(pc.factoryKey!, pc.state);
+    final page = createPage!(path.factoryKey!, path.state);
     if (page == null) {
       return false;
     }
 
-    page.bloc?.setStateMap(pc.state);
+    page.bloc?.setStateMap(path.state);
     _pushNoFire(page, onDuplicateKey);
     return true;
   }
 
-  Future<void> _schedulePageDisposal<R>(CAbstractPage<C, R> page) async {
+  Future<void> _schedulePageDisposal<R>(CAbstractPage<P, R> page) async {
     // If we dispose the page immediately (or even with 1 frame delay of
     // Future.delayed(Duration.zero)), the bloc will dispose
     // TextEditingController objects, and we get the exception of using disposed
@@ -326,4 +323,4 @@ class CPageStackBloc<C extends PageConfiguration> {
   }
 }
 
-typedef PageStackBloc = CPageStackBloc<PageConfiguration>;
+typedef PageStackBloc = CPageStackBloc<PagePath>;

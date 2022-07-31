@@ -1,10 +1,10 @@
 import '../../pages/abstract.dart';
 import '../page/bloc.dart';
-import '../page/configuration.dart';
 import '../page/event.dart';
+import '../page/path.dart';
 import 'event.dart';
 
-class CPageStackPageBlocEvent<C extends PageConfiguration, R>
+class CPageStackPageBlocEvent<C extends PagePath, R>
     extends PageStackBlocEvent {
   final CAbstractPage<C, R> page;
   final CPageBloc<C, R>? bloc;
@@ -17,5 +17,4 @@ class CPageStackPageBlocEvent<C extends PageConfiguration, R>
   });
 }
 
-typedef PageStackPageBlocEvent<R>
-    = CPageStackPageBlocEvent<PageConfiguration, R>;
+typedef PageStackPageBlocEvent<R> = CPageStackPageBlocEvent<PagePath, R>;

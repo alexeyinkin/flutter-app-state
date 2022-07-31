@@ -5,7 +5,7 @@ void main() {
   late PageBloc sut;
 
   setUp(() {
-    sut = CPageBloc<PageConfiguration, int>();
+    sut = CPageBloc<PagePath, int>();
   });
 
   test('pop pushes PageBlocCloseEvent', () async {
