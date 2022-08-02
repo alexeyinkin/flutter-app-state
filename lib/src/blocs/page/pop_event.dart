@@ -5,10 +5,13 @@ import 'event.dart';
 ///
 /// The page could be anywhere in the stack as long as at least one other page
 /// is left in the stack afterwards.
-class PageBlocCloseEvent<R> extends PageBlocEvent {
+class PageBlocPopEvent<R> extends PageBlocEvent {
   final R? data;
 
-  const PageBlocCloseEvent({
+  const PageBlocPopEvent({
     required this.data,
   });
 }
+
+@Deprecated('Renamed to PageBlocPopEvent')
+typedef PageBlocCloseEvent = PageBlocPopEvent;

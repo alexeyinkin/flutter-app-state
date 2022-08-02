@@ -152,7 +152,7 @@ class MyApp extends StatelessWidget {
 
 ### Pushing
 
-To push a screen, you create its `Page` class and `push` it into a `PageStackBloc`:
+To push a screen, you create its `Page` object and `push` it into a `PageStackBloc`:
 
 ```dart
 final result = await pageStacksBloc.push(
@@ -181,6 +181,7 @@ onPressed: () => bloc.pop(result);
 In your bloc, override `onBackPressed()`:
 
 ```dart
+@override
 Future<BackPressedResult> onBackPressed() {
   if (!_saved) {
     return Future.value(BackPressedResult.keep);
@@ -201,11 +202,11 @@ the `onDuplicateKey` argument of `pop` determines what to do. It can:
 Pages of the same class may have different keys. In a social app, you may have a user page
 with the user ID in the key. This allows you to show multiple user profiles in the stack,
 but if a duplicate user profile is about to be shown, you can bring the old one above
-to save memory and to not bore your use with many future back taps.
+to save memory and to not bore your user with many back taps later.
 
 ## Web Architecture
 
-All the above examples work in web, but URL always stays `/`. Here is how to support URLs.
+All the above examples work in web, but the URL always stays `/`. Here is how to support URLs.
 
 ### Parsing URLs
 
@@ -286,13 +287,13 @@ class BookDetailsPath extends PagePath {
 - **`location`** getter is the reverse. It returns the path of the URL to put in the address bar
   in case the location changes programmatically in the app and not as a result of the
   address bar change. If not present, the URL will be `/`.
-- **`getStackPaths`** returns a list of `PagePath` objects to pre-populate
+- **`defaultStackPaths`** returns a list of `PagePath` objects to pre-populate
   the stack with, bottom to top. In this case, the user has typed in a particular book's URL,
   so we compose the initial stack of two pages. At the bottom is the book list page,
   and above it is this one we parsed. So when this stack is loaded, the back button would lead the user
   to the book list page. If this getter is not present, the stack defaults to this single page.
 - **`super.key`** is to diff the pages in the stack to see if after the URL change some pages
-  need to be kicked out of the stack or added.
+  need to be kicked out of the stack, updated, or added.
 - **`super.state`** is the map of all fields. It is required because sometimes this object
   gets serialized into the browser history and then recovered.
 - **`super.factoryKey`** will be described in the next section.
@@ -354,7 +355,7 @@ The new things in this `Page` class are:
   the page class to create.
 - **`formatKey`** is a method to create a runtime key to
   [avoid page duplication in the stack](#page-keys). It is just for convenience because
-  we now need to create it in two different places: here and in `BookDetailsPath`.
+  we now need to create these keys in two different places: here and in `BookDetailsPath`.
 - **`super.path`** is described next.
 
 ### Updating the Address Bar
@@ -475,7 +476,7 @@ Read [this tutorial](https://medium.com/p/cfb52d035da6) on how this app is made.
 
 ### Push and Pop Type Safety at Compile Time
 
-`PageBloc` and `BlocMaterialPage` is typed by a return type `R`:
+`PageBloc` and `BlocMaterialPage` are typed by a return type `R`:
 
 - `PageBloc<R>`
 - `BlocMaterialPage<R, B extends PageBloc<R>>`
@@ -522,7 +523,7 @@ void didPopNext(AbstractPage page, PageBlocCloseEvent event) {
 ```
 
 This way the compiler still makes sure the bloc pops with the right type, but the `event.data`
-is not type-checked. This is because a bloc can push different page classes that produce different
+is not type-checked by the receiver. This is because a bloc can push pages of different classes that produce different
 result types, but they all are collected in this method.
 
 See [this tutorial](https://medium.com/p/811acedc5214) with more details and the link to the full runnable example.
@@ -535,7 +536,7 @@ Do you like this package? Do not buy me a coffee, I don't drink it. Here is what
     * **Like this package** on https://pub.dev/packages/app_state, because people judge the packages by the
       like count.
     * **Spread a word** to Flutterers you know.
-    * **[Follow me on Medium](https://medium.com/@alexey.inkin)**. It will show my app_state tutorials to more people.
+    * **[Follow me on Medium](https://medium.com/@alexey.inkin)**. It will show the app_state tutorials to more people.
 
 * **Info Help**:
     * **I need a Comparison** to

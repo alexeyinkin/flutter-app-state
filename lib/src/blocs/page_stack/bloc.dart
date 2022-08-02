@@ -7,10 +7,10 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../models/back_pressed_result_enum.dart';
 import '../../pages/abstract.dart';
-import '../page/close_event.dart';
 import '../page/event.dart';
 import '../page/path.dart';
 import '../page/path_changed_event.dart';
+import '../page/pop_event.dart';
 import 'configuration.dart';
 import 'duplicate_page_key_action.dart';
 import 'event.dart';
@@ -109,7 +109,7 @@ class CPageStackBloc<P extends PagePath> {
   void _onPageEvent<R>(CAbstractPage<P, R> page, PageBlocEvent event) {
     _emitPageEvent(page, event);
 
-    if (event is PageBlocCloseEvent && _pages.length >= 2) {
+    if (event is PageBlocPopEvent && _pages.length >= 2) {
       _pages.remove(page);
       _firePathChange(_pages.last);
 

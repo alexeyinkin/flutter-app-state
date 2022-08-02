@@ -1,3 +1,8 @@
+## 0.6.3
+
+* Renamed `PageBlocCloseEvent` to `PageBlocPopEvent` to align with `didPopNext` method.
+* A deprecated `typedef` was created for backwards compatibility.
+
 ## 0.6.2
 
 * Renamed `PageConfiguration` to `PagePath`. A `typedef` for backwards compatibility is added.

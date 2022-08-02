@@ -5,10 +5,10 @@ import '../../models/back_pressed_result_enum.dart';
 import '../../pages/abstract.dart';
 import '../../widgets/navigator.dart';
 import '../page_stack/bloc.dart';
-import 'close_event.dart';
 import 'event.dart';
 import 'path.dart';
 import 'path_changed_event.dart';
+import 'pop_event.dart';
 
 /// A BLoC that backs each stateful page of your app.
 ///
@@ -52,14 +52,14 @@ class CPageBloc<P extends PagePath, R> {
     }
   }
 
-  /// Emits [PageBlocCloseEvent] for [PageStackBloc] to remove and dispose
+  /// Emits [PageBlocPopEvent] for [PageStackBloc] to remove and dispose
   /// the current page. [data] is passed to the new topmost [PageBloc] and
   /// can be used as the modal dialog result.
   void pop([R? data]) {
     _eventsController.sink.add(
       data == null
-          ? const PageBlocCloseEvent(data: null)
-          : PageBlocCloseEvent<R>(data: data),
+          ? const PageBlocPopEvent(data: null)
+          : PageBlocPopEvent<R>(data: data),
     );
   }
 
@@ -68,7 +68,7 @@ class CPageBloc<P extends PagePath, R> {
   @Deprecated('Use pop')
   @nonVirtual
   void closeScreen() {
-    _eventsController.sink.add(const PageBlocCloseEvent(data: null));
+    _eventsController.sink.add(const PageBlocPopEvent(data: null));
   }
 
   /// Emits [event] for [PageStackBloc] to remove and dispose the current page.
@@ -76,17 +76,17 @@ class CPageBloc<P extends PagePath, R> {
   /// as modal dialog result.
   @Deprecated('Use pop for PageBlocCloseEvent or emitEvent for custom events')
   @nonVirtual
-  void closeScreenWith(PageBlocCloseEvent event) {
+  void closeScreenWith(PageBlocPopEvent event) {
     _eventsController.sink.add(event);
   }
 
   /// Override this to use the result of a closed modal screen.
-  void didPopNext(AbstractPage page, PageBlocCloseEvent event) {}
+  void didPopNext(AbstractPage page, PageBlocPopEvent event) {}
 
   /// Override this to use the result of a closed modal screen.
   @Deprecated('Use didPopNext')
   @nonVirtual
-  void onForegroundClosed(PageBlocCloseEvent event) {}
+  void onForegroundClosed(PageBlocPopEvent event) {}
 
   /// Called when Android back button is pressed with this page active.
   ///

@@ -17,7 +17,7 @@ void main() {
     sut.pop(7);
     await Future.delayed(Duration.zero);
 
-    expect(received.runtimeType, PageBlocCloseEvent<int>);
-    expect((received! as PageBlocCloseEvent).data, 7);
+    expect(received.runtimeType, PageBlocPopEvent<int>);
+    expect((received! as PageBlocPopEvent).data, 7);
   });
 }
