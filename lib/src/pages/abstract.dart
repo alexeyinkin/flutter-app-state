@@ -20,6 +20,8 @@ abstract class CAbstractPage<P extends PagePath, R> extends Page {
   @internal
   Completer<R?> get completer;
 
+  bool get isDisposed;
+
   /// The key to re-create this page with factory when recovering state.
   String? getFactoryKey();
 

@@ -2,6 +2,7 @@ export 'src/blocs/page/bloc.dart';
 export 'src/blocs/page/event.dart';
 export 'src/blocs/page/path.dart';
 export 'src/blocs/page/path_changed_event.dart';
+export 'src/blocs/page/pop_cause.dart';
 export 'src/blocs/page/pop_event.dart';
 export 'src/blocs/page/stateful_bloc.dart';
 
@@ -10,6 +11,7 @@ export 'src/blocs/page_stack/bloc.dart';
 export 'src/blocs/page_stack/configuration.dart';
 export 'src/blocs/page_stack/duplicate_page_key_action.dart';
 export 'src/blocs/page_stack/event.dart';
+export 'src/blocs/page_stack/match_mode.dart';
 export 'src/blocs/page_stack/page_event.dart';
 export 'src/blocs/page_stack/route_information_parser.dart';
 export 'src/blocs/page_stack/router_delegate.dart';

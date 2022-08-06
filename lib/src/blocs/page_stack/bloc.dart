@@ -1,20 +1,28 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../models/back_pressed_result_enum.dart';
 import '../../pages/abstract.dart';
+import '../../util/util.dart';
 import '../page/event.dart';
 import '../page/path.dart';
 import '../page/path_changed_event.dart';
+import '../page/pop_cause.dart';
 import '../page/pop_event.dart';
 import 'configuration.dart';
+import 'configuration_setters/abstract.dart';
+import 'configuration_setters/key_or_null_path_no_gap.dart';
+import 'configuration_setters/none.dart';
 import 'duplicate_page_key_action.dart';
 import 'event.dart';
+import 'match_mode.dart';
 import 'page_event.dart';
+import 'page_factory_function.dart';
+import 'route_information_parser.dart';
 
 /// The source of pages for [Navigator] widget.
 ///
@@ -28,13 +36,13 @@ class CPageStackBloc<P extends PagePath> {
   /// It is called when a popped page should be re-created on back-forward
   /// navigation. If null, pages will not be re-created this way.
   /// This makes navigation useless except for popping.
-  final CAbstractPage<P, dynamic>? Function(
-    String factoryKey,
-    Map<String, dynamic> state,
-  )? createPage;
+  final CPageFactoryFunction<P>? createPage;
 
   /// What to do if pushing a page with a key already existing in the stack.
   final DuplicatePageKeyAction onDuplicateKey;
+
+  /// Allows declarative navigation with [replacePath] if set.
+  final PageStackRouteInformationParser? routeInformationParser;
 
   final _eventsController = BehaviorSubject<PageStackBlocEvent>();
 
@@ -44,6 +52,7 @@ class CPageStackBloc<P extends PagePath> {
     required CAbstractPage<P, dynamic> bottomPage,
     this.createPage,
     this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
+    this.routeInformationParser,
   }) {
     _pushNoFire(bottomPage, onDuplicateKey);
   }
@@ -109,18 +118,19 @@ class CPageStackBloc<P extends PagePath> {
   void _onPageEvent<R>(CAbstractPage<P, R> page, PageBlocEvent event) {
     _emitPageEvent(page, event);
 
-    if (event is PageBlocPopEvent && _pages.length >= 2) {
-      _pages.remove(page);
-      _firePathChange(_pages.last);
+    if (event is PageBlocPopEvent) {
+      final index = _pages.indexOf(page);
 
-      final newTopBloc = _pages.last.bloc;
-      newTopBloc?.didPopNext(page, event);
+      if (index > 0) {
+        _pages.removeAt(index);
+        final pageBelow = _pages[index - 1];
 
-      // ignore: deprecated_member_use_from_same_package
-      newTopBloc?.onForegroundClosed(event);
-      page.completer.complete(event.data);
+        handleRemoved(pageBelow, page, event);
 
-      _schedulePageDisposal<R>(page);
+        // Even if the top page stayed the same, fire its change
+        // because it may want to store the whole stack config.
+        _firePathChange(_pages.last);
+      }
     }
   }
 
@@ -157,6 +167,29 @@ class CPageStackBloc<P extends PagePath> {
     }
   }
 
+  /// Called when a page is removed from the stack for any reason.
+  ///
+  /// Reasons are limited to:
+  /// 1. The back button was pressed, and the bloc did not prevent the pop.
+  /// 2. The configuration setter removed it from the stack while applying
+  ///    a stack configuration.
+  /// 3. The bloc emitted the [event] to pop.
+  ///
+  /// This does:
+  /// 1. Complete the page future.
+  /// 2. Call didPopNext and onForegroundClosed on a bloc below.
+  /// 3. Schedule the page disposal.
+  @visibleForTesting
+  void handleRemoved<R>(CAbstractPage<P, dynamic>? pageBelow,
+      CAbstractPage<P, R> page, PageBlocPopEvent<R> event) {
+    page.completer.complete(event.data);
+    pageBelow?.bloc?.didPopNext(page, event);
+    _schedulePageDisposal(page);
+
+    // ignore: deprecated_member_use_from_same_package
+    pageBelow?.bloc?.onForegroundClosed(event);
+  }
+
   void _firePathChange<R>(CAbstractPage<P, R> page) {
     _eventsController.sink.add(
       PageStackPageBlocEvent(
@@ -177,10 +210,11 @@ class CPageStackBloc<P extends PagePath> {
   /// Otherwise returns `false`. This may signal to shut down the app
   /// or to close some widgets wrapping this stack.
   Future<BackPressedResult> onBackPressed() async {
-    final page = _pages.lastOrNull;
+    final oldPages = [..._pages];
+    final page = oldPages.lastOrNull;
     if (page == null) {
-      return BackPressedResult.close;
-    } // Normally never happens.
+      return BackPressedResult.close; // Normally never happens.
+    }
 
     final bloc = page.bloc;
     if (bloc != null) {
@@ -195,8 +229,14 @@ class CPageStackBloc<P extends PagePath> {
     // _pages can never be empty. Only pop if there are at least 2.
     if (_pages.length >= 2) {
       _pages.removeLast();
+
+      handleRemoved(
+        oldPages.elementAtOrNull(oldPages.length - 2),
+        page,
+        const PageBlocPopEvent<Null>(data: null, cause: PopCause.backButton),
+      );
+
       _firePathChange(_pages.last);
-      unawaited(_schedulePageDisposal(page));
       return BackPressedResult.keep;
     }
 
@@ -224,84 +264,72 @@ class CPageStackBloc<P extends PagePath> {
   ///    Stops at the first page that failed to be created.
   void setConfiguration(
     PageStackConfiguration configuration, {
+    PageStackMatchMode mode = PageStackMatchMode.keyOrNullPathNoGap,
+    @internal CAbstractPageStackConfigurationSetter? setter,
     bool fire = true,
   }) {
-    int matchedIndex = 0;
-    final matchLength = min(
-      _pages.length,
-      configuration.paths.length,
+    final useSetter = setter ?? _getConfigurationSetter(mode);
+    final oldPages = [..._pages];
+
+    useSetter.set(
+      pages: _pages,
+      configuration: configuration,
+      createAndPushPage: _createAndPushPage,
     );
 
-    for (; matchedIndex < matchLength; matchedIndex++) {
-      final page = _pages[matchedIndex];
-      final path = configuration.paths[matchedIndex];
-
-      if (path == null) {
-        // A null PagePath is implied to match any page,
-        // and it cannot apply any state to it.
-        // The only production case for it is non-web where this diff
-        // only happens at startup and does nothing.
-        continue;
-      }
-
-      if (page.key?.value != path.key) {
-        break; // Mismatch. Will dispose this page and above.
-      }
-
-      page.bloc?.setStateMap(path.state);
-    }
-
-    for (int i = _pages.length; --i >= matchedIndex;) {
-      final page = _pages.removeAt(i);
-      page.completer.complete(null);
-      _schedulePageDisposal(page);
-    }
-
-    for (int i = matchedIndex; i < configuration.paths.length; i++) {
-      final path = configuration.paths[i];
-      if (path == null) {
-        // Pages without path are transient dialogs, these are OK
-        // to skip. Otherwise we will never be able to recover good URLed pages
-        // on top of transient dialogs.
-        continue;
-      }
-
-      if (!_createPage(path)) {
-        // But if we cannot create a page with path, it is not OK.
-        // A path implies recoverability.
-        // Also consider throwing Exception in createPage factory on failure
-        // so we will not get here.
-        break;
-      }
-    }
-
-    if (fire) {
-      _firePathChange(_pages.last);
-    }
-
-    // TODO(alexeyinkin): Prevent emptying. Maybe keep the list of popped pages, https://github.com/alexeyinkin/flutter-app-state/issues/3
-    //       and only dispose them when we determine the stack is not emptied.
     if (_pages.isEmpty) {
+      _pages.addAll(oldPages);
+
       throw Exception(
-        'PageStackBloc is emptied by setting a configuration state. '
+        'PageStackBloc was about to be emptied by setting '
+        'a configuration state. '
         'The stack should never be empty according to the Navigator API.',
+      );
+    }
+
+    final newPageSet = {for (final page in _pages) page};
+
+    for (int i = oldPages.length; --i >= 0;) {
+      final page = oldPages[i];
+
+      if (newPageSet.contains(page)) {
+        continue;
+      }
+
+      handleRemoved(
+        oldPages.elementAtOrNull(i - 1),
+        page,
+        const PageBlocPopEvent<Null>(data: null, cause: PopCause.diff),
       );
     }
   }
 
-  bool _createPage(PagePath path) {
+  void _createAndPushPage(PagePath path) {
+    final page = _createPage(path);
+
+    if (page == null) {
+      // But if we cannot create a page with path, it is not OK.
+      // A path implies recoverability.
+      // Also consider throwing Exception in createPage factory on failure
+      // so we will not get here.
+      return;
+    }
+
+    _pushNoFire(page, onDuplicateKey);
+  }
+
+  CAbstractPage<P, dynamic>? _createPage(PagePath path) {
     if (createPage == null || path.factoryKey == null) {
-      return false;
+      return null;
     }
 
     final page = createPage!(path.factoryKey!, path.state);
     if (page == null) {
-      return false;
+      return null;
     }
 
     page.bloc?.setStateMap(path.state);
-    _pushNoFire(page, onDuplicateKey);
-    return true;
+    return page;
   }
 
   Future<void> _schedulePageDisposal<R>(CAbstractPage<P, R> page) async {
@@ -312,6 +340,40 @@ class CPageStackBloc<P extends PagePath> {
     // TODO(alexeyinkin): Find a guaranteed synchronous way, https://github.com/alexeyinkin/flutter-app-state/issues/4
     await Future.delayed(const Duration(seconds: 10));
     page.dispose();
+  }
+
+  /// Replaces the stack of pages with the full default stack parsed
+  /// from [path] (declarative navigation).
+  ///
+  /// Requires [routeInformationParser] to be non-null.
+  Future<void> replacePath(
+    P path, {
+    PageStackMatchMode mode = PageStackMatchMode.keyOrNullPathNoGap,
+  }) async {
+    final ri = RouteInformation(
+      location: path.location,
+      state: path.state,
+    );
+
+    final configuration =
+        await routeInformationParser?.parsePageStackConfiguration(ri);
+
+    if (configuration == null) {
+      throw Exception('This requires routeInformationParser');
+    }
+
+    setConfiguration(configuration, setter: _getConfigurationSetter(mode));
+  }
+
+  CAbstractPageStackConfigurationSetter _getConfigurationSetter(
+    PageStackMatchMode mode,
+  ) {
+    switch (mode) {
+      case PageStackMatchMode.none:
+        return CNonePageStackConfigurationSetter<P>();
+      case PageStackMatchMode.keyOrNullPathNoGap:
+        return CKeyOrNullPathNoGapPageStackConfigurationSetter<P>();
+    }
   }
 
   void dispose() {

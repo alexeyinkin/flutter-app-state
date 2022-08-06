@@ -8,6 +8,7 @@ import '../page_stack/bloc.dart';
 import 'event.dart';
 import 'path.dart';
 import 'path_changed_event.dart';
+import 'pop_cause.dart';
 import 'pop_event.dart';
 
 /// A BLoC that backs each stateful page of your app.
@@ -27,6 +28,7 @@ class CPageBloc<P extends PagePath, R> {
   P? getConfiguration() => null;
 
   @protected
+  @visibleForTesting
   void emitEvent(PageBlocEvent event) {
     _eventsController.sink.add(event);
   }
@@ -58,8 +60,8 @@ class CPageBloc<P extends PagePath, R> {
   void pop([R? data]) {
     _eventsController.sink.add(
       data == null
-          ? const PageBlocPopEvent(data: null)
-          : PageBlocPopEvent<R>(data: data),
+          ? const PageBlocPopEvent(data: null, cause: PopCause.bloc)
+          : PageBlocPopEvent<R>(data: data, cause: PopCause.bloc),
     );
   }
 
@@ -68,7 +70,12 @@ class CPageBloc<P extends PagePath, R> {
   @Deprecated('Use pop')
   @nonVirtual
   void closeScreen() {
-    _eventsController.sink.add(const PageBlocPopEvent(data: null));
+    _eventsController.sink.add(
+      const PageBlocPopEvent(
+        data: null,
+        cause: PopCause.bloc,
+      ),
+    );
   }
 
   /// Emits [event] for [PageStackBloc] to remove and dispose the current page.

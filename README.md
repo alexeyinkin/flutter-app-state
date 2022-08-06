@@ -72,7 +72,7 @@ Blocs listen to events from other blocs above them. When the top bloc pops, its 
 to `didPopNext` method of a bloc under it. So you get the result without awaiting a future.
 If you type in `/books/123/rate` and close the dialog by rating a book, the book details bloc
 will get the rate without any future. See and run
-[the license dialog example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_5_route_result).
+[the license dialog example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/5_route_result).
 
 ## Architecture
 
@@ -111,7 +111,7 @@ Zooming in, this is how they interact:
 
 This app has one screen and no navigation. It even has no page bloc, since it has no state and
 the blocs are optional.
-See and run [the example project](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_1_min).
+See and run [the example project](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/1_min/main.dart).
 
 ![The Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/minimal.png)
 
@@ -164,7 +164,7 @@ You can do this from anywhere and don't need `BuildContext`.
 
 The Android back button and the default `BackButton` in `Scaffold` just work.
 
-See and run [this example with a book list](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_2_two_screens).
+See and run [this example with a book list](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/2_two_screens).
 It has no URLs so far, we will get to them soon.
 
 ![Book List App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-no-urls.gif)
@@ -234,7 +234,7 @@ class MyRouteInformationParser extends PageStackRouteInformationParser {
 ```
 
 You use this parser instead of the ordinary `PageStackRouteInformationParser` in your app constructor.
-See and run [this example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_3_web)
+See and run [this example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/3_web)
 that adds URL support to the earlier book list example.
 
 ### Recommended PagePath Structure

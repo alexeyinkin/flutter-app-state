@@ -1,3 +1,20 @@
+## 0.6.4
+
+* Added `PageStackBloc.replaceWith` to declaratively navigate to a given path with two options:
+    - Replacing the stack unconditionally with `mode: PageStackMatchMode.none`.
+    - Preserving the states of pages that exist in both the old and the new stack with
+      `mode: PageStackMatchMode.keyOrNullPathNoGap`.
+* Added `mode` argument to `PageStackBloc.setConfiguration` to choose the match mode the same way
+  as in `replaceWith`.
+* Added `PageBlocCloseEvent.cause` to tell between the back button close, the bloc's own intention
+  to close, and a kick-out as a result of stack diff.
+* `BlocMaterialPage` is now non-abstract.
+* Fixed issue when page stack was allowed to be emptied and stayed defunct afterwards
+  [Issue 3](https://github.com/alexeyinkin/flutter-app-state/issues/3). The emptying operation
+  is now reverted.
+* Removed code duplication by handling all page removals in `PageStackBloc.handleRemoved()`.
+* Expand tests.
+
 ## 0.6.3
 
 * Renamed `PageBlocCloseEvent` to `PageBlocPopEvent` to align with `didPopNext` method.

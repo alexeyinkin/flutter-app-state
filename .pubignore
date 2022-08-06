@@ -28,6 +28,10 @@
 .packages
 build/
 
+*.mocks.dart
+/test/full_coverage_test.dart
+/coverage
+
 
 
 # The above was a copy of .gitignore.

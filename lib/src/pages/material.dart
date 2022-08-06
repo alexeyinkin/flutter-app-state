@@ -29,6 +29,11 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
   @override
   final completer = Completer<R?>();
 
+  bool _isDisposed = false;
+
+  @override
+  bool get isDisposed => _isDisposed;
+
   CAbstractMaterialPage({
     required super.child,
     ValueKey<String>? key,
@@ -40,5 +45,8 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
         );
 
   @override
-  void dispose() {}
+  @mustCallSuper
+  void dispose() {
+    _isDisposed = true;
+  }
 }
