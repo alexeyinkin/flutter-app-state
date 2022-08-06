@@ -7,3 +7,9 @@ extension ElementAtOrNull<E> on Iterable<E> {
     return elementAt(i);
   }
 }
+
+class Wrapper<T> {
+  T value;
+
+  Wrapper(this.value);
+}

@@ -41,8 +41,9 @@ class BooksStatefulPath extends PagePath {
 
   BooksStatefulPath({this.category})
       : super(
-            key: BooksStatefulPage.classFactoryKey,
-            state: {'category': category});
+          key: BooksStatefulPage.classFactoryKey,
+          state: {'category': category},
+        );
 
   static PagePath? tryParse(RouteInformation ri) {
     return ri.location == _location ? BooksStatefulPath() : null;

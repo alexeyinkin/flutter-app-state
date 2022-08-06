@@ -5,6 +5,8 @@ import 'package:meta/meta.dart';
 
 import '../blocs/page/bloc.dart';
 import '../blocs/page/path.dart';
+import '../blocs/page/pop_cause.dart';
+import '../blocs/page/pop_event.dart';
 
 /// The base page class for this package.
 ///
@@ -30,6 +32,11 @@ abstract class CAbstractPage<P extends PagePath, R> extends Page {
   P? get path;
 
   void dispose();
+
+  PageBlocPopEvent createPopEvent({
+    required R? data,
+    required PopCause cause,
+  });
 }
 
 typedef AbstractPage<R> = CAbstractPage<PagePath, R>;

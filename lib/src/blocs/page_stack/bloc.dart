@@ -180,8 +180,11 @@ class CPageStackBloc<P extends PagePath> {
   /// 2. Call didPopNext and onForegroundClosed on a bloc below.
   /// 3. Schedule the page disposal.
   @visibleForTesting
-  void handleRemoved<R>(CAbstractPage<P, dynamic>? pageBelow,
-      CAbstractPage<P, R> page, PageBlocPopEvent<R> event) {
+  void handleRemoved<R>(
+    CAbstractPage<P, dynamic>? pageBelow,
+    CAbstractPage<P, R> page,
+    PageBlocPopEvent<R> event,
+  ) {
     page.completer.complete(event.data);
     pageBelow?.bloc?.didPopNext(page, event);
     _schedulePageDisposal(page);
@@ -233,7 +236,7 @@ class CPageStackBloc<P extends PagePath> {
       handleRemoved(
         oldPages.elementAtOrNull(oldPages.length - 2),
         page,
-        const PageBlocPopEvent<Null>(data: null, cause: PopCause.backButton),
+        page.createPopEvent(data: null, cause: PopCause.backButton),
       );
 
       _firePathChange(_pages.last);
@@ -299,7 +302,7 @@ class CPageStackBloc<P extends PagePath> {
       handleRemoved(
         oldPages.elementAtOrNull(i - 1),
         page,
-        const PageBlocPopEvent<Null>(data: null, cause: PopCause.diff),
+        page.createPopEvent(data: null, cause: PopCause.diff),
       );
     }
   }

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../blocs/page/bloc.dart';
 import '../blocs/page/path.dart';
+import '../blocs/page/pop_cause.dart';
+import '../blocs/page/pop_event.dart';
+import '../util/util.dart';
 import 'abstract.dart';
 
 abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
@@ -29,10 +32,10 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
   @override
   final completer = Completer<R?>();
 
-  bool _isDisposed = false;
+  final _isDisposed = Wrapper<bool>(false);
 
   @override
-  bool get isDisposed => _isDisposed;
+  bool get isDisposed => _isDisposed.value;
 
   CAbstractMaterialPage({
     required super.child,
@@ -45,8 +48,15 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
         );
 
   @override
+  PageBlocPopEvent createPopEvent({
+    required R? data,
+    required PopCause cause,
+  }) =>
+      PageBlocPopEvent<R>(data: data, cause: cause);
+
+  @override
   @mustCallSuper
   void dispose() {
-    _isDisposed = true;
+    _isDisposed.value = true;
   }
 }
