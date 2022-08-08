@@ -48,7 +48,7 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
         );
 
   @override
-  PageBlocPopEvent createPopEvent({
+  PageBlocPopEvent<R> createPopEvent({
     required R? data,
     required PopCause cause,
   }) =>

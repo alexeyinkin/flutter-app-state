@@ -167,6 +167,23 @@ class CPageStackBloc<P extends PagePath> {
     }
   }
 
+  /// Pops all pages except the bottom one, top to bottom.
+  void popUntilBottom() {
+    final oldPages = [..._pages];
+    _pages.removeRange(1, _pages.length);
+
+    for (int i = oldPages.length; --i >= 1;) {
+      final page = oldPages[i];
+      handleRemoved(
+        oldPages[i - 1],
+        page,
+        page.createPopEvent(data: null, cause: PopCause.pageStackBloc),
+      );
+    }
+
+    _firePathChange(_pages.last);
+  }
+
   /// Called when a page is removed from the stack for any reason.
   ///
   /// Reasons are limited to:

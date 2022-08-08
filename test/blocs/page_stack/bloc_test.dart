@@ -18,8 +18,8 @@ void main() {
       fakeAsync((async) {
         dynamic complete0Result;
         dynamic complete1Result;
-        const event0 = PageBlocPopEvent(data: 0, cause: PopCause.bloc);
-        const event1 = PageBlocPopEvent(data: 1, cause: PopCause.bloc);
+        const event0 = PageBlocPopEvent(data: 0, cause: PopCause.pageBloc);
+        const event1 = PageBlocPopEvent(data: 1, cause: PopCause.pageBloc);
 
         final page0Bloc = mockPageBloc();
         final page0 = createBlocPage(page0Bloc);
@@ -49,7 +49,31 @@ void main() {
       });
     });
 
-    test('setConfiguration pops gone pages top to bottom', () {
+    test(
+        'popUntilBottom pops pages top to bottom, '
+        'with null data and correct cause', () {
+      final page0 = AltHomePage();
+      final page1 = BooksStatefulPage();
+      final page2 = BookPage(id: 1);
+
+      final bloc = _PopTestPageStackBloc(bottomPage: page0);
+      unawaited(bloc.push(page1));
+      unawaited(bloc.push(page2));
+
+      bloc.popUntilBottom();
+
+      expect(bloc.pages.length, 1);
+      expect(identical(bloc.calls[0].page, page2), true);
+      expect(bloc.calls[0].event.data, null);
+      expect(bloc.calls[0].event.cause, PopCause.pageStackBloc);
+      expect(identical(bloc.calls[1].page, page1), true);
+      expect(bloc.calls[1].event.data, null);
+      expect(bloc.calls[1].event.cause, PopCause.pageStackBloc);
+    });
+
+    test(
+        'setConfiguration pops gone pages top to bottom, '
+        'with null data and correct cause', () {
       final page0 = AltHomePage();
       final page1 = BooksStatefulPage();
       final page2 = BookPage(id: 1);
@@ -69,7 +93,11 @@ void main() {
 
       expect(bloc.pages.length, 2);
       expect(identical(bloc.calls[0].page, page2), true);
+      expect(bloc.calls[0].event.data, null);
+      expect(bloc.calls[0].event.cause, PopCause.diff);
       expect(identical(bloc.calls[1].page, page1), true);
+      expect(bloc.calls[1].event.data, null);
+      expect(bloc.calls[1].event.cause, PopCause.diff);
     });
 
     test(
@@ -152,7 +180,7 @@ void main() {
       await Future.delayed(Duration.zero);
       expect(bloc.calls.length, 1);
       expect(bloc.calls[0].event.data, data);
-      expect(bloc.calls[0].event.cause, PopCause.bloc);
+      expect(bloc.calls[0].event.cause, PopCause.pageBloc);
     });
 
     test('PageBloc.pop() on bottom does not pop', () async {

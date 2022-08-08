@@ -1,3 +1,12 @@
+## 0.6.5
+
+* Added `PageStackBloc.popUntilBottom()`, it uses the new `PopCause.pageStackBloc`.
+* `PageBlocPopEvent` is now always created with the correct `R` type. Before it had been
+* `const PageBlocPopEvent<Null>` for pops without data.
+* Improved test coverage.
+* Fix formatting.
+* Add comparison to auto_route and go_router to README.
+
 ## 0.6.4
 
 * Added `PageStackBloc.replaceWith` to declaratively navigate to a given path with two options:

@@ -1,3 +1,6 @@
+import '../page_stack/bloc.dart';
+import 'bloc.dart';
+
 enum PopCause {
   /// The back button was pressed, and the bloc did not prevent the pop.
   backButton,
@@ -6,6 +9,9 @@ enum PopCause {
   /// a configuration.
   diff,
 
-  /// The bloc initiated the pop.
-  bloc,
+  /// [PageBloc] initiated the pop.
+  pageBloc,
+
+  /// [PageStackBloc] initiated the pop.
+  pageStackBloc,
 }

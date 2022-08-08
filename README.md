@@ -4,12 +4,10 @@
 
 A bloc-based state management solution on top of Router API for larger apps.
 
-This is a routing library that competes with
-[auto_route](https://pub.dev/packages/auto_route),
-[go_router](https://pub.dev/packages/go_router),
-[beamer](https://pub.dev/packages/beamer),
-raw Router API implementation,
-and the old Navigator push-pop.
+This is a routing library. See how it compares to
+[auto_route](https://medium.com/p/41da1aa53146)
+and
+[go_router](https://medium.com/p/397316f30dcb).
 
 See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-state-examples).
 

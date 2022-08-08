@@ -59,9 +59,10 @@ class CPageBloc<P extends PagePath, R> {
   /// can be used as the modal dialog result.
   void pop([R? data]) {
     _eventsController.sink.add(
-      data == null
-          ? const PageBlocPopEvent(data: null, cause: PopCause.bloc)
-          : PageBlocPopEvent<R>(data: data, cause: PopCause.bloc),
+      PageBlocPopEvent<R>(
+        data: data,
+        cause: PopCause.pageBloc,
+      ),
     );
   }
 
@@ -71,9 +72,9 @@ class CPageBloc<P extends PagePath, R> {
   @nonVirtual
   void closeScreen() {
     _eventsController.sink.add(
-      const PageBlocPopEvent(
+      PageBlocPopEvent<R>(
         data: null,
-        cause: PopCause.bloc,
+        cause: PopCause.pageBloc,
       ),
     );
   }

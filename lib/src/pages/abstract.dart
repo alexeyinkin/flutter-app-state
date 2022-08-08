@@ -33,7 +33,10 @@ abstract class CAbstractPage<P extends PagePath, R> extends Page {
 
   void dispose();
 
-  PageBlocPopEvent createPopEvent({
+  /// Creates [PageBlocPopEvent].
+  ///
+  /// Useful for polymorphic creation of the event when [R] is not known.
+  PageBlocPopEvent<R> createPopEvent({
     required R? data,
     required PopCause cause,
   });
