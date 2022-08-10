@@ -1,3 +1,7 @@
+## 0.6.6
+
+* Updated example links.
+
 ## 0.6.5
 
 * Added `PageStackBloc.popUntilBottom()`, it uses the new `PopCause.pageStackBloc`.

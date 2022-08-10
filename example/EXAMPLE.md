@@ -4,7 +4,7 @@ The gallery of runnable examples is here: https://github.com/alexeyinkin/flutter
 
 This app does nothing.
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_1_min
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/1_min
 
 ![Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/minimal.png)
 
@@ -12,7 +12,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree
 
 ## 2. The Book List App Without URLs
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_2_two_screens
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/2_two_screens
 
 ![Book List No URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-no-urls.gif)
 
@@ -20,7 +20,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree
 
 ## 3. The Book List App With URLs
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_3_web
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/3_web
 
 ![Book List With URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-urls.gif)
 
@@ -28,7 +28,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree
 
 ## 4. Tabs with Independent Navigation Stacks
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_4_tabs
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/4_tabs
 
 ![Tabs with Independent Navigation Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/multiple-stacks.gif)
 
@@ -36,7 +36,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree
 
 ## 5. Receiving the Dialog Result after the App Restart
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_5_route_result
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/5_route_result
 
 ![Receiving the Dialog Result after the App Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/result-surviving-restart.gif)
 
@@ -44,6 +44,13 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree
 
 ## 6. Recovering Unsaved Input on Back and Forward Navigation
 
-Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/app_state_6_forward_recovery
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/6_forward_recovery
 
 ![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/recovering-unsaved-input.gif)
+
+
+## 7. Pushing one pop-up screen to any tab
+
+Runnable project: https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/7_any_tab
+
+![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/any-tab-anywhere.gif)
