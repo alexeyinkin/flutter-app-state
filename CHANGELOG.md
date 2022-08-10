@@ -1,3 +1,7 @@
+## 0.6.8
+
+* Added `PageStackRouterDelegate.observers`, `PageStackRouterDelegate.transitionDelegate`.
+
 ## 0.6.7
 
 * Added `PageStackBlocNavigator.observers`, `PageStackBlocNavigator.transitionDelegate`.

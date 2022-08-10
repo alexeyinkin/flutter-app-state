@@ -11,9 +11,15 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
     with
         ChangeNotifier,
         PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
+  final List<NavigatorObserver> observers;
   final PageStackBloc pageStackBloc;
+  final TransitionDelegate<dynamic> transitionDelegate;
 
-  PageStackRouterDelegate(this.pageStackBloc) {
+  PageStackRouterDelegate(
+    this.pageStackBloc, {
+    this.observers = const <NavigatorObserver>[],
+    this.transitionDelegate = const DefaultTransitionDelegate<dynamic>(),
+  }) {
     pageStackBloc.events.listen(_onPageStackEvent);
   }
 
@@ -29,6 +35,8 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
   Widget build(BuildContext context) {
     return PageStackBlocNavigator(
       bloc: pageStackBloc,
+      observers: observers,
+      transitionDelegate: transitionDelegate,
     );
   }
 
