@@ -34,7 +34,7 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
         + [Updating the URL Programmatically](#updating-the-url-programmatically)
     * [Redirecting a URL](#redirecting-a-url)
     * [Browser's Back and Forward Buttons](#browser-back-and-forward-buttons)
-    * [Recovering Unsaved Input on Back and Forward Navigation](#recovering-unsaved-input-on-back-and-forward-navigation)
+    * [Recovering Unsaved Input on Back and Forward Navigation](#recovering-unsaved-input-on-page-refresh-and-navigation)
 - [Multiple Tabs with Independent Stacks](#multiple-tabs-with-independent-stacks)
 - [Advanced Ways to Return Result](#advanced-ways-to-return-result)
     * [Push and Pop Type Safety at Compile Time](#push-and-pop-type-safety-at-compile-time)
@@ -449,15 +449,22 @@ with browser buttons:
 
 It all works for you automatically if you correctly set all pages' and `PagePath` keys.
 
-### Recovering Unsaved Input on Back and Forward Navigation
+### Recovering Unsaved Input on Page Refresh and Navigation
 
-Use case: In a multi-screen app, the user enters some text,
-then closes the screen without saving by ‘Back’ button.
-They then click ‘Forward’ and expect their input is still there.
+![Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-issue-108697-workaround/main/example/example.gif)
 
-![Recovering Unsaved Input](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/recovering-unsaved-input.gif)
+This package allows you to recover the state in many cases where it otherwise would be lost:
+1. Page refresh, including Ctrl-F5.
+2. Back and Forward navigation with browser buttons between your app pages.
+3. Back and Forward navigation away from your app that effectively restarts it.
 
-Read [this tutorial](https://medium.com/p/60c66938db34) on how this app is made.
+Flutter apps generally cannot do (1) and (3) because of
+[a bug in Flutter](https://github.com/flutter/flutter/issues/108697), but this package
+has a workaround for it. Actually the only way to lose the state is to copy the URL
+and re-open it in a new browser tab.
+
+To preserve the state, you add data fields to your `PagePath` classes, and then save and read them.
+Read [this tutorial](https://medium.com/p/60c66938db34) on how to do this.
 
 ## Multiple Tabs with Independent Stacks
 

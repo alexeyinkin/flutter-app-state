@@ -1,3 +1,9 @@
+## 0.6.9
+
+* Preserves the state on browser refresh button press by using https://pub.dev/packages/flutter_issue_108697_workaround
+* Renamed `PageStackBlocNavigator` to `PageStackNavigator`. A deprecated `typedef` was added
+  for backward compatibility.
+
 ## 0.6.8
 
 * Added `PageStackRouterDelegate.observers`, `PageStackRouterDelegate.transitionDelegate`.

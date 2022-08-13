@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_issue_108697_workaround/flutter_issue_108697_workaround.dart';
 import 'package:meta/meta.dart';
 
 import '../page/path.dart';
@@ -26,7 +27,8 @@ class PageStackRouteInformationParser
     RouteInformation routeInformation,
   ) async {
     return PageStackConfiguration.fromMapOrNull(
-          routeInformation.state as Map<String, dynamic>?,
+          apply108697Workaround(routeInformation).state
+              as Map<String, dynamic>?,
         ) ??
         await parsePageStackConfiguration(routeInformation);
   }
