@@ -99,7 +99,7 @@ class CPageBloc<P extends PagePath, R> {
   /// Called when Android back button is pressed with this page active.
   ///
   /// Override this to handle the event and to prevent the screen from closing.
-  /// The closing itself is done in [PageStackBlocNavigator] so this method
+  /// The closing itself is done in [PageStackNavigator] so this method
   /// only has to return the decision.
   ///
   /// Closing is not guaranteed. For instance, it is not closed

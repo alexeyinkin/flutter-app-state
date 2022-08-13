@@ -6,12 +6,12 @@ import '../models/back_pressed_result_enum.dart';
 import '../pages/bloc_material.dart';
 
 /// Builds a [Navigator] using [PageStackBloc]'s pages.
-class PageStackBlocNavigator extends StatelessWidget {
+class PageStackNavigator extends StatelessWidget {
   final PageStackBloc bloc;
   final List<NavigatorObserver> observers;
   final TransitionDelegate<dynamic> transitionDelegate;
 
-  const PageStackBlocNavigator({
+  const PageStackNavigator({
     required this.bloc,
     super.key,
     this.observers = const <NavigatorObserver>[],
@@ -77,3 +77,6 @@ class PageStackBlocNavigator extends StatelessWidget {
     }
   }
 }
+
+@Deprecated('Renamed to PageStackNavigator in v0.6.9')
+typedef PageStackBlocNavigator = PageStackNavigator;
