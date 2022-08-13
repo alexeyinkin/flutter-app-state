@@ -34,7 +34,7 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
         + [Updating the URL Programmatically](#updating-the-url-programmatically)
     * [Redirecting a URL](#redirecting-a-url)
     * [Browser's Back and Forward Buttons](#browser-back-and-forward-buttons)
-    * [Recovering Unsaved Input on Back and Forward Navigation](#recovering-unsaved-input-on-page-refresh-and-navigation)
+    * [Recovering Unsaved Input on Page Refresh and Navigation](#recovering-unsaved-input-on-page-refresh-and-navigation)
 - [Multiple Tabs with Independent Stacks](#multiple-tabs-with-independent-stacks)
 - [Advanced Ways to Return Result](#advanced-ways-to-return-result)
     * [Push and Pop Type Safety at Compile Time](#push-and-pop-type-safety-at-compile-time)
