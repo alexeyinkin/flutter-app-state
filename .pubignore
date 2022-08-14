@@ -37,3 +37,7 @@ build/
 # The above was a copy of .gitignore.
 # Additionally to it:
 /img/*
+/integration_test
+/example/*
+!/example/README.md
+/test_driver

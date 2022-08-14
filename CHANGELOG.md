@@ -1,3 +1,7 @@
+## 0.6.10
+
+* Added `PageStacksConfigurationChangedEvent`.
+
 ## 0.6.9
 
 * Preserves the state on browser refresh button press by using https://pub.dev/packages/flutter_issue_108697_workaround

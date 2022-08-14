@@ -4,6 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import '../page_stack/bloc.dart';
 import '../page_stack/event.dart';
 import 'configuration.dart';
+import 'configuration_changed_event.dart';
 import 'current_page_stack_changed_event.dart';
 import 'event.dart';
 import 'page_stack_event.dart';
@@ -39,6 +40,10 @@ class PageStacksBloc {
     }
 
     setCurrentStackKey(state.currentStackKey, fire: fire);
+
+    if (fire) {
+      _eventsController.add(const PageStacksConfigurationChangedEvent());
+    }
   }
 
   String? get currentStackKey => _currentStackKey;
