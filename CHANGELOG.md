@@ -1,3 +1,7 @@
+## 0.7.1
+
+* Moved the examples to the package's repository.
+
 ## 0.7.0
 
 Most of the references to BLoC were removed from the package to allow any implementation for
