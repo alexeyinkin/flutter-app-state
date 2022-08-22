@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../blocs/page/bloc.dart';
+import '../blocs/page/page_state_mixin.dart';
 import '../blocs/page/path.dart';
 import '../blocs/page/pop_cause.dart';
 import '../blocs/page/pop_event.dart';
 import '../util/util.dart';
 import 'abstract.dart';
 
-abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
-    implements CAbstractPage<P, R> {
+abstract class PAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
+    implements PAbstractPage<P, R> {
   final ValueKey<String>? _valueKey;
 
   @override
@@ -23,8 +23,13 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
   @override
   String? getFactoryKey() => _factoryKey ?? _valueKey?.value;
 
+  @Deprecated('Renamed to state in v0.7.0')
   @override
-  CPageBloc<P, R>? get bloc => null;
+  PPageStateMixin<P, R>? get bloc => null;
+
+  @override
+  // ignore: deprecated_member_use_from_same_package
+  PPageStateMixin<P, R>? get state => bloc;
 
   @override
   P? get path => null;
@@ -37,7 +42,7 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
   @override
   bool get isDisposed => _isDisposed.value;
 
-  CAbstractMaterialPage({
+  PAbstractMaterialPage({
     required super.child,
     ValueKey<String>? key,
     String? factoryKey,
@@ -48,11 +53,11 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
         );
 
   @override
-  PageBlocPopEvent<R> createPopEvent({
+  PagePopEvent<R> createPopEvent({
     required R? data,
     required PopCause cause,
   }) =>
-      PageBlocPopEvent<R>(data: data, cause: cause);
+      PagePopEvent<R>(data: data, cause: cause);
 
   @override
   @mustCallSuper
@@ -60,3 +65,7 @@ abstract class CAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
     _isDisposed.value = true;
   }
 }
+
+@Deprecated('Renamed in v0.7.0')
+typedef CAbstractMaterialPage<P extends PagePath, R>
+    = PAbstractMaterialPage<P, R>;

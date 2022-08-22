@@ -3,11 +3,11 @@ import '../../page/path.dart';
 import '../configuration.dart';
 import 'abstract.dart';
 
-class CNonePageStackConfigurationSetter<P extends PagePath>
-    extends CAbstractPageStackConfigurationSetter<P> {
+class PNonePageStackConfigurationSetter<P extends PagePath>
+    extends PAbstractPageStackConfigurationSetter<P> {
   @override
   void set({
-    required List<CAbstractPage<P, dynamic>> pages,
+    required List<PAbstractPage<P, dynamic>> pages,
     required PageStackConfiguration configuration,
     required void Function(PagePath) createAndPushPage,
   }) {

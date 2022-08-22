@@ -1,20 +1,23 @@
-import '../page_stack/bloc.dart';
+import '../page_stack/page_stack.dart';
 import 'event.dart';
 import 'pop_cause.dart';
 
-/// Emit this for [PageStackBloc] to remove and dispose the page.
+/// Emit this for [PageStack] to remove and dispose the page.
 ///
 /// The page could be anywhere in the stack as long as at least one other page
 /// is left in the stack afterwards.
-class PageBlocPopEvent<R> extends PageBlocEvent {
+class PagePopEvent<R> extends PageEvent {
   final R? data;
   final PopCause cause;
 
-  const PageBlocPopEvent({
+  const PagePopEvent({
     required this.data,
     required this.cause,
   });
 }
 
-@Deprecated('Renamed to PageBlocPopEvent')
-typedef PageBlocCloseEvent = PageBlocPopEvent;
+@Deprecated('Renamed to PagePopEvent')
+typedef PageBlocCloseEvent = PagePopEvent;
+
+@Deprecated('Renamed to PagePopEvent')
+typedef PageBlocPopEvent<R> = PagePopEvent<R>;

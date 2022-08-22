@@ -1,5 +1,5 @@
 import 'event.dart';
 
-class PageStacksConfigurationChangedEvent extends PageStacksBlocEvent {
+class PageStacksConfigurationChangedEvent extends PageStacksEvent {
   const PageStacksConfigurationChangedEvent();
 }

@@ -1,5 +1,5 @@
-import '../page_stack/bloc.dart';
-import 'bloc.dart';
+import '../page_stack/page_stack.dart';
+import 'page_state_mixin.dart';
 
 enum PopCause {
   /// The back button was pressed, and the bloc did not prevent the pop.
@@ -9,9 +9,16 @@ enum PopCause {
   /// a configuration.
   diff,
 
-  /// [PageBloc] initiated the pop.
-  pageBloc,
+  /// [PageStateMixin] initiated the pop.
+  page,
 
-  /// [PageStackBloc] initiated the pop.
-  pageStackBloc,
+  /// [PageStack] initiated the pop.
+  pageStack,
+  ;
+
+  @Deprecated('Use page')
+  static const pageBloc = page;
+
+  @Deprecated('Use pageStack')
+  static const pageStackBloc = pageStack;
 }

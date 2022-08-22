@@ -1,6 +1,6 @@
 import 'event.dart';
 
-class CurrentPageStackChangedEvent extends PageStacksBlocEvent {
+class CurrentPageStackChangedEvent extends PageStacksEvent {
   final String? oldKey;
   final String? newKey;
 

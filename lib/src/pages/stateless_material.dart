@@ -4,7 +4,7 @@ import '../blocs/page/path.dart';
 import 'material.dart';
 
 abstract class CStatelessMaterialPage<P extends PagePath, R>
-    extends CAbstractMaterialPage<P, R> {
+    extends PAbstractMaterialPage<P, R> {
   @override
   final P? path;
 

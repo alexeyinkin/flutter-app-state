@@ -2,9 +2,9 @@ import 'package:flutter/widgets.dart';
 
 import '../page/path.dart';
 import '../page_stack/configuration.dart';
-import 'bloc.dart';
+import 'page_stacks.dart';
 
-/// Used to restore [PageStacksBloc] state, can be serialized
+/// Used to restore [PageStacks] state, can be serialized
 /// for browser history.
 class PageStacksConfiguration {
   final Map<String, PageStackConfiguration> pageStackConfigurations;

@@ -1,18 +1,18 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/bloc.dart';
-import '../blocs/page_stack/bloc.dart';
+import '../blocs/page/page_state_mixin.dart';
+import '../blocs/page_stack/page_stack.dart';
 import '../models/back_pressed_result_enum.dart';
-import '../pages/bloc_material.dart';
+import '../pages/stateful_material.dart';
 
-/// Builds a [Navigator] using [PageStackBloc]'s pages.
+/// Builds a [Navigator] using [PPageStack.pages].
 class PageStackNavigator extends StatelessWidget {
-  final PageStackBloc bloc;
+  final PageStack stack;
   final List<NavigatorObserver> observers;
   final TransitionDelegate<dynamic> transitionDelegate;
 
   const PageStackNavigator({
-    required this.bloc,
+    required this.stack,
     super.key,
     this.observers = const <NavigatorObserver>[],
     this.transitionDelegate = const DefaultTransitionDelegate<dynamic>(),
@@ -23,7 +23,7 @@ class PageStackNavigator extends StatelessWidget {
     // TODO(alexeyinkin): Only rebuild on configuration change events,
     //  https://github.com/alexeyinkin/flutter-app-state/issues/7
     return StreamBuilder(
-      stream: bloc.events,
+      stream: stack.events,
       builder: (context, snapshot) => _buildOnChange(),
     );
   }
@@ -34,7 +34,7 @@ class PageStackNavigator extends StatelessWidget {
       // Pass the current copy of the pages list.
       // Otherwise (if passing `bloc.pages`) on update the navigator would
       // diff the new list with itself and would not show a newly pushed route.
-      pages: [...bloc.pages],
+      pages: [...stack.pages],
       transitionDelegate: transitionDelegate,
       onPopPage: (route, result) {
         // This is required by Flutter's internals to complete the pop future.
@@ -42,20 +42,20 @@ class PageStackNavigator extends StatelessWidget {
 
         final settings = route.settings;
 
-        if (settings is BlocMaterialPage) {
+        if (settings is StatefulMaterialPage) {
           // Ideally we want to await for bloc.onBackPressed to see if it
           // handled the event (so we ignore it) or not (so we propagate it).
           // But this callback is synchronous, so we always have to ignore it.
           // This means the app will never close on back button press.
           // TODO(alexeyinkin): Allow to close the app on back button,
           //  https://github.com/alexeyinkin/flutter-app-state/issues/8
-          _onBackButtonPressedInBloc(settings.bloc);
+          _onBackButtonPressedInStatefulPage(settings.state);
           return false; // Prevent the default pop.
         }
 
         if (settings is Page) {
-          // A page without bloc. It has no chance to override the behavior.
-          bloc.onBackPressed();
+          // A page without state. It has no chance to override the behavior.
+          stack.onBackPressed();
           return false; // Prevent the default pop.
         }
 
@@ -70,10 +70,10 @@ class PageStackNavigator extends StatelessWidget {
     );
   }
 
-  Future<void> _onBackButtonPressedInBloc(PageBloc bloc) async {
-    final result = await bloc.onBackPressed();
+  Future<void> _onBackButtonPressedInStatefulPage(PageStateMixin state) async {
+    final result = await state.onBackPressed();
     if (result == BackPressedResult.close) {
-      bloc.pop();
+      state.pop();
     }
   }
 }

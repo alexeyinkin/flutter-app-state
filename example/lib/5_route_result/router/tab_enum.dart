@@ -1,0 +1,4 @@
+enum TabEnum {
+  books,
+  about,
+}

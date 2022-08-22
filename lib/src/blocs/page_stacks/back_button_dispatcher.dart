@@ -1,24 +1,27 @@
 import 'package:flutter/widgets.dart';
 
 import '../../models/back_pressed_result_enum.dart';
-import 'bloc.dart';
+import 'page_stacks.dart';
 
-/// The back button dispatcher for [PageStacksBloc],
+/// The back button dispatcher for [PageStacks],
 /// directs requests to the current bloc in the stack.
 class PageStacksBackButtonDispatcher extends RootBackButtonDispatcher {
-  final PageStacksBloc pageStacksBloc;
+  final PageStacks pageStacks;
 
-  PageStacksBackButtonDispatcher(this.pageStacksBloc);
+  @Deprecated('Renamed to pageStacks in v0.7.0')
+  PageStacks get pageStacksBloc => pageStacks;
+
+  PageStacksBackButtonDispatcher(this.pageStacks);
 
   @override
   Future<bool> invokeCallback(Future<bool> defaultValue) async {
-    final pageStackBloc = pageStacksBloc.currentStackBloc;
+    final stack = pageStacks.currentStack;
 
-    if (pageStackBloc == null) {
+    if (stack == null) {
       return false; // Not handled, pass farther.
     }
 
-    final result = await pageStackBloc.onBackPressed();
+    final result = await stack.onBackPressed();
     return result == BackPressedResult.keep;
   }
 }

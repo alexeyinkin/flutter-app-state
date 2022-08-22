@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 
 import 'common.mocks.dart';
 
-@GenerateMocks([CPageBloc])
+@GenerateMocks([PPageState])
 class _MyGenerateMocks {}
 
 class HomePath extends PagePath {
@@ -57,12 +57,12 @@ class BooksStatefulPath extends PagePath {
 }
 
 class BooksStatefulPage
-    extends BlocMaterialPage<dynamic, BooksStatefulPageBloc> {
+    extends StatefulMaterialPage<dynamic, BooksStatefulPageBloc> {
   static const classFactoryKey = 'Books';
 
   BooksStatefulPage()
       : super(
-          bloc: BooksStatefulPageBloc(),
+          state: BooksStatefulPageBloc(),
           key: const ValueKey(classFactoryKey),
           createScreen: (b) => Text('$classFactoryKey-${b.category}'),
         );
@@ -162,19 +162,19 @@ class AltHomePage extends StatelessMaterialPage {
         );
 }
 
-class TestPageBlocEvent extends PageBlocEvent {
-  const TestPageBlocEvent();
+class TestPageEvent extends PageEvent {
+  const TestPageEvent();
 }
 
-PageBloc<R> mockPageBloc<R>() {
-  final result = MockCPageBloc<PagePath, R>();
+PageStateMixin<R> mockPageState<R>() {
+  final result = MockPPageState<PagePath, R>();
   when(result.events)
-      .thenAnswer((_) => StreamController<PageBlocEvent>().stream);
+      .thenAnswer((_) => StreamController<PageEvent>().stream);
   return result;
 }
 
-BlocMaterialPage createBlocPage(CPageBloc bloc) {
-  return CBlocMaterialPage(bloc: bloc, createScreen: (b) => Text('$b'));
+PStatefulMaterialPage createStatefulPage(PPageStateMixin state) {
+  return PStatefulMaterialPage(state: state, createScreen: (b) => Text('$b'));
 }
 
 class CommonPageStackRouteInformationParser

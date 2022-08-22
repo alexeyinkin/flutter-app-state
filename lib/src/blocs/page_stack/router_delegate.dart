@@ -2,25 +2,28 @@ import 'package:flutter/widgets.dart';
 
 import '../../widgets/navigator.dart';
 import '../page/path_changed_event.dart';
-import 'bloc.dart';
 import 'configuration.dart';
 import 'event.dart';
 import 'page_event.dart';
+import 'page_stack.dart';
 
 class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
     with
         ChangeNotifier,
         PopNavigatorRouterDelegateMixin<PageStackConfiguration> {
   final List<NavigatorObserver> observers;
-  final PageStackBloc pageStackBloc;
+  final PageStack pageStack;
   final TransitionDelegate<dynamic> transitionDelegate;
 
+  @Deprecated('Renamed to pageStack in v0.7.0')
+  PageStack get pageStackBloc => pageStack;
+
   PageStackRouterDelegate(
-    this.pageStackBloc, {
+    this.pageStack, {
     this.observers = const <NavigatorObserver>[],
     this.transitionDelegate = const DefaultTransitionDelegate<dynamic>(),
   }) {
-    pageStackBloc.events.listen(_onPageStackEvent);
+    pageStack.events.listen(_onPageStackEvent);
   }
 
   @override
@@ -28,13 +31,13 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
 
   @override
   PageStackConfiguration? get currentConfiguration {
-    return pageStackBloc.getConfiguration();
+    return pageStack.getConfiguration();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageStackNavigator(
-      bloc: pageStackBloc,
+      stack: pageStack,
       observers: observers,
       transitionDelegate: transitionDelegate,
     );
@@ -42,12 +45,12 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
 
   @override
   Future<void> setNewRoutePath(PageStackConfiguration configuration) async {
-    return pageStackBloc.setConfiguration(configuration);
+    return pageStack.setConfiguration(configuration);
   }
 
-  void _onPageStackEvent(PageStackBlocEvent event) {
-    if (event is PageStackPageBlocEvent) {
-      if (event.pageBlocEvent is PageBlocPathChangedEvent) {
+  void _onPageStackEvent(PageStackEvent event) {
+    if (event is PageStackPageEvent) {
+      if (event.pageEvent is PagePathChangedEvent) {
         notifyListeners();
       }
     }

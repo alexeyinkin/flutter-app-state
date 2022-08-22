@@ -12,12 +12,12 @@ void main() {
         'null path matches any page, '
         'drops mismatched, '
         'creates mismatched', () {
-      final setter = CKeyOrNullPathNoGapPageStackConfigurationSetter();
+      final setter = PKeyOrNullPathNoGapPageStackConfigurationSetter();
       final page0 = HomePage();
       final page1 = BooksStatefulPage();
       final page2 = BookPage(id: 1);
       final page3 = BooksStatefulPage();
-      final pages = <CAbstractPage>[page0, page1, page2, page3];
+      final pages = <PAbstractPage>[page0, page1, page2, page3];
       const category1 = 'changed1';
       const category2 = 'changed2';
       final inPaths = [
@@ -37,7 +37,7 @@ void main() {
       expect(pages.length, 2);
       expect(identical(pages[0], page0), true);
       expect(identical(pages[1], page1), true);
-      expect(page1.bloc.category, category1);
+      expect(page1.state.category, category1);
       expect((outPaths[0] as BookPath).id, 2);
       expect((outPaths[1] as BooksStatefulPath).category, category2);
     });

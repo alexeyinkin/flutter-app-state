@@ -1,9 +1,9 @@
 import '../../pages/abstract.dart';
 import '../page/path.dart';
-import 'bloc.dart';
+import 'page_stack.dart';
 
-/// How to match [CAbstractPage] objects with [PagePath] objects
-/// in [CPageStackBloc].`setConfiguration` and `replacePath`.
+/// How to match [PAbstractPage] objects with [PagePath] objects
+/// in [PPageStack.setConfiguration] and [PPageStack.replacePath].
 enum PageStackMatchMode {
   /// Do not attempt to match. Replace all pages.
   none,

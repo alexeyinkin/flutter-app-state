@@ -2,7 +2,7 @@
 [![GitHub](https://img.shields.io/github/license/alexeyinkin/flutter-app-state)](https://github.com/alexeyinkin/flutter-app-state/blob/main/LICENSE)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/alexeyinkin/flutter-app-state?style=flat-square)](https://www.codefactor.io/repository/github/alexeyinkin/flutter-app-state)
 
-A bloc-based state management solution on top of Router API for larger apps.
+A state management solution on top of Router API for larger apps.
 
 This is a routing library. See how it compares to
 [auto_route](https://medium.com/p/41da1aa53146)
@@ -12,7 +12,7 @@ and
 See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-state-examples).
 
 - [Unique Features](#unique-features)
-    * [Blocs First](#blocs-first)
+    * [States First](#states-first)
     * [Push-pop Type Safety at Compile Time](#push-pop-type-safety-at-compile-time)
     * [Stack Recovery from URL](#stack-recovery-from-url)
     * [Dialog Awaiting Survives the App Restart](#dialog-awaiting-survives-the-app-restart)
@@ -28,12 +28,14 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
     * [Recommended PagePath Structure](#recommended-pagepath-structure)
     * [Creating the Page Objects](#creating-the-page-objects)
     * [Updating the Address Bar](#updating-the-address-bar)
-        + [Page Without Bloc](#page-without-bloc)
-        + [Page With Bloc](#page-with-bloc)
+        + [Page Without State](#page-without-state)
+        + [Page With State](#page-with-state)
         + [Page Without URL](#page-without-url)
         + [Updating the URL Programmatically](#updating-the-url-programmatically)
     * [Redirecting a URL](#redirecting-a-url)
-    * [Browser's Back and Forward Buttons](#browser-back-and-forward-buttons)
+        + [Option 1. Single Class](#option-1-single-class)
+        + [Option 2. Multiple Classes](#option-2-multiple-classes)
+    * [Browser Back and Forward Buttons](#browser-back-and-forward-buttons)
     * [Recovering Unsaved Input on Page Refresh and Navigation](#recovering-unsaved-input-on-page-refresh-and-navigation)
 - [Multiple Tabs with Independent Stacks](#multiple-tabs-with-independent-stacks)
 - [Advanced Ways to Return Result](#advanced-ways-to-return-result)
@@ -43,16 +45,19 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
 
 ## Unique Features
 
-### Blocs First
+### States First
 
-In the core there is a stack of Page Blocs instead of routes or widgets.
-These Blocs are then wrapped into widgets to form the navigator's stack.
+Instead of routes or widgets, in the core there is a stack of stateful objects
+(Blocs, ChangeNotifiers, or anything else, collectively referred to as *page states*
+as opposed to *widget states*).
+This package translates navigation intents to operations on those.
+The page states are then wrapped into widgets to form the navigator's stack.
 This simplifies state management: no need for providers,
 stateful widgets, manual bloc creation and disposal, or `BuildContext`.
 
 ### Push-pop Type Safety at Compile Time
 
-Page Blocs are typed and can only pop what is allowed.
+All state objects are typed and can only pop what is allowed.
 And the Page entry you push to the stack is also typed, so your awaited type is also
 guaranteed.
 
@@ -66,49 +71,50 @@ path segments.
 
 ### Dialog Awaiting Survives the App Restart
 
-Blocs listen to events from other blocs above them. When the top bloc pops, its result is passed
-to `didPopNext` method of a bloc under it. So you get the result without awaiting a future.
-If you type in `/books/123/rate` and close the dialog by rating a book, the book details bloc
+Page states listen to events from other page states above them. When the top one pops, its result is passed
+to `didPopNext` method of the page state under it. So you get the result without awaiting a future.
+If you type in `/books/123/rate` and close the dialog by rating a book, the book details page state
 will get the rate without any future. See and run
 [the license dialog example](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/5_route_result).
 
 ## Architecture
 
-The main state unit is `PageStackBloc`. You normally create it as a global object
+The main state unit is `PageStack`. You normally create it as a global object
 available to all code, or you provide it with [get_it](https://pub.dev/packages/get_it).
 
 It contains the stack at runtime:
 
-![PageStackBloc](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-stack-bloc.png)
+![PageStack](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-stack.png)
 
 For each page, there are 3 main units:
 
-- **PageBloc**.
+- **Page State**.
   This is the heart of a page during its life cycle.
+  It can be any object with `PageStateMixin`:
+  a [BLoC](https://pub.dev/packages/bloc),
+  a [ChangeNotifier](https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html),
+  or a plain custom class.
   If your screen was a `StatefulWidget` in the traditional architecture,
-  then `PageBloc` plays the role of its `State`.
+  then the page state with this mixin plays the role of its `State`.
   It contains everything to preserve so the screen itself can be a stateless widget.
-  However, `PageBloc` is richer than a `State`.
-  It can produce a stream of output as
-  [the purpose of BLoC](https://docs.flutter.dev/development/data-and-backend/state-mgmt/options#bloc--rx) suggests.
-  It is also aware of the page stacking and can handle events related to it.
+  However, `PageStateMixin` is richer than a screen's `State`.
+  It is aware of the page stacking and can handle events related to it.
 - **Screen**.
-  Most often this is just a stateless widget with `PageBloc` as the single argument.
+  Most often this is just a stateless widget with your page state as the single argument.
 - **Page**.
   `Navigator` in Flutter accepts the list of `Page` objects to maintain
   the stack of routes that are displayed.
-  So `Page` is a necessary adapter for the pair of bloc and screen to show in the app.
+  So `Page` is a necessary adapter for the pair of the state and the screen to show in the app.
 
 These three together are collectively referred to as a 'page' (lowercase) to distinguish it from `Page` class.
 
 Zooming in, this is how they interact:
 
-![Page, PageBloc, Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-bloc-screen.png)
+![Page, Page State, Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-state-screen.png)
 
 ## The Bare Minimal App
 
-This app has one screen and no navigation. It even has no page bloc, since it has no state and
-the blocs are optional.
+This app has one screen and no navigation. It even has no page state, since it has nothing to preserve.
 See and run [the example project](https://github.com/alexeyinkin/flutter-app-state-examples/tree/main/lib/1_min/main.dart).
 
 ![The Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/minimal.png)
@@ -117,8 +123,8 @@ See and run [the example project](https://github.com/alexeyinkin/flutter-app-sta
 import 'package:app_state/app_state.dart';
 import 'package:flutter/material.dart';
 
-final pageStackBloc = PageStackBloc(bottomPage: HomePage());
-final _routerDelegate = PageStackRouterDelegate(pageStackBloc);
+final pageStack = PageStack(bottomPage: HomePage());
+final _routerDelegate = PageStackRouterDelegate(pageStack);
 
 void main() => runApp(MyApp());
 
@@ -150,10 +156,10 @@ class MyApp extends StatelessWidget {
 
 ### Pushing
 
-To push a screen, you create its `Page` object and `push` it into a `PageStackBloc`:
+To push a screen, you create its `Page` object and `push` it into a `PageStack`:
 
 ```dart
-final result = await pageStacksBloc.push(
+final result = await pageStack.push(
   BookDetailsPage(bookId: id),
 );
 ```
@@ -169,14 +175,14 @@ It has no URLs so far, we will get to them soon.
 
 ### Programmatic Popping
 
-To pop a page, call `pop()` on its bloc with an optional return value:
+To pop a page, call `pop()` on its state with an optional return value:
 ```dart
-onPressed: () => bloc.pop(result);
+onPressed: () => state.pop(result);
 ```
 
 ### Overriding the Back Button
 
-In your bloc, override `onBackPressed()`:
+In your state, override `onBackPressed()`:
 
 ```dart
 @override
@@ -191,11 +197,11 @@ Future<BackPressedResult> onBackPressed() {
 ### Page Keys
 
 Each page in a stack must have a unique key. If you push a page with an existing key,
-the `onDuplicateKey` argument of `pop` determines what to do. It can:
+the `onDuplicateKey` argument of `push` determines what to do. It can:
 
 - Bring the older page up and drop the new page (the default).
 - Drop the older page and show the new one.
-- Raise an exception.
+- Throw an exception.
 
 Pages of the same class may have different keys. In a social app, you may have a user page
 with the user ID in the key. This allows you to show multiple user profiles in the stack,
@@ -260,12 +266,7 @@ class BookDetailsPath extends PagePath {
     final matches = _regExp.firstMatch(ri.location ?? '');
     if (matches == null) return null;
 
-    final bookId = int.tryParse(matches[1] ?? '');
-
-    if (bookId == null) {
-      return null; // Will never get here with present _regExp.
-    }
-
+    final bookId = int.tryParse(matches[1] ?? '') ?? (throw Error());
     return BookDetailsPath(
       bookId: bookId,
     );
@@ -317,10 +318,10 @@ AbstractPage? createPage(
 }
 ```
 
-Then pass it to your `PageStackBloc`:
+Then pass it to your `PageStack`:
 
 ```dart
-final pageStackBloc = PageStackBloc(
+final pageStack = PageStack(
   bottomPage: BookListPage(),
   createPage: createPage,
 );
@@ -364,8 +365,8 @@ a `PagePath` object to the framework so it updates the address bar from it.
 
 ![Emitting PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/emitting-page-path.png)
 
-#### Page Without Bloc
-For a page without bloc, you hardcode a `PagePath` like in the snippet above.
+#### Page Without State
+For a page without state, you hardcode a `PagePath` like in the snippet above.
 
 ```dart
 super(
@@ -376,9 +377,9 @@ super(
 
 When this page is pushed, that `PagePath.location` ends up in the address bar.
 
-#### Page With Bloc
-A page with bloc delegates this to the bloc for higher flexibility.
-Override the `PageBloc.path` getter:
+#### Page With State
+A page with state delegates this to the state for higher flexibility.
+Override the `PageStateMixin.path` getter:
 
 ```dart
 @override
@@ -387,7 +388,7 @@ BookListPath get path => const BookListPath();
 
 #### Page Without URL
 The address bar content is always taken from the highest page in the stack that has non-`null`
-`PagePath`, with or without bloc. For minor dialogs that should not affect the address bar
+`PagePath`, with or without state. For minor dialogs that should not affect the address bar
 and should not get to the browser history, just do not introduce any path classes.
 
 #### Updating the URL Programmatically
@@ -397,7 +398,7 @@ in a single screen:
 
 ![Tree Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/tree-navigation.gif)
 
-What gets updated is its bloc. A bloc can emit a new `PagePath` at any time.
+What gets updated is its state. A state can emit a new `PagePath` at any time.
 For this, call its `emitPathChanged()` method.
 This will call the `path` getter for the actual path to propagate.
 
@@ -425,7 +426,7 @@ This is useful for:
 
 Back and Forward buttons in the browser work automatically. Unlike the Android back button,
 these buttons traverse the browser's history. The following is happening on any navigation
-with browser buttons:
+with the browser buttons:
 
 1. **`RouteInformationParser`** is called with a URL to parse `PagePath` object from it.
    This is exactly like when the app starts.
@@ -436,16 +437,16 @@ with browser buttons:
    This is how [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API)
    works in JavaScript, nicely abstracted by Flutter.
    `PageStackRouteInformationParser` detects this and skips the URL parsing.
-3. `PageStackBloc.setConfiguration()` is called with all pages' states recovered into maps.
+3. `PageStack.setConfiguration()` is called with all pages' states recovered into maps.
    The current pages in the stack are diffed against that recovered state.
    Unchanged pages are not affected, unwanted pages are popped, and new pages are created
-   using the `createPage` factory you provided when creating this bloc. This is why `createPage`
+   using the `createPage` factory you provided when creating this stack. This is why `createPage`
    gets a map and not a `PagePath` object.
-4. `PageStckBloc` emits an event to rebuild any navigator listening to it.
-   This is usually `PageStackBlocNavigator` created for you by the default `PageStackRouterDelegate`
+4. `PageStck` emits an event to rebuild any navigator listening to it.
+   This is usually `PageStackNavigator` created for you by the default `PageStackRouterDelegate`
    you passed to the app constructor.
 5. The `Navigator` then runs its own diff on pages to update the routes that actually show
-   the screen widgets. This way you get the updated UI.
+   the screen widgets, this is Flutter's built-in. This way you get the updated UI.
 
 It all works for you automatically if you correctly set all pages' and `PagePath` keys.
 
@@ -454,7 +455,7 @@ It all works for you automatically if you correctly set all pages' and `PagePath
 ![Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-issue-108697-workaround/main/example/example.gif)
 
 This package allows you to recover the state in many cases where it otherwise would be lost:
-1. Page refresh, including Ctrl-F5.
+1. Page refresh, including `Ctrl-F5`.
 2. Back and Forward navigation with browser buttons between your app pages.
 3. Back and Forward navigation away from your app that effectively restarts it.
 
@@ -481,10 +482,10 @@ Read [this tutorial](https://medium.com/p/cfb52d035da6) on how this app is made.
 
 ### Push and Pop Type Safety at Compile Time
 
-`PageBloc` and `BlocMaterialPage` are typed by a return type `R`:
+`PageStateMixin` and `StatefulMaterialPage` are typed by a return type `R`:
 
-- `PageBloc<R>`
-- `BlocMaterialPage<R, B extends PageBloc<R>>`
+- `PageStateMixin<R>`
+- `StatefulMaterialPage<R, B extends PageStateMixin<R>>`
 
 In most examples we ignore those types for faster learning, but in production
 you always specify the return type even if it is `void`.
@@ -492,16 +493,16 @@ you always specify the return type even if it is `void`.
 If you await the `push` call, the result is inferred with that type:
 
 ```dart
-class InputPageBloc extends PageBloc<int> { /* ... */ }
-class InputPage extends BlocMaterialPage<int, InputPageBloc> { /* ... */ }
+class InputPageState with PageStateMixin<int> { /* ... */ }
+class InputPage extends StatefulMaterialPage<int, InputPageState> { /* ... */ }
 
-final result = await pageStackBloc.push(InputPage()); // result is inferred as int.
+final result = await pageStack.push(InputPage()); // result is inferred as int.
 ```
 
-When you `pop` the result from the bloc, you can only `pop` that exact type,
+When you `pop` the result from the state, you can only `pop` that exact type,
 otherwise it will not build.
 
-And your `Page` can only have a bloc of the same return type, otherwise it will not build.
+And your `Page` can only have a state of the same return type, otherwise it will not build.
 
 ### Receiving the Dialog Result after the App Restart
 
@@ -517,18 +518,18 @@ This cannot be done by mere awaiting of the pushed page. When the app restarts,
 even if we recover the page stack, we create the stack in the factory, so the bottom page
 has no future to await.
 
-For this, we employ the alternative way to receive the result. In the bottom page bloc,
+For this, we employ the alternative way to receive the result. In the bottom page state,
 override `didPopNext`:
 
 ```dart
 @override
-void didPopNext(AbstractPage page, PageBlocCloseEvent event) {
+void didPopNext(AbstractPage page, PagePopEvent event) {
   print('didPopNext: ${event.data}');
 }
 ```
 
-This way the compiler still makes sure the bloc pops with the right type, but the `event.data`
-is not type-checked by the receiver. This is because a bloc can push pages of different classes that produce different
+This way the compiler still makes sure the state pops with the right type, but the `event.data`
+is not type-checked by the receiver. This is because a state can push pages of different classes that produce different
 result types, but they all are collected in this method.
 
 See [this tutorial](https://medium.com/p/811acedc5214) with more details and the link to the full runnable example.
@@ -545,9 +546,8 @@ Do you like this package? Do not buy me a coffee, I don't drink it. Here is what
 
 * **Info Help**:
     * **I need a Comparison** to
-      [auto_route](https://pub.dev/packages/auto_route),
-      [go_router](https://pub.dev/packages/go_router),
       [beamer](https://pub.dev/packages/beamer),
+      [routemaster](https://pub.dev/packages/routemaster),
       raw Router API implementation,
       and the old Navigator push-pop. You can write an article or at least provide me with points
       on how they compare, what they could not do for you, what is too hard with them,
@@ -555,12 +555,14 @@ Do you like this package? Do not buy me a coffee, I don't drink it. Here is what
       My email is here: https://pub.dev/publishers/ainkin.com/packages
     * **Send me your project link** so I can list it among users to have a richer gallery of examples.
       Get a free ad from me.
-      If it is a proprietary website or app, people will see what is possible. If it is open-source,
+      If it is a proprietary website or app, people will see what is possible to do with the package.
+      And if it is open-source,
       it will get more attention here and gain more users.
     * **Reports an Issue** if you find anything wrong.
 
 * **Program**:
-    * **Code Generator**. This package needs one to generate `Page` and `PagePath` classes.
+    * **Code Generator**. This package needs one to generate `Page` and `PagePath` classes,
+      a page factory and `PagePath` parsing chain.
       You can design or implement it.
     * **Tests**. You can cover it.
     * **Other PRs**. Please share your idea in an issue first.

@@ -31,3 +31,6 @@ build/
 *.mocks.dart
 /test/full_coverage_test.dart
 /coverage
+
+.flutter-plugins
+.flutter-plugins-dependencies

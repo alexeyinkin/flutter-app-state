@@ -1,12 +1,14 @@
 import 'package:flutter/widgets.dart';
 
 import '../../models/back_pressed_result_enum.dart';
-import 'bloc.dart';
+import 'page_stack.dart';
 
 class PageStackBackButtonDispatcher extends RootBackButtonDispatcher {
-  final PageStackBloc pageStackBloc;
+  final PageStack pageStack;
 
-  PageStackBackButtonDispatcher(this.pageStackBloc);
+  PageStack get pageStackBloc => pageStack;
+
+  PageStackBackButtonDispatcher(this.pageStack);
 
   @override
   Future<bool> invokeCallback(Future<bool> defaultValue) async {

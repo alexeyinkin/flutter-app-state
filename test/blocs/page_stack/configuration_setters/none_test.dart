@@ -7,7 +7,7 @@ import '../../../common/common.dart';
 void main() {
   group('CNonePageStackConfigurationSetter', () {
     test('cleans pages, sets new non-null paths', () {
-      final setter = CNonePageStackConfigurationSetter();
+      final setter = PNonePageStackConfigurationSetter();
       final page0 = HomePage();
       final pages = [page0];
       const inPaths = [HomePath(), null, AltHomePath()];

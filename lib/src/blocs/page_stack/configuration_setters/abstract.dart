@@ -2,9 +2,9 @@ import '../../../pages/abstract.dart';
 import '../../page/path.dart';
 import '../configuration.dart';
 
-abstract class CAbstractPageStackConfigurationSetter<P extends PagePath> {
+abstract class PAbstractPageStackConfigurationSetter<P extends PagePath> {
   void set({
-    required List<CAbstractPage<P, dynamic>> pages,
+    required List<PAbstractPage<P, dynamic>> pages,
     required PageStackConfiguration configuration,
     required void Function(PagePath) createAndPushPage,
   });

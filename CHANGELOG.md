@@ -1,3 +1,58 @@
+## 0.7.0
+
+Most of the references to BLoC were removed from the package to allow any implementation for
+state management:
+custom BLoC, BLoC or Cubit from [the bloc package](https://pub.dev/packages/bloc),
+`ChangeNotifier`, or anything else. Deprecated `typedef`s to the older classes and
+deprecated aliases to older members were added to soften the change.
+
+This is a short-lived major version to migrate from those deprecated API to the new one
+but to still be able to run your app in the process. Every deprecation in this version
+is scheduled for removal in v0.8.0.
+
+* **BREAKING:** While removing references to BLoC, named arguments to some constructors and methods
+  could not be easily backed by anything backward compatible, and they were hard-renamed:
+    * `PageStackPageBlocEvent`:
+        * was renamed to `PageStackPageEvent`.
+        * `bloc` was changed to `PageStateMixin state`.
+        * `pageBlocEvent` was renamed to `pageEvent`.
+    * `PageStacksPageStackBlocEvent`:
+        * was renamed to `PageStacksStackEvent`.
+        * `bloc` was renamed to `stack`.
+        * `pageStackBlocEvent` was renamed to `pageStackEvent`.
+    * `MaterialPageStacksRouterDelegate.pageStacksBloc` was changed from a named constructor
+       argument to a positional one and renamed to `pageStacks`.
+    * `PageStackNavigator.bloc` was renamed to `stack`.
+* **BREAKING:** `PageStack.pages` is now an `UnmodifiableListView` and not the actual list.
+* Renamings backed by deprecated `typedef`s and member aliases that are thus non-breaking:
+    * `PageBloc` was changed to `PageStateMixin` mixin. To continue using
+      custom blocs as in the previous versions, mix it in with `with` keyword
+      instead of extending `PageBloc`. The newly deprecated `PageBloc`
+      is changed to mix in this mixin.
+    * `PageBlocEvent` was renamed to `PageEvent`.
+    * `PageBlocPathChangedEvent` was renamed to `PagePathChangedEvent`.
+    * In `enum PopCause`:
+        * `pageBloc` was renamed to `page`.
+        * `pageStackBloc` was renamed to `pageStack`.
+    * `PageBlocPopEvent` was renamed to `PagePopEvent`.
+    * `PageStackBackButtonDispatcher.pageStackBloc` was renamed to `pageStack`.
+    * `PageStacksBackButtonDispatcher.pageStacksBloc` was renamed to `pageStacks`.
+    * `PageStackBlocEvent` was renamed to `PageStackEvent`.
+    * `PageStackRouterDelegate.pageStackBloc` was renamed to `pageStack`.
+    * `PageStacksBloc`:
+        * was renamed to `PageStacks`.
+        * `currentStackBloc` was renamed to `currentStack`.
+    * `PageStacksBlocEvent` was renamed to `PageStacksEvent`.
+    * `PageStacksRouterDelegate.pageStacksBloc` was renamed to `pageStacks`.
+    * `CAbstractPage.bloc` was changed to `PageStateMixin state`.
+* `PageStackEvent` now has type parameter `<P extends PagePath>`.
+* `PageState` class is added as the default class that uses `PageStateMixin`.
+* All classes using `C` prefix were changed to `P` prefix. Deprecated `typedef`s added for
+  backward compatibility. That prefix was historical
+  when the term 'configuration' was used instead of 'path'. The new `P` stands for 'path'.
+  These classes are meant for apps that have a common superclass under `PagePath`.
+  All other apps should use the same classes without prefixes.
+
 ## 0.6.10
 
 * Added `PageStacksConfigurationChangedEvent`.

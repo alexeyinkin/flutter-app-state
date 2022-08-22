@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'bloc.dart';
 import 'configuration.dart';
+import 'page_stacks.dart';
 
 abstract class PageStacksRouterDelegate
     extends RouterDelegate<PageStacksConfiguration>
@@ -10,21 +10,24 @@ abstract class PageStacksRouterDelegate
         PopNavigatorRouterDelegateMixin<PageStacksConfiguration> {
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
-  final PageStacksBloc pageStacksBloc;
+  final PageStacks pageStacks;
 
-  PageStacksRouterDelegate(this.pageStacksBloc) {
+  @Deprecated('Renamed to pageStacks in v0.7.0')
+  PageStacks get pageStacksBloc => pageStacks;
+
+  PageStacksRouterDelegate(this.pageStacks) {
     // TODO(alexeyinkin): Filter events, do not fire on all,
     //  https://github.com/alexeyinkin/flutter-app-state/issues/6
-    pageStacksBloc.events.listen((e) => notifyListeners());
+    pageStacks.events.listen((e) => notifyListeners());
   }
 
   @override
   PageStacksConfiguration? get currentConfiguration {
-    return pageStacksBloc.getConfiguration();
+    return pageStacks.getConfiguration();
   }
 
   @override
   Future<void> setNewRoutePath(PageStacksConfiguration configuration) async {
-    return pageStacksBloc.setConfiguration(configuration);
+    return pageStacks.setConfiguration(configuration);
   }
 }

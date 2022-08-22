@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'bloc.dart';
 import 'router_delegate.dart';
 
 // TODO(alexeyinkin): Create a delegate like this independent from Material,
@@ -20,10 +19,10 @@ import 'router_delegate.dart';
 class MaterialPageStacksRouterDelegate extends PageStacksRouterDelegate {
   final Widget child;
 
-  MaterialPageStacksRouterDelegate({
-    required PageStacksBloc pageStacksBloc,
+  MaterialPageStacksRouterDelegate(
+    super.pageStacks, {
     required this.child,
-  }) : super(pageStacksBloc);
+  });
 
   @override
   Widget build(BuildContext context) {
