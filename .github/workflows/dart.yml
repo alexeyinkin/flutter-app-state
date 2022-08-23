@@ -22,6 +22,8 @@ jobs:
         run: |
           cd app_state
           dart pub get
+          cd example
+          dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
