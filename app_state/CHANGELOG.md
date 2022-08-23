@@ -1,3 +1,7 @@
+## 0.7.3
+
+* Fixed image paths.
+
 ## 0.7.2
 
 * Fixed linter issues, formatted examples, added the format check to the CI.
