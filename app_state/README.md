@@ -84,7 +84,7 @@ available to all code, or you provide it with [get_it](https://pub.dev/packages/
 
 It contains the stack at runtime:
 
-![PageStack](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-stack.png)
+![PageStack](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/page-stack.png)
 
 For each page, there are 3 main units:
 
@@ -110,14 +110,14 @@ These three together are collectively referred to as a 'page' (lowercase) to dis
 
 Zooming in, this is how they interact:
 
-![Page, Page State, Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/page-state-screen.png)
+![Page, Page State, Screen](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/page-state-screen.png)
 
 ## The Bare Minimal App
 
 This app has one screen and no navigation. It even has no page state, since it has nothing to preserve.
 See and run [the example project](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/1_min/main.dart).
 
-![The Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/minimal.png)
+![The Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/minimal.png)
 
 ```dart
 import 'package:app_state/app_state.dart';
@@ -171,7 +171,7 @@ The Android back button and the default `BackButton` in `Scaffold` just work.
 See and run [this example with a book list](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/2_two_screens).
 It has no URLs so far, we will get to them soon.
 
-![Book List App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-no-urls.gif)
+![Book List App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/book-list-no-urls.gif)
 
 ### Programmatic Popping
 
@@ -222,7 +222,7 @@ You then create a URL parser that is called by Flutter on start-up
 and also on back and forward navigation.
 This parser chooses the particular `PagePath`.
 
-![Parsing PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/parsing-page-path.png)
+![Parsing PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/parsing-page-path.png)
 
 It is easiest to maintain if made of one-liners like this:
 
@@ -363,7 +363,7 @@ The address bar is not the only source of `PagePath` objects.
 When you programmatically create a page and push it to the stack, it may report
 a `PagePath` object to the framework so it updates the address bar from it.
 
-![Emitting PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/emitting-page-path.png)
+![Emitting PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/emitting-page-path.png)
 
 #### Page Without State
 For a page without state, you hardcode a `PagePath` like in the snippet above.
@@ -396,7 +396,7 @@ and should not get to the browser history, just do not introduce any path classe
 Imagine a tree browser that dynamically updates the address bar with all of this happening
 in a single screen:
 
-![Tree Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/tree-navigation.gif)
+![Tree Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/tree-navigation.gif)
 
 What gets updated is its state. A state can emit a new `PagePath` at any time.
 For this, call its `emitPathChanged()` method.
@@ -474,7 +474,7 @@ The Android back button and the Scaffold's back button should only pop pages on 
 Tab switching should not affect the back button history (except the browser's navigation buttons,
 this is how browsers work).
 
-![Multiple Tabs with Independent Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/multiple-stacks.gif)
+![Multiple Tabs with Independent Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/multiple-stacks.gif)
 
 Read [this tutorial](https://medium.com/p/cfb52d035da6) on how this app is made.
 
@@ -512,7 +512,7 @@ Use case:
 2. The user inputs a value and closes the dialog.
 3. The underlying page receives the result.
 
-![Result Surviving Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/result-surviving-restart.gif)
+![Result Surviving Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/result-surviving-restart.gif)
 
 This cannot be done by mere awaiting of the pushed page. When the app restarts,
 even if we recover the page stack, we create the stack in the factory, so the bottom page
