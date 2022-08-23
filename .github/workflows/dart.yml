@@ -18,19 +18,23 @@ jobs:
           channel: 'stable'
       - run: flutter --version
 
-      - run: cd app_state
-
       - name: Install dependencies
-        run: dart pub get
+        run: |
+          cd app_state
+          dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Generate source
-        run: dart run build_runner build
+        run: |
+          cd app_state
+          dart run build_runner build
 
       - name: Analyze project source
         run: dart analyze --fatal-infos
 
       - name: Run tests
-        run: flutter test
+        run: |
+          cd app_state
+          flutter test
