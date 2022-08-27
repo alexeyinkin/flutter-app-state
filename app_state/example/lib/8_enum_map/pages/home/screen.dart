@@ -11,43 +11,41 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: stacks.events,
-      builder: (context, snapshot) => _buildOnEvent(),
-    );
-  }
+    return PageStacksBuilder(
+      stacks: stacks,
+      builder: (BuildContext context) {
+        final tab = TabEnum.values.byName(stacks.currentStackKey!);
 
-  Widget _buildOnEvent() {
-    final tab = TabEnum.values.byName(stacks.currentStackKey!);
-
-    return Scaffold(
-      body: KeyedStack<TabEnum>(
-        itemKey: tab,
-        children: UnmodifiableTabEnumMap(
-          books: PageStackNavigator(
-            key: ValueKey(TabEnum.books),
-            stack: stacks.pageStacks[TabEnum.books.name]!,
+        return Scaffold(
+          body: KeyedStack<TabEnum>(
+            itemKey: tab,
+            children: UnmodifiableTabEnumMap(
+              books: PageStackNavigator(
+                key: ValueKey(TabEnum.books),
+                stack: stacks.pageStacks[TabEnum.books.name]!,
+              ),
+              about: PageStackNavigator(
+                key: ValueKey(TabEnum.about),
+                stack: stacks.pageStacks[TabEnum.about.name]!,
+              ),
+            ),
           ),
-          about: PageStackNavigator(
-            key: ValueKey(TabEnum.about),
-            stack: stacks.pageStacks[TabEnum.about.name]!,
+          bottomNavigationBar: KeyedBottomNavigationBar<TabEnum>(
+            currentItemKey: tab,
+            items: UnmodifiableTabEnumMap(
+              books: BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book),
+                label: 'Books',
+              ),
+              about: BottomNavigationBarItem(
+                icon: Icon(Icons.info),
+                label: 'About',
+              ),
+            ),
+            onTap: (tab) => stacks.setCurrentStackKey(tab.name),
           ),
-        ),
-      ),
-      bottomNavigationBar: KeyedBottomNavigationBar<TabEnum>(
-        currentItemKey: tab,
-        items: UnmodifiableTabEnumMap(
-          books: BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Books',
-          ),
-          about: BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'About',
-          ),
-        ),
-        onTap: (tab) => stacks.setCurrentStackKey(tab.name),
-      ),
+        );
+      },
     );
   }
 }

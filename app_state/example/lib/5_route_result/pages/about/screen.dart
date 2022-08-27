@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 import 'state.dart';
 
 class AboutScreen extends StatelessWidget {
-  final AboutPageBloc bloc;
+  final AboutPageNotifier notifier;
 
-  const AboutScreen({required this.bloc});
+  const AboutScreen(this.notifier);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AboutPageBlocState>(
-      stream: bloc.states,
-      builder: (context, snapshot) =>
-          _buildWithState(snapshot.data ?? bloc.initialState),
+    return AnimatedBuilder(
+      animation: notifier,
+      builder: _buildOnChange,
     );
   }
 
-  Widget _buildWithState(AboutPageBlocState state) {
-    final text = state.name == ''
+  Widget _buildOnChange(BuildContext context, Widget? child) {
+    final text = notifier.name == ''
         ? 'This software is not licensed.'
-        : 'This software is licensed to ${state.name}.';
+        : 'This software is licensed to ${notifier.name}.';
 
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
@@ -31,7 +30,7 @@ class AboutScreen extends StatelessWidget {
             Container(height: 20),
             ElevatedButton(
               child: const Text('License'),
-              onPressed: bloc.onLicensePressed,
+              onPressed: notifier.onLicensePressed,
             ),
           ],
         ),

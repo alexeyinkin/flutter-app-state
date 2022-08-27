@@ -6,7 +6,7 @@ This app does nothing.
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/1_min
 
-![Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/minimal.png)
+![Bare Minimal App](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/minimal.png)
 
 
 
@@ -14,7 +14,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/2_two_screens
 
-![Book List No URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-no-urls.gif)
+![Book List No URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/book-list-no-urls.gif)
 
 
 
@@ -22,7 +22,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/3_web
 
-![Book List With URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/book-list-urls.gif)
+![Book List With URLs](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/book-list-urls.gif)
 
 
 
@@ -30,7 +30,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/4_tabs
 
-![Tabs with Independent Navigation Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/multiple-stacks.gif)
+![Tabs with Independent Navigation Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/multiple-stacks.gif)
 
 
 
@@ -38,7 +38,7 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/5_route_result
 
-![Receiving the Dialog Result after the App Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/result-surviving-restart.gif)
+![Receiving the Dialog Result after the App Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/result-surviving-restart.gif)
 
 
 
@@ -46,14 +46,14 @@ Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/6_forward_recovery
 
-![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/recovering-unsaved-input.gif)
+![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/recovering-unsaved-input.gif)
 
 
 ## 7. Pushing one pop-up screen to any tab
 
 Runnable project: https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/7_any_tab
 
-![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/img/any-tab-anywhere.gif)
+![Recovering Unsaved Input on Back and Forward Navigation](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/any-tab-anywhere.gif)
 
 
 ## 8. Using enum_map package for higher compile-time safety of tabs

@@ -3,37 +3,22 @@ import 'package:flutter/widgets.dart';
 
 import 'path.dart';
 
-class InputPageBloc extends PageStatefulBloc<InputPageBlocState, String> {
+class InputPageNotifier extends ChangeNotifier with PageStateMixin<String> {
   final nameController = TextEditingController();
-  final initialState = InputPageBlocState(canSave: false);
 
-  InputPageBloc({
+  InputPageNotifier({
     required String name,
   }) {
     nameController.text = name;
-    nameController.addListener(emitState);
-    emitState();
+    nameController.addListener(notifyListeners);
   }
 
   void onSavePressed() {
-    pop(nameController.text);
+    pop(nameController.text); // This is statically type-checked to be String.
   }
 
-  @override
-  InputPageBlocState createState() {
-    return InputPageBlocState(
-      canSave: nameController.text != '',
-    );
-  }
+  bool get canSave => nameController.text != '';
 
   @override
   InputPath get path => const InputPath();
-}
-
-class InputPageBlocState {
-  final bool canSave;
-
-  InputPageBlocState({
-    required this.canSave,
-  });
 }

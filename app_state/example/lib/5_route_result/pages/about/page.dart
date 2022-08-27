@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'screen.dart';
 import 'state.dart';
 
-class AboutPage extends StatefulMaterialPage<void, AboutPageBloc> {
+class AboutPage extends StatefulMaterialPage<void, AboutPageNotifier> {
   static const classFactoryKey = 'About';
 
   AboutPage()
       : super(
           key: const ValueKey(classFactoryKey),
-          state: AboutPageBloc(name: ''),
-          createScreen: (b) => AboutScreen(bloc: b),
+          state: AboutPageNotifier(name: ''),
+          createScreen: AboutScreen.new,
         );
 }

@@ -11,37 +11,37 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: stacks.events,
-      builder: (context, snapshot) => _buildOnEvent(),
-    );
-  }
+    return PageStacksBuilder(
+      stacks: stacks,
+      builder: (BuildContext context) {
+        final tab = TabEnum.values.byName(stacks.currentStackKey!);
 
-  Widget _buildOnEvent() {
-    final tab = TabEnum.values.byName(stacks.currentStackKey!);
-
-    return Scaffold(
-      body: KeyedStack<TabEnum>(
-        itemKey: tab,
-        children: stacks.pageStacks.map(
-          (tabString, bloc) => MapEntry(TabEnum.values.byName(tabString),
-              PageStackNavigator(key: ValueKey(tabString), stack: bloc)),
-        ),
-      ),
-      bottomNavigationBar: KeyedBottomNavigationBar<TabEnum>(
-        currentItemKey: tab,
-        items: const {
-          TabEnum.books: BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Books',
+        return Scaffold(
+          body: KeyedStack<TabEnum>(
+            itemKey: tab,
+            children: stacks.pageStacks.map(
+              (tabString, stack) => MapEntry(
+                TabEnum.values.byName(tabString),
+                PageStackNavigator(key: ValueKey(tabString), stack: stack),
+              ),
+            ),
           ),
-          TabEnum.about: BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'About',
+          bottomNavigationBar: KeyedBottomNavigationBar<TabEnum>(
+            currentItemKey: tab,
+            items: const {
+              TabEnum.books: BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book),
+                label: 'Books',
+              ),
+              TabEnum.about: BottomNavigationBarItem(
+                icon: Icon(Icons.info),
+                label: 'About',
+              ),
+            },
+            onTap: (tab) => stacks.setCurrentStackKey(tab.name),
           ),
-        },
-        onTap: (tab) => stacks.setCurrentStackKey(tab.name),
-      ),
+        );
+      },
     );
   }
 }

@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 import 'state.dart';
 
 class InputScreen extends StatelessWidget {
-  final InputPageBloc bloc;
+  final InputPageNotifier notifier;
 
-  const InputScreen(this.bloc);
+  const InputScreen(this.notifier);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<InputPageBlocState>(
-      stream: bloc.states,
-      builder: (context, snapshot) =>
-          _buildWithState(snapshot.data ?? bloc.initialState),
+    return AnimatedBuilder(
+      animation: notifier,
+      builder: _buildOnChange,
     );
   }
 
-  Widget _buildWithState(InputPageBlocState state) {
+  Widget _buildOnChange(BuildContext context, Widget? child) {
     return Scaffold(
       appBar: AppBar(title: const Text('Enter Your Name')),
       body: Container(
@@ -24,7 +23,7 @@ class InputScreen extends StatelessWidget {
         child: Column(
           children: [
             TextField(
-              controller: bloc.nameController,
+              controller: notifier.nameController,
               decoration: const InputDecoration(
                 label: Text('Name'),
               ),
@@ -35,12 +34,12 @@ class InputScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   child: const Text('Cancel'),
-                  onPressed: bloc.pop,
+                  onPressed: notifier.pop,
                 ),
                 Container(width: 20),
                 ElevatedButton(
                   child: const Text('Save'),
-                  onPressed: bloc.onSavePressed,
+                  onPressed: notifier.canSave ? notifier.onSavePressed : null,
                 ),
               ],
             ),

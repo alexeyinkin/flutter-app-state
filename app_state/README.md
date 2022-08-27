@@ -1,6 +1,7 @@
 [![Pub Package](https://img.shields.io/pub/v/app_state.svg)](https://pub.dev/packages/app_state)
 [![GitHub](https://img.shields.io/github/license/alexeyinkin/flutter-app-state)](https://github.com/alexeyinkin/flutter-app-state/blob/main/LICENSE)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/alexeyinkin/flutter-app-state?style=flat-square)](https://www.codefactor.io/repository/github/alexeyinkin/flutter-app-state)
+[![Support Chat](https://img.shields.io/badge/support%20chat-telegram-green)](https://t.me/+IjcTl85cTxBmN2Ey)
 
 A state management solution on top of Router API for larger apps.
 
@@ -9,7 +10,7 @@ This is a routing library. See how it compares to
 and
 [go_router](https://medium.com/p/397316f30dcb).
 
-See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-state-examples).
+See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example).
 
 - [Unique Features](#unique-features)
     * [States First](#states-first)
@@ -38,9 +39,23 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
     * [Browser Back and Forward Buttons](#browser-back-and-forward-buttons)
     * [Recovering Unsaved Input on Page Refresh and Navigation](#recovering-unsaved-input-on-page-refresh-and-navigation)
 - [Multiple Tabs with Independent Stacks](#multiple-tabs-with-independent-stacks)
+    * [Defining the Stacks](#defining-the-stacks)
+    * [Showing the Stacks](#showing-the-stacks)
+    * [Wiring the Stacks to Navigation Events](#wiring-the-stacks-to-navigation-events)
+        + [`PageStacksRouterDelegate`](#-pagestacksrouterdelegate-)
+        + [`MaterialPageStacksRouterDelegate`](#-materialpagestacksrouterdelegate-)
+    * [Pushing Pages](#pushing-pages)
+    * [Parsing URLs for the Stacks](#parsing-urls-for-the-stacks)
+    * [Setting the Default Stack for Pages](#setting-the-default-stack-for-pages)
+    * [Back Button with Multiple Stacks](#back-button-with-multiple-stacks)
 - [Advanced Ways to Return Result](#advanced-ways-to-return-result)
     * [Push and Pop Type Safety at Compile Time](#push-and-pop-type-safety-at-compile-time)
     * [Receiving the Dialog Result after the App Restart](#receiving-the-dialog-result-after-the-app-restart)
+        + [How Screens Get Closed](#how-screens-get-closed)
+        + [Popping Data](#popping-data)
+        + [Receiving Data](#receiving-data)
+        + [Re-creating the Stack on Start-up](#re-creating-the-stack-on-start-up)
+- [Tech Support Chat](#tech-support-chat)
 - [Help is Wanted](#help-is-wanted)
 
 ## Unique Features
@@ -97,7 +112,7 @@ For each page, there are 3 main units:
   If your screen was a `StatefulWidget` in the traditional architecture,
   then the page state with this mixin plays the role of its `State`.
   It contains everything to preserve so the screen itself can be a stateless widget.
-  However, `PageStateMixin` is richer than a screen's `State`.
+  However, `PageStateMixin` is richer than a widget's `State`.
   It is aware of the page stacking and can handle events related to it.
 - **Screen**.
   Most often this is just a stateless widget with your page state as the single argument.
@@ -366,7 +381,7 @@ a `PagePath` object to the framework so it updates the address bar from it.
 ![Emitting PagePath](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/emitting-page-path.png)
 
 #### Page Without State
-For a page without state, you hardcode a `PagePath` like in the snippet above.
+For a page without a state, you hardcode a `PagePath` like in the snippet above.
 
 ```dart
 super(
@@ -388,7 +403,7 @@ BookListPath get path => const BookListPath();
 
 #### Page Without URL
 The address bar content is always taken from the highest page in the stack that has non-`null`
-`PagePath`, with or without state. For minor dialogs that should not affect the address bar
+`PagePath`, with or without a state. For minor dialogs that should not affect the address bar
 and should not get to the browser history, just do not introduce any path classes.
 
 #### Updating the URL Programmatically
@@ -465,18 +480,198 @@ has a workaround for it. Actually the only way to lose the state is to copy the 
 and re-open it in a new browser tab.
 
 To preserve the state, you add data fields to your `PagePath` classes, and then save and read them.
-Read [this tutorial](https://medium.com/p/60c66938db34) on how to do this.
+Read [this tutorial](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/6_forward_recovery)
+on how to do this. It has the runnable app from which this GIF is recorded.
 
 ## Multiple Tabs with Independent Stacks
 
-Use case: Each tab must have its own navigation stack.
+**Use case:** Each tab must have its own navigation stack.
 The Android back button and the Scaffold's back button should only pop pages on the current stack.
 Tab switching should not affect the back button history (except the browser's navigation buttons,
 this is how browsers work).
 
 ![Multiple Tabs with Independent Stacks](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/multiple-stacks.gif)
 
-Read [this tutorial](https://medium.com/p/cfb52d035da6) on how this app is made.
+Take a look at [this runnable example](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/4_tabs).
+
+### Defining the Stacks
+
+`PageStacks` is the class that:
+
+- Holds multiple `PageStack` objects. These are added at runtime.
+- Keeps the notion of the current stack.
+- Serializes the states of all pages in all stacks for browser history.
+- Recovers the states of all pages in all stacks when navigating the browser history.
+
+This is how to initialize it in your `main.dart`:
+
+```dart
+final pageStacks = PageStacks();                                          // CHANGED
+final _routerDelegate = MaterialPageStacksRouterDelegate(                 // CHANGED
+  pageStacks: pageStacks,
+  child: HomeScreen(stacks: pageStacks),
+);
+final _routeInformationParser = MyRouteInformationParser();
+final _backButtonDispatcher = PageStacksBackButtonDispatcher(pageStacks); // CHANGED
+
+void main() {
+  pageStacks.addPageStack(                                                // NEW
+    TabEnum.books.name,
+    PageStack(
+      bottomPage: BookListPage(),
+      createPage: PageFactory.createPage,
+    ),
+  );
+
+  pageStacks.addPageStack(                                                // NEW
+    TabEnum.about.name,
+    PageStack(
+      bottomPage: AboutPage(),
+      createPage: PageFactory.createPage,
+    ),
+  );
+
+  pageStacks.setCurrentStackKey(TabEnum.books.name, fire: false);         // NEW
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerDelegate: _routerDelegate,
+      routeInformationParser: _routeInformationParser,
+      backButtonDispatcher: _backButtonDispatcher,
+    );
+  }
+}
+```
+
+### Showing the Stacks
+
+Create a screen that shows the current stack:
+
+```dart
+class HomeScreen extends StatelessWidget {
+  final PageStacks stacks;
+
+  const HomeScreen({required this.stacks});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageStacksBuilder(
+      stacks: stacks,
+      builder: (BuildContext context) {
+        final tab = TabEnum.values.byName(stacks.currentStackKey!);
+
+        return Scaffold(
+          body: KeyedStack<TabEnum>(
+            itemKey: tab,
+            children: stacks.pageStacks.map(
+              (tabString, stack) => MapEntry(
+                TabEnum.values.byName(tabString),
+                PageStackNavigator(key: ValueKey(tabString), stack: stack),
+              ),
+            ),
+          ),
+          bottomNavigationBar: KeyedBottomNavigationBar<TabEnum>(
+            currentItemKey: tab,
+            items: const {
+              TabEnum.books: BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book),
+                label: 'Books',
+              ),
+              TabEnum.about: BottomNavigationBarItem(
+                icon: Icon(Icons.info),
+                label: 'About',
+              ),
+            },
+            onTap: (tab) => stacks.setCurrentStackKey(tab.name),
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+Here `PageStacksBuilder` is the widget that builds itself on `PageStacks` events.
+
+You can use any layout for the stacks. Here we use a bottom navigation bar that switches
+the current stack. Note that we use `KeyedBottomNavigationBar` and `KeyedStack` from
+[keyed_collection_widgets](https://pub.dev/packages/keyed_collection_widgets) package.
+These are safer equivalents of the standard `BottomNavigationBar` and `IndexedStack`.
+
+You are not limited to this layout an can as well use tabs or `PageView`, or even go split-screen
+with all stacks visible at a time.
+
+### Wiring the Stacks to Navigation Events
+
+#### `PageStacksRouterDelegate`
+
+`PageStacksRouterDelegate` is the router delegate that makes a `PageStacks` object
+respond to navigation events by:
+- Creating and popping pages in the current stack.
+- Storing and recovering pages' states.
+
+The only thing it does not know is how to show the stacks since this is very much app-specific,
+so it does not override `RouterDelegate.build()` method.
+
+#### `MaterialPageStacksRouterDelegate`
+
+`MaterialPageStacksRouterDelegate` is a subclass that in addition overrides the `build()` method
+and shows a specific child. It also gives you the default root `Navigator` which you don't use
+for much but it is convenient for multiple reasons like having an `Overlay` for tool tips
+on the navigation bar buttons.
+
+So this is the delegate we use in the above example.
+
+### Pushing Pages
+
+You can push a page to the current page stack like this:
+
+```dart
+class BookListState with PageStateMixin<void> {
+  void showDetails(Book book) {
+    pageStacks.currentStack?.push(BookDetailsPage(bookId: book.id));
+  }
+  // ...
+}
+```
+
+### Parsing URLs for the Stacks
+
+For a single-stack app, we used to extend `PageStackRouteInformationParser` to parse URLs
+into a stack configuration. Now we extend `PageStacksRouteInformationParser` (note the “s”).
+
+The difference is that the latter recovers state for all stacks.
+
+### Setting the Default Stack for Pages
+
+When URL is typed in, it is converted to a `PagePath` object which is used
+to create stacks of pages. With single stack, each path was populating that one stack.
+With multiple stacks, each path must know what tab should be active
+if it was the entry point to the app. Otherwise an exception is thrown.
+
+For this, override `defaultStackKey` getter in each `PagePath`:
+
+```dart
+class BookListPath extends PagePath {
+  // ...
+  @override
+  String get defaultStackKey => TabEnum.books.name;
+}
+```
+
+### Back Button with Multiple Stacks
+
+In Android, the back button always closes the current screen and does not lead
+to the previously selected tab.
+
+However, in browser, the back button will take you to a previously selected tab
+as this is how browsers are supposed to work.
+Traditionally their back-forward navigation has to do with history and not with hierarchy.
 
 ## Advanced Ways to Return Result
 
@@ -506,7 +701,7 @@ And your `Page` can only have a state of the same return type, otherwise it will
 
 ### Receiving the Dialog Result after the App Restart
 
-Use case:
+**Use case:**
 
 1. The user opens the input dialog, copies its URL and restarts the app at that URL.
 2. The user inputs a value and closes the dialog.
@@ -514,25 +709,131 @@ Use case:
 
 ![Result Surviving Restart](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/result-surviving-restart.gif)
 
+See [this runnable example](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example/lib/5_route_result)
+from which this GIF is recorded.
+
 This cannot be done by mere awaiting of the pushed page. When the app restarts,
 even if we recover the page stack, we create the stack in the factory, so the bottom page
 has no future to await.
 
-For this, we employ the alternative way to receive the result. In the bottom page state,
-override `didPopNext`:
+#### How Screens Get Closed
+
+Each `PageStateMixin` has `events` stream.
+`PageStack` listens to its pages’ `event` streams, and this allows the page states to coöperate.
+
+<!---
+https://sequencediagram.org
+
+PageStack-->bottom PageStateMixin:contains
+bottom PageStateMixin->PageStack:push(topPage);
+PageStack->top PageStateMixin:creates
+top PageStateMixin->top PageStateMixin:pop(data);
+top PageStateMixin->PageStack:PagePopEvent with data
+PageStack->bottom PageStateMixin:didPopNext(topPage, event)
+PageStack->bottom PageStateMixin:future from push completes
+
+-->
+
+![How Screens Get Closed](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/closing-screen.gif)
+
+The `PageStateMixin` can call `pop(data)` method with an optional `data` argument.
+It emits the `PagePopEvent` that carries this data.
+
+If you use `PageStackNavigator`, then under the hood these two also call this method without data:
+- The Android back button.
+- The back arrow button in `AppBar`.
+
+`PageStack` receives this event and calls `didPopNext` method on the `PageStateMixin`
+immediately under. The event is passed there. This way,
+the `PageStaeMixin` learns that it is likely the topmost one now.
+
+Also `PageStack` completes the future that was created with the original push.
+
+So the bottom `PageStateMixin` has two ways to receive the data.
+
+#### Popping Data
+
+In this example, this is how the state closes its screen on the 'save' button.
+It is the same as described earlier in [Programmatic Popping](#programmatic-popping):
 
 ```dart
-@override
-void didPopNext(AbstractPage page, PagePopEvent event) {
-  print('didPopNext: ${event.data}');
+class InputPageNotifier extends ChangeNotifier with PageStateMixin<String> {
+  final nameController = TextEditingController();
+
+  InputPageNotifier({
+    required String name,
+  }) {
+    nameController.text = name;
+    nameController.addListener(notifyListeners);
+  }
+
+  void onSavePressed() {
+    pop(nameController.text); // This is statically type-checked to be String.
+  }
+
+  @override
+  InputPath get path => const InputPath();
 }
 ```
 
-This way the compiler still makes sure the state pops with the right type, but the `event.data`
-is not type-checked by the receiver. This is because a state can push pages of different classes that produce different
-result types, but they all are collected in this method.
+#### Receiving Data
 
-See [this tutorial](https://medium.com/p/811acedc5214) with more details and the link to the full runnable example.
+And this is how the result is received:
+
+```dart
+class AboutPageNotifier extends ChangeNotifier with PageStateMixin<void> {
+  String name;
+
+  AboutPageNotifier({required this.name});
+
+  Future<void> onLicensePressed() async {
+    // This is statically type-checked to be String.
+    final result = await pageStacks.currentStack?.push(
+      InputPage(name: name),
+    );
+
+    print('Awaited: $result');
+  }
+
+  @override
+  void didPopNext(AbstractPage page, PagePopEvent event) {
+    print('didPopNext: ${event.data}');
+
+    final data = event.data; // Not type-checked in any way.
+    if (data is String) {
+      name = data;
+      notifyListeners();
+    }
+  }
+
+  @override
+  AboutPath get path => const AboutPath();
+}
+```
+
+Note that `event.data` is not type-checked by the receiver.
+This is because we can push pages of different classes that produce different result types,
+but they all are collected in this method.
+
+#### Re-creating the Stack on Start-up
+
+In [Recommended PagePath Structure](#recommended-pagepath-structure), we showed how a `PagePath`
+can dictate the default stack of pages when its URL is typed in. This was optional before
+but is critical now that the bottom page must receive the data:
+
+```dart
+@override
+get defaultStackPaths => [
+      const AboutPath(),
+      this,
+    ];
+```
+
+## Tech Support Chat
+
+Do you have any questions?
+
+Feel free to ask in the [Telegram Support Chat](https://t.me/+IjcTl85cTxBmN2Ey).
 
 ## Help is Wanted
 
@@ -567,5 +868,5 @@ Do you like this package? Do not buy me a coffee, I don't drink it. Here is what
     * **Tests**. You can cover it.
     * **Other PRs**. Please share your idea in an issue first.
 
-Here are [tons of runnable examples again](https://github.com/alexeyinkin/flutter-app-state-examples)
+Here are [tons of runnable examples again](https://github.com/alexeyinkin/flutter-app-state/tree/main/app_state/example)
 if you have missed the link in the beginning.

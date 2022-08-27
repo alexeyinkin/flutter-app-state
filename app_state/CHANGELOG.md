@@ -1,3 +1,14 @@
+## 0.7.4
+
+* Added `PageStacksBuilder` widget.
+* Refactored the `5_route_result` example to use `ChangeNotifier` instead of bloc.
+* Incorporated the older separate medium tutorials in the READMEs:
+    * [Recovering user input when ‘Forward’ is clicked in Flutter app](https://medium.com/p/60c66938db34).
+    * [Tabs with independent navigation stacks in Flutter with app_state package](https://medium.com/p/cfb52d035da6).
+    * [Receiving result from modal routes in Flutter with app_state package](https://medium.com/p/811acedc5214).
+* Fixed image links in `/example/README.md`.
+* Added 'Support: Telegram' shield.
+
 ## 0.7.3
 
 * Fixed image paths.
