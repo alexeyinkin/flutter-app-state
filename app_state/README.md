@@ -1,7 +1,7 @@
 [![Pub Package](https://img.shields.io/pub/v/app_state.svg)](https://pub.dev/packages/app_state)
 [![GitHub](https://img.shields.io/github/license/alexeyinkin/flutter-app-state)](https://github.com/alexeyinkin/flutter-app-state/blob/main/LICENSE)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/alexeyinkin/flutter-app-state?style=flat-square)](https://www.codefactor.io/repository/github/alexeyinkin/flutter-app-state)
-[![Support Chat](https://img.shields.io/badge/support%20chat-telegram-green)](https://t.me/+IjcTl85cTxBmN2Ey)
+[![Support Chat](https://img.shields.io/badge/support%20chat-telegram-brightgreen)](https://ainkin.com/chat)
 
 A state management solution on top of Router API for larger apps.
 
@@ -42,8 +42,8 @@ See [tons of runnable examples here](https://github.com/alexeyinkin/flutter-app-
     * [Defining the Stacks](#defining-the-stacks)
     * [Showing the Stacks](#showing-the-stacks)
     * [Wiring the Stacks to Navigation Events](#wiring-the-stacks-to-navigation-events)
-        + [`PageStacksRouterDelegate`](#-pagestacksrouterdelegate-)
-        + [`MaterialPageStacksRouterDelegate`](#-materialpagestacksrouterdelegate-)
+        + [PageStacksRouterDelegate](#pagestacksrouterdelegate)
+        + [MaterialPageStacksRouterDelegate](#materialpagestacksrouterdelegate)
     * [Pushing Pages](#pushing-pages)
     * [Parsing URLs for the Stacks](#parsing-urls-for-the-stacks)
     * [Setting the Default Stack for Pages](#setting-the-default-stack-for-pages)
@@ -608,7 +608,7 @@ with all stacks visible at a time.
 
 ### Wiring the Stacks to Navigation Events
 
-#### `PageStacksRouterDelegate`
+#### PageStacksRouterDelegate
 
 `PageStacksRouterDelegate` is the router delegate that makes a `PageStacks` object
 respond to navigation events by:
@@ -618,7 +618,7 @@ respond to navigation events by:
 The only thing it does not know is how to show the stacks since this is very much app-specific,
 so it does not override `RouterDelegate.build()` method.
 
-#### `MaterialPageStacksRouterDelegate`
+#### MaterialPageStacksRouterDelegate
 
 `MaterialPageStacksRouterDelegate` is a subclass that in addition overrides the `build()` method
 and shows a specific child. It also gives you the default root `Navigator` which you don't use
@@ -820,7 +820,7 @@ get defaultStackPaths => [
 
 Do you have any questions?
 
-Feel free to ask in the [Telegram Support Chat](https://t.me/+IjcTl85cTxBmN2Ey).
+Feel free to ask in the [Telegram Support Chat](https://ainkin.com/chat).
 
 ## Help is Wanted
 

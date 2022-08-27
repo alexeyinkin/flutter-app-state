@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/path.dart';
-import '../blocs/page/stateful_bloc.dart';
+import '../page_state/path.dart';
+import '../page_state/stateful_bloc.dart';
 
 abstract class StatefulBlocWidget<R,
     B extends CPageStatefulBloc<PagePath, S, R>, S> extends StatelessWidget {

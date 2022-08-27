@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../blocs/page/page_state_mixin.dart';
-import '../blocs/page/path.dart';
-import '../blocs/page/pop_cause.dart';
-import '../blocs/page/pop_event.dart';
+import '../page_state/page_state_mixin.dart';
+import '../page_state/path.dart';
+import '../page_state/pop_cause.dart';
+import '../page_state/pop_event.dart';
 import '../util/util.dart';
 import 'abstract.dart';
 
@@ -23,13 +23,8 @@ abstract class PAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
   @override
   String? getFactoryKey() => _factoryKey ?? _valueKey?.value;
 
-  @Deprecated('Renamed to state in v0.7.0')
   @override
-  PPageStateMixin<P, R>? get bloc => null;
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  PPageStateMixin<P, R>? get state => bloc;
+  PPageStateMixin<P, R>? get state => null;
 
   @override
   P? get path => null;
@@ -65,7 +60,3 @@ abstract class PAbstractMaterialPage<P extends PagePath, R> extends MaterialPage
     _isDisposed.value = true;
   }
 }
-
-@Deprecated('Renamed in v0.7.0')
-typedef CAbstractMaterialPage<P extends PagePath, R>
-    = PAbstractMaterialPage<P, R>;

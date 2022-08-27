@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page_stacks/page_stacks.dart';
+import '../page_stacks/page_stacks.dart';
 
 /// Widget that builds itself when [stacks] emits events.
 class PageStacksBuilder extends StatelessWidget {

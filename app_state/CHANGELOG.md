@@ -1,3 +1,7 @@
+## 0.8.0
+
+* **BREAKING:** Removed all functionality deprecated in v0.6 and v0.7.
+
 ## 0.7.4
 
 * Added `PageStacksBuilder` widget.

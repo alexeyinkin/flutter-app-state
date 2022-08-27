@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../blocs/page/page_state_mixin.dart';
-import '../blocs/page_stack/page_stack.dart';
 import '../models/back_pressed_result_enum.dart';
+import '../page_stack/page_stack.dart';
+import '../page_state/page_state_mixin.dart';
 import '../pages/stateful_material.dart';
 
 /// Builds a [Navigator] using [PPageStack.pages].
@@ -77,6 +77,3 @@ class PageStackNavigator extends StatelessWidget {
     }
   }
 }
-
-@Deprecated('Renamed to PageStackNavigator in v0.6.9')
-typedef PageStackBlocNavigator = PageStackNavigator;

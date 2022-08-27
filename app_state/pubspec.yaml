@@ -1,6 +1,6 @@
 name: app_state
 description: A state management solution on top of Router API for larger apps.
-version: 0.7.4
+version: 0.8.0
 repository: https://github.com/alexeyinkin/flutter-app-state
 
 environment:
