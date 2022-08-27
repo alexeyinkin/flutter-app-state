@@ -1,0 +1,9 @@
+https://sequencediagram.org
+
+PageStack-->bottom PageStateMixin:contains
+bottom PageStateMixin->PageStack:push(topPage);
+PageStack->top PageStateMixin:creates
+top PageStateMixin->top PageStateMixin:pop(data);
+top PageStateMixin->PageStack:PagePopEvent with data
+PageStack->bottom PageStateMixin:didPopNext(topPage, event)
+PageStack->bottom PageStateMixin:future from push completes

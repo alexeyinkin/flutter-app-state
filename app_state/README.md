@@ -721,17 +721,6 @@ has no future to await.
 Each `PageStateMixin` has `events` stream.
 `PageStack` listens to its pages’ `event` streams, and this allows the page states to coöperate.
 
-<!---
-https://sequencediagram.org
-PageStack-->bottom PageStateMixin:contains
-bottom PageStateMixin->PageStack:push(topPage);
-PageStack->top PageStateMixin:creates
-top PageStateMixin->top PageStateMixin:pop(data);
-top PageStateMixin->PageStack:PagePopEvent with data
-PageStack->bottom PageStateMixin:didPopNext(topPage, event)
-PageStack->bottom PageStateMixin:future from push completes
--->
-
 ![How Screens Get Closed](https://raw.githubusercontent.com/alexeyinkin/flutter-app-state/main/app_state/img/closing-screen.png)
 
 The `PageStateMixin` can call `pop(data)` method with an optional `data` argument.
