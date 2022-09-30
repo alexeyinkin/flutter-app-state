@@ -299,7 +299,7 @@ class PPageStack<P extends PagePath> {
       _pages.addAll(oldPages);
 
       throw Exception(
-        'PageStackBloc was about to be emptied by setting '
+        'PageStack was about to be emptied by setting '
         'a configuration state. '
         'The stack should never be empty according to the Navigator API.',
       );
