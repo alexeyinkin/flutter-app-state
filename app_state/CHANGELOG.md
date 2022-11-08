@@ -1,3 +1,7 @@
+## 0.8.2
+
+* Allow `PageStack.replacePath` without `RouteInformationParser`.
+
 ## 0.8.1
 
 * Exports `PageStacksStackEvent`.

@@ -301,7 +301,8 @@ class PPageStack<P extends PagePath> {
       throw Exception(
         'PageStack was about to be emptied by setting '
         'a configuration state. '
-        'The stack should never be empty according to the Navigator API.',
+        'The stack should never be empty according to the Navigator API. '
+        'Most likely your page factory failed to create a page by a key.',
       );
     }
 
@@ -360,27 +361,16 @@ class PPageStack<P extends PagePath> {
     page.dispose();
   }
 
-  /// Replaces the stack of pages with the full default stack parsed
-  /// from [path] (declarative navigation).
-  ///
-  /// Requires [routeInformationParser] to be non-null.
+  /// Replaces the stack of pages with the full default stack of [path]
+  /// (declarative navigation).
   Future<void> replacePath(
     P path, {
     PageStackMatchMode mode = PageStackMatchMode.keyOrNullPathNoGap,
   }) async {
-    final ri = RouteInformation(
-      location: path.location,
-      state: path.state,
+    setConfiguration(
+      path.defaultStackConfiguration,
+      setter: _getConfigurationSetter(mode),
     );
-
-    final configuration =
-        await routeInformationParser?.parsePageStackConfiguration(ri);
-
-    if (configuration == null) {
-      throw Exception('This requires routeInformationParser');
-    }
-
-    setConfiguration(configuration, setter: _getConfigurationSetter(mode));
   }
 
   PAbstractPageStackConfigurationSetter _getConfigurationSetter(

@@ -118,15 +118,6 @@ void main() {
       expect(page0.isDisposed, false);
     });
 
-    test('replacePath throws without routeInformationParser', () async {
-      final stack = PageStack(
-        createPage: CommonPageFactory.createPage,
-        bottomPage: AltHomePage(),
-      );
-
-      expect(() => stack.replacePath(const HomePath()), throwsException);
-    });
-
     test('replacePath uses correct setters', () async {
       final s = _SetConfigurationTestPageStack();
 
@@ -280,7 +271,6 @@ class _SetConfigurationTestPageStack extends PageStack {
   _SetConfigurationTestPageStack()
       : super(
           bottomPage: HomePage(),
-          routeInformationParser: CommonPageStackRouteInformationParser(),
         );
 
   @override
