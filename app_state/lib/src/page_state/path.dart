@@ -43,7 +43,7 @@ class PagePath {
   /// This map is passed:
   ///   1. To your page factory to create the page. Use some parameters there
   ///      if you need something to be known at the time of creating your
-  ///      [PageBloc].
+  ///      [PPageStateMixin].
   ///   2. To [PPageStateMixin.setStateMap]. Use other parameters there
   ///      to recover further details of the state.
   final Map<String, dynamic> state;
@@ -109,6 +109,24 @@ class PagePath {
     return PageStacksConfiguration(
       currentStackKey: key,
       pageStackConfigurations: {key: defaultStackConfiguration},
+    );
+  }
+
+  /// Parses [location] into a [Uri].
+  Uri get uri => Uri.parse(location);
+
+  /// The full [Uri] with schema, domain, port, etc. taken from [baseUri].
+  Uri getUriAtBase(Uri baseUri) {
+    final uri = this.uri;
+    final queryParameters = uri.queryParameters;
+
+    return Uri(
+      scheme: baseUri.scheme,
+      userInfo: baseUri.userInfo,
+      host: baseUri.host,
+      port: baseUri.port,
+      path: uri.path,
+      queryParameters: queryParameters.isEmpty ? null : queryParameters,
     );
   }
 }

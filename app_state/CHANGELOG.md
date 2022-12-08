@@ -1,3 +1,9 @@
+## 0.8.3
+
+* Added `PagePath.uri`.
+* Added `PagePath.getUriAtBase()`.
+* Relaxed mockito version requirement.
+
 ## 0.8.2
 
 * Allow `PageStack.replacePath` without `RouteInformationParser`.
