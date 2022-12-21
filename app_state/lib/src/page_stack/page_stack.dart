@@ -249,7 +249,7 @@ class PPageStack<P extends PagePath> {
       _pages.removeLast();
 
       handleRemoved(
-        oldPages.elementAtOrNull(oldPages.length - 2),
+        oldPages.elementAtOrNullIncludingNegative(oldPages.length - 2),
         page,
         page.createPopEvent(data: null, cause: PopCause.backButton),
       );
@@ -316,7 +316,7 @@ class PPageStack<P extends PagePath> {
       }
 
       handleRemoved(
-        oldPages.elementAtOrNull(i - 1),
+        oldPages.elementAtOrNullIncludingNegative(i - 1),
         page,
         page.createPopEvent(data: null, cause: PopCause.diff),
       );

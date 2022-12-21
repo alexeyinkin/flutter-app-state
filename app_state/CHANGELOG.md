@@ -1,3 +1,7 @@
+## 0.8.4
+
+* Support for `collection` v1.17.0.
+
 ## 0.8.3
 
 * Added `PagePath.uri`.
