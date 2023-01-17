@@ -36,4 +36,5 @@ export 'src/pages/stateless_material.dart';
 
 export 'src/widgets/navigator.dart';
 export 'src/widgets/page_stacks_builder.dart';
+export 'src/widgets/single_entry_overlay.dart';
 export 'src/widgets/stateful_bloc_widget.dart';

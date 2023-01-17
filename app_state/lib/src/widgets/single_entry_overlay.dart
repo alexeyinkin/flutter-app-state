@@ -1,9 +1,12 @@
 import 'package:flutter/widgets.dart';
 
+/// Widget for cases where the parent should be [Overlay]
+/// For example: to use in your own [RouterDelegate]
 class SingleEntryOverlay extends StatelessWidget {
-  const SingleEntryOverlay({required this.child});
-
   final Widget child;
+  
+  ///
+  const SingleEntryOverlay({required this.child});
 
   @override
   Widget build(BuildContext context) {
