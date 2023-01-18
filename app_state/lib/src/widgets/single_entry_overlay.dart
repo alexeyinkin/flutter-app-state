@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-/// Widget for cases where the parent should be [Overlay]
-/// For example: to use in your own [RouterDelegate]
+/// An [Overlay] with a single initial [OverlayEntry].
+///
+/// Use as a short wrapper to allow tooltips and other popups.
 class SingleEntryOverlay extends StatelessWidget {
   final Widget child;
-  
+
   ///
   const SingleEntryOverlay({required this.child});
 
