@@ -1,3 +1,9 @@
+## 0.9.0
+
+* **BREAKING:** `restoreRouteInformation` in `PageStackConfiguration` and `PageStacksConfiguration`
+are now nullable. They used to return `/` for `null` paths and that had been showing for an instant
+in the address bar when starting at a non-`/` URL.
+
 ## 0.8.4
 
 * Support for `collection` v1.17.0.
