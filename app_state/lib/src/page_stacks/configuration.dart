@@ -53,11 +53,11 @@ class PageStacksConfiguration {
 
   RouteInformation? restoreRouteInformation() {
     final location = currentStackConfiguration?.getTopPagePath()?.location;
-    
+
     if (location == null) return null;
-    
+
     return RouteInformation(
-      location: currentStackConfiguration?.getTopPagePath()?.location,
+      location: location,
       state: toJson(),
     );
   }
