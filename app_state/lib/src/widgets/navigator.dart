@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../models/back_pressed_result_enum.dart';
@@ -49,13 +51,13 @@ class PageStackNavigator extends StatelessWidget {
           // This means the app will never close on back button press.
           // TODO(alexeyinkin): Allow to close the app on back button,
           //  https://github.com/alexeyinkin/flutter-app-state/issues/8
-          _onBackButtonPressedInStatefulPage(settings.state);
+          unawaited(_onBackButtonPressedInStatefulPage(settings.state));
           return false; // Prevent the default pop.
         }
 
         if (settings is Page) {
           // A page without state. It has no chance to override the behavior.
-          stack.onBackPressed();
+          unawaited(stack.onBackPressed());
           return false; // Prevent the default pop.
         }
 

@@ -1,3 +1,8 @@
+## 0.9.1
+
+* Fixed linter issues.
+* Upgrade to [total_lints](https://pub.dev/packages/total_lints) v2.19.0
+
 ## 0.9.0
 
 * **BREAKING:** `restoreRouteInformation` in `PageStackConfiguration` and `PageStacksConfiguration`

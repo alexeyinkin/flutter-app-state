@@ -30,9 +30,9 @@ abstract class PPageStatefulBloc<P extends PagePath, S, R>
   S createState();
 
   @override
-  void dispose() {
-    _statesController.close();
-    super.dispose();
+  Future<void> dispose() async {
+    await _statesController.close();
+    await super.dispose();
   }
 }
 

@@ -75,8 +75,8 @@ mixin PPageStateMixin<P extends PagePath, R> {
   void setStateMap(Map<String, dynamic> state) {}
 
   @mustCallSuper
-  void dispose() {
-    _eventsController.close();
+  Future<void> dispose() async {
+    await _eventsController.close();
   }
 }
 

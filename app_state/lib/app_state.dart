@@ -1,3 +1,15 @@
+/// A routing library and state management solution on top of Router
+/// API for larger apps.
+///
+/// Instead of routes or widgets, in the core there is a stack of stateful
+/// objects (Blocs, ChangeNotifiers, or anything else, collectively
+/// referred to as page states as opposed to widget states).
+/// This package translates navigation intents to operations on those.
+/// The page states are then wrapped into widgets to form the navigator's stack.
+/// This simplifies state management: no need for providers, stateful widgets,
+/// manual bloc creation and disposal, or BuildContext.
+library app_state;
+
 export 'src/models/back_pressed_result_enum.dart';
 
 export 'src/page_stack/back_button_dispatcher.dart';

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../page_state/page_state_mixin.dart';
@@ -28,7 +30,7 @@ class PStatefulMaterialPage<P extends PagePath, R,
 
   @override
   void dispose() {
-    state.dispose();
+    unawaited(state.dispose());
     super.dispose();
   }
 }

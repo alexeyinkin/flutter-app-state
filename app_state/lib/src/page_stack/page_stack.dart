@@ -55,7 +55,7 @@ class PPageStack<P extends PagePath> {
     this.onDuplicateKey = DuplicatePageKeyAction.bringOld,
     this.routeInformationParser,
   }) {
-    _pushNoFire(bottomPage, onDuplicateKey);
+    unawaited(_pushNoFire(bottomPage, onDuplicateKey));
   }
 
   /// The first non-null page path from top.
@@ -205,7 +205,7 @@ class PPageStack<P extends PagePath> {
   ) {
     page.completer.complete(event.data);
     pageBelow?.state?.didPopNext(page, event);
-    _schedulePageDisposal(page);
+    unawaited(_schedulePageDisposal(page));
   }
 
   void _firePathChange<R>(PAbstractPage<P, R> page) {
@@ -334,7 +334,7 @@ class PPageStack<P extends PagePath> {
       return;
     }
 
-    _pushNoFire(page, onDuplicateKey);
+    unawaited(_pushNoFire(page, onDuplicateKey));
   }
 
   PAbstractPage<P, dynamic>? _createPage(PagePath path) {
@@ -384,12 +384,12 @@ class PPageStack<P extends PagePath> {
     }
   }
 
-  void dispose() {
+  Future<void> dispose() async {
     for (final page in _pages) {
       page.dispose();
     }
 
-    _eventsController.close();
+    await _eventsController.close();
   }
 }
 
