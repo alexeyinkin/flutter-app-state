@@ -19,7 +19,7 @@ class InputScreen extends StatelessWidget {
           children: [
             Text(
               'Enter Text',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             TextField(
               controller: state.controller,
