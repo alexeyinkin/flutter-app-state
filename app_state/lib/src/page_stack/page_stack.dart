@@ -81,6 +81,16 @@ class PPageStack<P extends PagePath> {
     return future;
   }
 
+  Future<void> replaceTopPage<R>(
+    PAbstractPage<P, R> page, {
+    DuplicatePageKeyAction? onDuplicateKey,
+  }) async {
+    _pages.removeLast();
+    _pages.add(page);
+
+    _firePathChange<R>(page);
+  }
+
   Future<R?> _pushNoFire<R>(
     PAbstractPage<P, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
