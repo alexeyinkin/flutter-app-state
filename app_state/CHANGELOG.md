@@ -1,3 +1,7 @@
+## 0.9.2
+
+* Added `PageStackNavigator.navigatorKey`, passed `PageStackRouterDelegate.navigatorKey`.
+
 ## 0.9.1
 
 * Fixed linter issues.
