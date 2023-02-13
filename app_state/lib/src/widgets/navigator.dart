@@ -9,6 +9,7 @@ import '../pages/stateful_material.dart';
 
 /// Builds a [Navigator] using [PPageStack.pages].
 class PageStackNavigator extends StatelessWidget {
+  final Key? navigatorKey;
   final PageStack stack;
   final List<NavigatorObserver> observers;
   final TransitionDelegate<dynamic> transitionDelegate;
@@ -16,6 +17,7 @@ class PageStackNavigator extends StatelessWidget {
   const PageStackNavigator({
     required this.stack,
     super.key,
+    this.navigatorKey,
     this.observers = const <NavigatorObserver>[],
     this.transitionDelegate = const DefaultTransitionDelegate<dynamic>(),
   });
@@ -32,6 +34,7 @@ class PageStackNavigator extends StatelessWidget {
 
   Widget _buildOnChange() {
     return Navigator(
+      key: navigatorKey,
       observers: observers,
       // Pass the current copy of the pages list.
       // Otherwise (if passing `bloc.pages`) on update the navigator would

@@ -34,8 +34,9 @@ class PageStackRouterDelegate extends RouterDelegate<PageStackConfiguration>
   @override
   Widget build(BuildContext context) {
     return PageStackNavigator(
-      stack: pageStack,
+      navigatorKey: navigatorKey,
       observers: observers,
+      stack: pageStack,
       transitionDelegate: transitionDelegate,
     );
   }
