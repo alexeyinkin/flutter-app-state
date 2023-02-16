@@ -85,6 +85,8 @@ class PPageStack<P extends PagePath> {
     PAbstractPage<P, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
   ) {
+    page.state?.pageStack = this;
+
     final key = page.key;
     if (key == null) {
       _pushNewPageNoFire(page);
