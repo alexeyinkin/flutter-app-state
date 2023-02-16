@@ -19,6 +19,8 @@ import 'pop_event.dart';
 mixin PPageStateMixin<P extends PagePath, R> {
   final _eventsController = BehaviorSubject<PageEvent>();
 
+  PageStack? pageStack;
+
   Stream<PageEvent> get events => _eventsController.stream;
 
   P? get path => null;
