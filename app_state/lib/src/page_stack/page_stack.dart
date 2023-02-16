@@ -76,7 +76,6 @@ class PPageStack<P extends PagePath> {
     PAbstractPage<P, R> page, {
     DuplicatePageKeyAction? onDuplicateKey,
   }) {
-    page.state?.pageStack = this;
     final future = _pushNoFire<R>(page, onDuplicateKey ?? this.onDuplicateKey);
     _firePathChange<R>(page);
     return future;
@@ -86,6 +85,8 @@ class PPageStack<P extends PagePath> {
     PAbstractPage<P, R> page,
     DuplicatePageKeyAction duplicatePageKeyAction,
   ) {
+    page.state?.pageStack = this;
+
     final key = page.key;
     if (key == null) {
       _pushNewPageNoFire(page);
