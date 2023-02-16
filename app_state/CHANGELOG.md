@@ -1,3 +1,7 @@
+## 0.9.3
+
+* Added `PPageStateMixin.pageStack`, fill it when a page is added to the stack.
+
 ## 0.9.2
 
 * Added `PageStackNavigator.navigatorKey`, passed `PageStackRouterDelegate.navigatorKey`.
