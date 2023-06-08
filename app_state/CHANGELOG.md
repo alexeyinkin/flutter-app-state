@@ -1,3 +1,11 @@
+## 0.9.4
+
+* Require `flutter_issue_108697_workaround: ^0.1.3` with a fix for WebKit.
+
+## 0.9.3
+
+* Added `PPageStateMixin.pageStack`, fill it when a page is added to the stack.
+
 ## 0.9.2
 
 * Added `PageStackNavigator.navigatorKey`, passed `PageStackRouterDelegate.navigatorKey`.
