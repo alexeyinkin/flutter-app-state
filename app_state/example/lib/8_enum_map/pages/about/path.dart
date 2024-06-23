@@ -5,15 +5,15 @@ import '../../router/tab_enum.dart';
 import 'page.dart';
 
 class AboutPath extends PagePath {
-  static const _location = '/about';
+  static final _url = Uri.parse('/about');
 
   const AboutPath() : super(key: AboutPage.classFactoryKey);
 
   @override
-  String get location => _location;
+  Uri get uri => _url;
 
   static AboutPath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const AboutPath() : null;
+    return ri.uri == _url ? const AboutPath() : null;
   }
 
   @override

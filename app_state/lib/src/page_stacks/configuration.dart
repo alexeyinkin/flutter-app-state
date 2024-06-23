@@ -52,12 +52,12 @@ class PageStacksConfiguration {
   }
 
   RouteInformation? restoreRouteInformation() {
-    final location = currentStackConfiguration?.getTopPagePath()?.location;
+    final uri = currentStackConfiguration?.getTopPagePath()?.uri;
 
-    if (location == null) {
+    if (uri == null) {
       return null;
     }
 
-    return RouteInformation(location: location, state: toJson());
+    return RouteInformation(state: toJson(), uri: uri);
   }
 }

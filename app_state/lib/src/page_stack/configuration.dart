@@ -50,12 +50,12 @@ class PageStackConfiguration {
   /// Returns [RouteInformation] that has the top [PagePath]'s location
   /// and all pages' states.
   RouteInformation? restoreRouteInformation() {
-    final location = getTopPagePath()?.location;
+    final uri = getTopPagePath()?.uri;
 
-    if (location == null) {
+    if (uri == null) {
       return null;
     }
 
-    return RouteInformation(location: location, state: toJson());
+    return RouteInformation(state: toJson(), uri: uri);
   }
 }

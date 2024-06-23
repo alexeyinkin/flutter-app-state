@@ -21,10 +21,10 @@ void main() {
       const category1 = 'changed1';
       const category2 = 'changed2';
       final inPaths = [
-        null, //                                   match
-        BooksStatefulPath(category: category1), // match, apply state
-        BookPath(id: 2), //                        mismatch, id
-        BooksStatefulPath(category: category2) //  new, apply state
+        null, //                                    match
+        BooksStatefulPath(category: category1), //  match, apply state
+        BookPath(id: 2), //                         mismatch, id
+        BooksStatefulPath(category: category2), //  new, apply state
       ];
       final outPaths = <PagePath>[];
 

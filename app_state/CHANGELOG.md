@@ -1,3 +1,10 @@
+## 0.9.5
+
+* Using `PagePath.uri` instead of `.location` to construct `RouteInformation`.
+* Deprecated `PagePath.location`.
+* Disallowed `PageStacks.setCurrentStackKey` for a non-existent stack.
+* Added pub.dev topics: state-management, navigation, routing, urls, deep-linking.
+
 ## 0.9.4
 
 * Require `flutter_issue_108697_workaround: ^0.1.3` with a fix for WebKit.

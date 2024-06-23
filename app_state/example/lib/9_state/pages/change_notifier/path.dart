@@ -17,10 +17,10 @@ class ChangeNotifierPath extends PagePath {
         );
 
   @override
-  String get location => '/change-notifier/$counter';
+  Uri get uri => Uri.parse('/change-notifier/$counter');
 
   static ChangeNotifierPath? tryParse(RouteInformation ri) {
-    final matches = _regExp.firstMatch(ri.location ?? '');
+    final matches = _regExp.firstMatch(ri.uri.path);
     if (matches == null) return null;
 
     final counter = int.tryParse(matches[1] ?? '') ?? 0;

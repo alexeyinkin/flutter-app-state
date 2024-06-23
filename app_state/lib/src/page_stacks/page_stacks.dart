@@ -53,6 +53,10 @@ class PageStacks {
       return;
     }
 
+    if (key != null && !_pageStacks.containsKey(key)) {
+      throw Exception('PageStack not found: $key');
+    }
+
     final oldKey = _currentStackKey;
     _currentStackKey = key;
 

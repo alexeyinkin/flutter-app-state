@@ -5,15 +5,15 @@ import '../../router/tab_enum.dart';
 import '../tab2/path.dart';
 
 class PopupPath extends PagePath {
-  static const _location = '/popup';
+  static final _url = Uri.parse('/popup');
 
   const PopupPath() : super(key: 'Popup');
 
   @override
-  String get location => _location;
+  Uri get uri => _url;
 
   static PopupPath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const PopupPath() : null;
+    return ri.uri == _url ? const PopupPath() : null;
   }
 
   @override

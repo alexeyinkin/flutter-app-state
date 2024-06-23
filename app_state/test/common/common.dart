@@ -11,7 +11,7 @@ import 'common.mocks.dart';
 class _MyGenerateMocks {} // ignore: unused_element
 
 class HomePath extends PagePath {
-  static const _location = '/';
+  static final _url = Uri.parse('/');
 
   const HomePath()
       : super(
@@ -19,7 +19,7 @@ class HomePath extends PagePath {
         );
 
   static PagePath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const HomePath() : null;
+    return ri.uri == _url ? const HomePath() : null;
   }
 }
 
@@ -35,7 +35,7 @@ class HomePage extends StatelessMaterialPage {
 }
 
 class BooksStatefulPath extends PagePath {
-  static const _location = '/books';
+  static final _url = Uri.parse('/books');
 
   final String? category;
 
@@ -46,7 +46,7 @@ class BooksStatefulPath extends PagePath {
         );
 
   static PagePath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? BooksStatefulPath() : null;
+    return ri.uri == _url ? BooksStatefulPath() : null;
   }
 
   @override
@@ -98,10 +98,10 @@ class BookPath extends PagePath {
         );
 
   @override
-  String get location => '/books/$id';
+  Uri get uri => Uri.parse('/books/$id');
 
   static BookPath? tryParse(RouteInformation ri) {
-    final matches = _regExp.firstMatch(ri.location ?? '');
+    final matches = _regExp.firstMatch(ri.uri.path);
     if (matches == null) return null;
 
     final id = int.tryParse(matches[1] ?? '');
@@ -139,7 +139,7 @@ class BookPage extends StatelessMaterialPage {
 }
 
 class AltHomePath extends PagePath {
-  static const _location = '/home';
+  static final _url = Uri.parse('/home');
 
   const AltHomePath()
       : super(
@@ -147,7 +147,7 @@ class AltHomePath extends PagePath {
         );
 
   static PagePath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const AltHomePath() : null;
+    return ri.uri == _url ? const AltHomePath() : null;
   }
 }
 

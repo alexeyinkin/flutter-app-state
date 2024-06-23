@@ -4,15 +4,15 @@ import 'package:flutter/widgets.dart';
 import '../../router/tab_enum.dart';
 
 class Tab1Path extends PagePath {
-  static const _location = '/one';
+  static final _url = Uri.parse('/one');
 
   const Tab1Path() : super(key: 'Tab1');
 
   @override
-  String get location => _location;
+  Uri get uri => _url;
 
   static Tab1Path? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const Tab1Path() : null;
+    return ri.uri == _url ? const Tab1Path() : null;
   }
 
   @override

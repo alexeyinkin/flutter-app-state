@@ -83,8 +83,9 @@ class PagePath {
 
   /// Returns the path of the page to be a part of the URL.
   ///
-  /// It gets passed to [RouteInformation] as `location` argument.
+  /// It gets passed to [RouteInformation] as `uri` argument.
   /// It may contain query string parameters after '?'.
+  @Deprecated('Use and override the "uri" getter instead.')
   String get location => '/';
 
   /// What pages to show when navigating directly to this path.
@@ -112,7 +113,11 @@ class PagePath {
     );
   }
 
-  /// Parses [location] into a [Uri].
+  /// Returns the path of the page to be a part of the URL.
+  ///
+  /// It gets passed to [RouteInformation] as `uri` argument.
+  /// It may contain query string parameters after '?'.
+  // ignore: deprecated_member_use_from_same_package
   Uri get uri => Uri.parse(location);
 
   /// The full [Uri] with schema, domain, port, etc. taken from [baseUri].

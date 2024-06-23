@@ -5,15 +5,15 @@ import '../../router/tab_enum.dart';
 import '../about/path.dart';
 
 class InputPath extends PagePath {
-  static const _location = '/input';
+  static final _url = Uri.parse('/input');
 
   const InputPath() : super(key: 'Input');
 
   @override
-  String get location => _location;
+  Uri get uri => _url;
 
   static InputPath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? const InputPath() : null;
+    return ri.uri == _url ? const InputPath() : null;
   }
 
   @override

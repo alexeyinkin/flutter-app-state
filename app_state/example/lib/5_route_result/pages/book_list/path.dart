@@ -3,12 +3,12 @@ import 'package:app_state/app_state.dart';
 import '../../router/tab_enum.dart';
 
 class BookListPath extends PagePath {
-  static const _location = '/books';
+  static final _url = Uri.parse('/books');
 
   const BookListPath() : super(key: 'BookList');
 
   @override
-  String get location => _location;
+  Uri get uri => _url;
 
   @override
   String get defaultStackKey => TabEnum.books.name;

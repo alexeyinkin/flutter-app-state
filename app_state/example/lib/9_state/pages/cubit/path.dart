@@ -17,10 +17,10 @@ class CubitPath extends PagePath {
         );
 
   @override
-  String get location => '/cubit/$counter';
+  Uri get uri => Uri.parse('/cubit/$counter');
 
   static CubitPath? tryParse(RouteInformation ri) {
-    final matches = _regExp.firstMatch(ri.location ?? '');
+    final matches = _regExp.firstMatch(ri.uri.path);
     if (matches == null) return null;
 
     final counter = int.tryParse(matches[1] ?? '') ?? 0;

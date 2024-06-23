@@ -19,10 +19,10 @@ class BookDetailsPath extends PagePath {
         );
 
   @override
-  String get location => '/books/$bookId';
+  Uri get uri => Uri.parse('/books/$bookId');
 
   static BookDetailsPath? tryParse(RouteInformation ri) {
-    final matches = _regExp.firstMatch(ri.location ?? '');
+    final matches = _regExp.firstMatch(ri.uri.path);
     if (matches == null) return null;
 
     final bookId = int.tryParse(matches[1] ?? '') ?? (throw Error());

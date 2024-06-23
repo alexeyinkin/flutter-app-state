@@ -17,10 +17,10 @@ class BlocPath extends PagePath {
         );
 
   @override
-  String get location => '/bloc/$counter';
+  Uri get uri => Uri.parse('/bloc/$counter');
 
   static BlocPath? tryParse(RouteInformation ri) {
-    final matches = _regExp.firstMatch(ri.location ?? '');
+    final matches = _regExp.firstMatch(ri.uri.path);
     if (matches == null) return null;
 
     final counter = int.tryParse(matches[1] ?? '') ?? 0;

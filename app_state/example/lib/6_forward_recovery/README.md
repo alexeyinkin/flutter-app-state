@@ -50,7 +50,7 @@ in the browser history accompanying the current URL.
 
 ```dart
 class InputPath extends PagePath {
-  static const _location = '/input';
+  static const _url = Uri.parse('/input');
 
   final String text;
 
@@ -63,10 +63,10 @@ class InputPath extends PagePath {
         );
 
   @override
-  get location => _location;
+  Uri get uri => _url;
 
   static InputPath? tryParse(RouteInformation ri) {
-    return ri.location == _location ? InputPath(text: '') : null;
+    return ri.uri == _url ? InputPath(text: '') : null;
   }
 
   @override
