@@ -1,3 +1,7 @@
+## 0.9.6
+
+* Support [rxdart](https://pub.dev/packages/rxdart) v0.28.
+
 ## 0.9.5
 
 * Using `PagePath.uri` instead of `.location` to construct `RouteInformation`.
