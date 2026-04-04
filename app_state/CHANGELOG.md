@@ -1,3 +1,16 @@
+## 0.9.7
+
+* Migrated `Navigator` integration from the deprecated `onPopPage` to `onDidRemovePage` and `PopScope`.
+* Made `PageStacksRouterDelegate` non-abstract and sufficient.
+* Deleted the old `MaterialPageStacksRouterDelegate` and created a deprecated typedef to use its parent `PageStacksRouterDelegate`.
+* Upgraded the `mockito` version to `^5.5.1` to support the latest SDK.
+* Re-created `ios` and `android` directories in the example app to support the recent Gradle and SDKs.
+* Deprecated `PPageStatefulBloc`. Create your own custom class or mix the Bloc from the bloc package. This solution is opinionated and limited and will not be maintained.
+* Deprecated `PageStackBackButtonDispatcher.pageStackBloc` in favor of `pageStack`.
+* Deprecated `PPageStacksStackEvent.bloc` in favor of `stack`.
+* Deprecated `PPageStacksStackEvent.pageStackBlocEvent` in favor of `pageStackEvent`.
+* Renamed the forgotten `CStatelessMaterialPage` to `PStatelessMaterialPage` in accordance with v0.7.0.
+
 ## 0.9.6
 
 * Support [rxdart](https://pub.dev/packages/rxdart) v0.28.
@@ -124,7 +137,7 @@ is scheduled for removal in v0.8.0.
         * `currentStackBloc` was renamed to `currentStack`.
     * `PageStacksBlocEvent` was renamed to `PageStacksEvent`.
     * `PageStacksRouterDelegate.pageStacksBloc` was renamed to `pageStacks`.
-    * `CAbstractPage.bloc` was changed to `PageStateMixin state`.
+    * `CAbstractPage.bloc` was changed to `PageStateMixin.state`.
 * `PageStackEvent` now has type parameter `<P extends PagePath>`.
 * `PageState` class is added as the default class that uses `PageStateMixin`.
 * All classes using `C` prefix were changed to `P` prefix. Deprecated `typedef`s added for

@@ -3,12 +3,12 @@ import 'package:flutter/widgets.dart';
 import '../page_state/path.dart';
 import 'material.dart';
 
-abstract class CStatelessMaterialPage<P extends PagePath, R>
+abstract class PStatelessMaterialPage<P extends PagePath, R>
     extends PAbstractMaterialPage<P, R> {
   @override
   final P? path;
 
-  CStatelessMaterialPage({
+  PStatelessMaterialPage({
     required ValueKey<String> super.key,
     required super.child,
     super.factoryKey,
@@ -16,4 +16,8 @@ abstract class CStatelessMaterialPage<P extends PagePath, R>
   });
 }
 
-typedef StatelessMaterialPage<R> = CStatelessMaterialPage<PagePath, R>;
+typedef StatelessMaterialPage<R> = PStatelessMaterialPage<PagePath, R>;
+
+@Deprecated('Renamed to PStatelessMaterialPage')
+typedef CStatelessMaterialPage<P extends PagePath, R>
+    = PStatelessMaterialPage<P, R>;

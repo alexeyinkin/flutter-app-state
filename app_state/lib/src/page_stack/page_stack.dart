@@ -13,6 +13,7 @@ import '../page_state/pop_cause.dart';
 import '../page_state/pop_event.dart';
 import '../pages/abstract.dart';
 import '../util/util.dart';
+import '../widgets/navigator.dart';
 import 'configuration.dart';
 import 'configuration_setters/abstract.dart';
 import 'configuration_setters/key_or_null_path_no_gap.dart';
@@ -220,20 +221,35 @@ class PPageStack<P extends PagePath> {
     );
   }
 
-  /// Passes the back button event to the foreground page bloc.
+  /// Handles the back button press.
   ///
-  /// If that bloc handles the event itself, returns `true`.
+  /// Passes the back button event to the foreground page state.
   ///
-  /// If that bloc does not handle the event itself AND it is not the bottommost
-  /// one, pops it and disposes the page, then returns `true`.
+  /// If that state handles the event itself, returns the decision to keep
+  /// the page to prevent the framework from doing anything.
   ///
-  /// Otherwise returns `false`. This may signal to shut down the app
-  /// or to close some widgets wrapping this stack.
+  /// If that state does not handle the event itself
+  /// AND it is not the bottommost one,
+  /// pops it and disposes the page, then returns the decision to keep the page
+  /// to prevent the framework from doing anything.
+  ///
+  /// Otherwise returns the decision to close. This may signal to shut down
+  /// the app or to pop a route from another Navigator
+  /// that possibly wraps this stack.
+  ///
+  /// This is triggered:
+  ///  - By the platform with Android back button and likely the gesture.
+  ///  - By [PageStackNavigator] for stateless pages.
   Future<BackPressedResult> onBackPressed() async {
     final oldPages = [..._pages];
     final page = oldPages.lastOrNull;
     if (page == null) {
-      return BackPressedResult.close; // Normally never happens.
+      // ignore: avoid_print
+      print(
+        'PPageStack.onBackPressed called for a non-page route. '
+        'Please report this bug. This may mean messed up pages in the stack.',
+      );
+      return BackPressedResult.close;
     }
 
     final state = page.state;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../models/back_pressed_result_enum.dart';
 import '../page_state/page_state_mixin.dart';
 import '../page_state/path.dart';
 import 'material.dart';
@@ -25,7 +26,26 @@ class PStatefulMaterialPage<P extends PagePath, R,
     super.key,
     super.factoryKey,
   }) : super(
-          child: createScreen(state),
+          // A stateful page handles pop asynchronously.
+          // Therefore, the pop by the framework must always be disabled
+          // because the framework only does that synchronously.
+          // If the page decides to proceed with the pop, it does so manually
+          // in the following handler.
+          child: PopScope(
+            canPop: false, // Prevents the pop by the framework.
+            onPopInvokedWithResult: (bool didPop, dynamic result) async {
+              if (didPop) {
+                // Never get here.
+                return;
+              }
+
+              final result = await state.onBackPressed();
+              if (result == BackPressedResult.close) {
+                state.pop();
+              }
+            },
+            child: createScreen(state),
+          ),
         );
 
   @override

@@ -9,8 +9,10 @@ class PPageStacksStackEvent<P extends PagePath> extends PageStacksEvent {
   final PPageStack<P> stack;
   final PPageStackEvent<P> pageStackEvent;
 
+  @Deprecated('Use stack')
   PPageStack<P> get bloc => stack;
 
+  @Deprecated('Use pageStackEvent')
   PageStackEvent get pageStackBlocEvent => pageStackEvent;
 
   const PPageStacksStackEvent({

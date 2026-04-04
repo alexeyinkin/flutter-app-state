@@ -9,7 +9,7 @@ import 'router/route_information_parser.dart';
 import 'router/tab_enum.dart';
 
 final pageStacks = PageStacks();
-final _routerDelegate = MaterialPageStacksRouterDelegate(
+final _routerDelegate = PageStacksRouterDelegate(
   pageStacks,
   child: HomeScreen(stacks: pageStacks),
 );

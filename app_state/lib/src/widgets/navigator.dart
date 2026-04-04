@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../models/back_pressed_result_enum.dart';
 import '../page_stack/page_stack.dart';
-import '../page_state/page_state_mixin.dart';
 import '../pages/stateful_material.dart';
 
 /// Builds a [Navigator] using [PPageStack.pages].
@@ -37,48 +35,23 @@ class PageStackNavigator extends StatelessWidget {
       key: navigatorKey,
       observers: observers,
       // Pass the current copy of the pages list.
-      // Otherwise (if passing `bloc.pages`) on update the navigator would
+      // Otherwise (without copying) on update the navigator would
       // diff the new list with itself and would not show a newly pushed route.
       pages: [...stack.pages],
       transitionDelegate: transitionDelegate,
-      onPopPage: (route, result) {
-        // This is required by Flutter's internals to complete the pop future.
-        final didPop = route.didPop(result);
-
-        final settings = route.settings;
-
-        if (settings is StatefulMaterialPage) {
-          // Ideally we want to await for bloc.onBackPressed to see if it
-          // handled the event (so we ignore it) or not (so we propagate it).
-          // But this callback is synchronous, so we always have to ignore it.
-          // This means the app will never close on back button press.
-          // TODO(alexeyinkin): Allow to close the app on back button,
-          //  https://github.com/alexeyinkin/flutter-app-state/issues/8
-          unawaited(_onBackButtonPressedInStatefulPage(settings.state));
-          return false; // Prevent the default pop.
+      onDidRemovePage: (page) {
+        if (page is PStatefulMaterialPage) {
+          throw Exception(
+            'Must never get here '
+            'because stateful pages use PopScope with canPop = false, '
+            'which prevents Navigator from handling their events.',
+          );
         }
 
-        if (settings is Page) {
-          // A page without state. It has no chance to override the behavior.
-          unawaited(stack.onBackPressed());
-          return false; // Prevent the default pop.
-        }
-
-        // The classic handler for non-paged routes:
-
-        if (!didPop) {
-          return false; // Prevent the default pop.
-        }
-
-        return true; // Continue with the default pop.
+        // This is only called for stateless pages because stateful ones
+        // use PopScope (with canPop = false) to handle popping.
+        unawaited(stack.onBackPressed());
       },
     );
-  }
-
-  Future<void> _onBackButtonPressedInStatefulPage(PageStateMixin state) async {
-    final result = await state.onBackPressed();
-    if (result == BackPressedResult.close) {
-      state.pop();
-    }
   }
 }

@@ -4,6 +4,10 @@ import 'package:rxdart/rxdart.dart';
 import 'page_state_mixin.dart';
 import 'path.dart';
 
+@Deprecated(
+  'Create your own custom class or mix the Bloc from the bloc package. '
+  'This solution is opinionated and limited and will not be maintained.',
+)
 /// A [PPageStateMixin] implementation for your pages that uses
 /// a simple custom BLoC implementation.
 ///
@@ -36,7 +40,15 @@ abstract class PPageStatefulBloc<P extends PagePath, S, R>
   }
 }
 
+@Deprecated(
+  'Create your own custom class or mix the Bloc from the bloc package. '
+  'This solution is opinionated and limited and will not be maintained.',
+)
 typedef PageStatefulBloc<S, R> = CPageStatefulBloc<PagePath, S, R>;
 
+@Deprecated(
+  'Create your own custom class or mix the Bloc from the bloc package. '
+  'This solution is opinionated and limited and will not be maintained.',
+)
 typedef CPageStatefulBloc<P extends PagePath, S, R>
     = PPageStatefulBloc<P, S, R>;

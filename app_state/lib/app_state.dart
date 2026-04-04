@@ -26,7 +26,6 @@ export 'src/page_stacks/back_button_dispatcher.dart';
 export 'src/page_stacks/configuration.dart';
 export 'src/page_stacks/current_page_stack_changed_event.dart';
 export 'src/page_stacks/event.dart';
-export 'src/page_stacks/material_router_delegate.dart';
 export 'src/page_stacks/page_stack_event.dart';
 export 'src/page_stacks/page_stacks.dart';
 export 'src/page_stacks/route_information_parser.dart';

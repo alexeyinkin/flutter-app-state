@@ -3,6 +3,10 @@ import 'package:flutter/widgets.dart';
 import '../page_state/path.dart';
 import '../page_state/stateful_bloc.dart';
 
+@Deprecated(
+  'Create your own custom widget. '
+  'This solution is opinionated and limited and will not be maintained.',
+)
 abstract class StatefulBlocWidget<R,
     B extends CPageStatefulBloc<PagePath, S, R>, S> extends StatelessWidget {
   final B bloc;

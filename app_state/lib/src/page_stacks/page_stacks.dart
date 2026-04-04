@@ -28,7 +28,7 @@ class PageStacks {
   PageStacksConfiguration getConfiguration() {
     return PageStacksConfiguration(
       pageStackConfigurations: _pageStacks.map(
-        (key, pageStackBloc) => MapEntry(key, pageStackBloc.getConfiguration()),
+        (key, pageStack) => MapEntry(key, pageStack.getConfiguration()),
       ),
       currentStackKey: _currentStackKey,
     );
